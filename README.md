@@ -12,3 +12,12 @@ designed to take students from absolute beginner to top-tier university level.
 Structured. Adaptive. Elite-focused.
 
 </div>
+
+## Setup (required)
+
+After cloning the repository, run:
+
+```bash
+npm install
+```
+This enables Git hooks and commit validation locally.
