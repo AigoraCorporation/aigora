@@ -1,4 +1,9 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+DOC_PATH="docs/conventions/commits.md"
 
-npx --no -- commitlint --edit "$1"
+echo ""
+echo "Commit message must follow: <type>(<scope>): <subject>"
+echo "See: $DOC_PATH"
+echo ""
+
+npx commitlint --edit "$1"
