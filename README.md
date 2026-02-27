@@ -45,6 +45,22 @@ Read the full project vision here:
 
 ---
 
+## Operations
+- [Git Flow](docs/06-operations/git-flow.md)
+- [Commit Convention](docs/conventions/commits.md)
+
+---
+
+## Contribution Workflow
+
+All contributions must follow the official Git Flow and repository rules.
+
+→ [Git Flow Guide](docs/06-operations/git-flow.md)
+
+Protected branch rules apply to `main`.
+
+---
+
 ## Setup (required)
 
 After cloning the repository, run:
