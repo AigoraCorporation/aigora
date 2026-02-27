@@ -49,6 +49,7 @@ following:
 -   docs
 -   ci
 -   repo
+-   architecture
 
 If unsure, use `repo`.
 
