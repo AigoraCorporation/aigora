@@ -17,24 +17,35 @@ Structured. Adaptive. Elite-focused.
 
 ## About
 
-Aigora is a doc-first AI tutoring architecture project.  
-It aims to build a structured, adaptive mathematics tutor capable of diagnosing knowledge gaps, reinforcing conceptual understanding, and preparing students for competitive university entrance exams.
+AIGORA is a doc-first AI tutoring architecture project.
+
+It aims to build a structured, adaptive mathematics tutor capable of:
+
+- Diagnosing knowledge gaps
+- Reinforcing conceptual understanding
+- Developing procedural fluency
+- Improving exam performance
+- Tracking mastery progression
 
 This is not a generic chatbot.  
 It is a designed educational system.
 
 ---
 
-## Vision
+## Strategic Foundation
 
-Read the full project vision here:
-→ [Project Vision](docs/00-vision/vision.md)
+- [Project Vision](docs/00-vision/vision.md)
+- [Goals & Non-Goals](docs/00-vision/goals-non-goals.md)
+
+These documents define what AIGORA is — and what it is not.
 
 ---
 
 ## Architecture
 
 - [System Overview](docs/02-architecture/overview.md)
+
+Architecture is designed before implementation.
 
 ---
 
@@ -43,25 +54,22 @@ Read the full project vision here:
 - [Scope Definition](docs/04-curriculum/scope-fuvest.md)
 - [Topic Map](docs/04-curriculum/topic-map.md)
 
+The curriculum is structured as a prerequisite graph with mastery-based progression.
+
 ---
 
-## Operations
+## Operations & Governance
+
 - [Git Flow](docs/06-operations/git-flow.md)
 - [Commit Convention](docs/conventions/commits.md)
+- [Contributing Guide](CONTRIBUTING.md)
+
+The `main` branch is protected.
+All changes must go through Pull Requests and pass CI checks.
 
 ---
 
-## Contribution Workflow
-
-All contributions must follow the official Git Flow and repository rules.
-
-→ [Git Flow Guide](docs/06-operations/git-flow.md)
-
-Protected branch rules apply to `main`.
-
----
-
-## Setup (required)
+## Setup (Required)
 
 After cloning the repository, run:
 

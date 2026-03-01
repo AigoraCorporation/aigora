@@ -17,6 +17,18 @@ This document explains how to contribute consistently and safely.
 
 ---
 
+## Project Scope
+
+Before proposing changes, read:
+
+→ [Goals & Non-Goals](docs/00-vision/goals-non-goals.md)
+
+All contributions must align with the defined strategic scope.
+
+Pull Requests that introduce features outside the defined goals may be declined.
+
+---
+
 ## Branching & Git Flow
 
 All contributions must follow the official workflow:
@@ -52,3 +64,4 @@ Before merging:
 - Keep changes focused and atomic
 
 Only approved Pull Requests can be merged into `main`.
+
