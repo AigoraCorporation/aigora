@@ -62,6 +62,7 @@ The curriculum is structured as a prerequisite graph with mastery-based progress
 
 - [Git Flow](docs/06-operations/git-flow.md)
 - [Commit Convention](docs/conventions/commits.md)
+- [Pull Request Template](.github/pull_request_template.md)
 - [Contributing Guide](CONTRIBUTING.md)
 
 The `main` branch is protected.
