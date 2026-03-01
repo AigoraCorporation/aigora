@@ -65,3 +65,23 @@ Before merging:
 
 Only approved Pull Requests can be merged into `main`.
 
+---
+
+## Pull Request Template
+
+All Pull Requests must follow the official PR template.
+
+The template is automatically loaded when opening a PR and must not be removed.
+
+Location:
+→ [Pull Request Template](.github/pull_request_template.md) 
+
+PRs missing required sections (Changes, Motivation, Impact) may be rejected.
+
+The structure ensures:
+
+- Clarity of intent
+- Architectural transparency
+- Scope alignment
+- Cleaner project history
+
