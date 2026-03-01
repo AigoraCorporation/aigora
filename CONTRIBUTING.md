@@ -11,7 +11,9 @@ This document explains how to contribute consistently and safely.
 
 ## Table of Contents
 
+- [Project Scope](#project-scope)
 - [Branching & Git Flow](#branching--git-flow)
+- [Development Workflow](#development-workflow)
 - [Commit Convention](#commit-convention)
 - [Pull Request Process](#pull-request-process)
 
@@ -19,23 +21,15 @@ This document explains how to contribute consistently and safely.
 
 ## Project Scope
 
-Before proposing changes, read:
-
 → [Goals & Non-Goals](docs/00-vision/goals-non-goals.md)
 
 All contributions must align with the defined strategic scope.
-
-Pull Requests that introduce features outside the defined goals may be declined.
 
 ---
 
 ## Branching & Git Flow
 
-All contributions must follow the official workflow:
-
 → [Git Flow Guide](docs/06-operations/git-flow.md)
-
-### Important
 
 - Work must be done in feature branches.
 - `main` is protected.
@@ -44,9 +38,38 @@ All contributions must follow the official workflow:
 
 ---
 
-## Commit Convention
+## Task Creation
 
-All commits must follow the Conventional Commits standard:
+All work must begin with a GitHub Issue.
+
+Use the official Issue template when creating new tasks.
+
+Location:
+→ .github/ISSUE_TEMPLATE/task.md
+
+No feature or architectural change should start without an associated Issue.
+
+---
+
+## Development Workflow
+
+All work must follow the official development lifecycle:
+
+→ [Development Workflow](docs/06-operations/workflow.md)
+
+No change reaches `main` without:
+
+- An associated Issue
+- A dedicated branch
+- Conventional commits
+- A Pull Request
+- Passing CI checks
+
+This workflow is mandatory.
+
+---
+
+## Commit Convention
 
 → [Commit Convention](docs/conventions/commits.md)
 
@@ -56,32 +79,13 @@ Commits that do not follow the standard will fail CI checks.
 
 ## Pull Request Process
 
+All Pull Requests must follow the official PR template.
+
+→ [.github/pull_request_template.md](.github/pull_request_template.md)
+
 Before merging:
 
 - Ensure CI passes
 - Ensure commit messages follow the standard
-- Provide a clear PR description (what and why)
+- Provide a clear PR description
 - Keep changes focused and atomic
-
-Only approved Pull Requests can be merged into `main`.
-
----
-
-## Pull Request Template
-
-All Pull Requests must follow the official PR template.
-
-The template is automatically loaded when opening a PR and must not be removed.
-
-Location:
-→ [Pull Request Template](.github/pull_request_template.md) 
-
-PRs missing required sections (Changes, Motivation, Impact) may be rejected.
-
-The structure ensures:
-
-- Clarity of intent
-- Architectural transparency
-- Scope alignment
-- Cleaner project history
-
