@@ -60,13 +60,26 @@ The curriculum is structured as a prerequisite graph with mastery-based progress
 
 ## Operations & Governance
 
+- [Development Workflow](docs/06-operations/workflow.md)
 - [Git Flow](docs/06-operations/git-flow.md)
 - [Commit Convention](docs/conventions/commits.md)
 - [Pull Request Template](.github/pull_request_template.md)
 - [Contributing Guide](CONTRIBUTING.md)
 
 The `main` branch is protected.
-All changes must go through Pull Requests and pass CI checks.
+All changes must originate from an Issue and follow the official workflow.
+Pull Requests must pass CI checks before merging.
+
+---
+
+## Roadmap & Tasks
+
+Project work is tracked via structured GitHub Issues and Projects.
+
+All development must originate from a documented Issue.
+
+→ View Issues
+→ View Project Board
 
 ---
 
