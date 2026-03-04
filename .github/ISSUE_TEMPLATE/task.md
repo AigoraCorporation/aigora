@@ -28,3 +28,7 @@ What is explicitly excluded?
 ## Related Documents
 
 - 
+
+## Related Issue
+
+Closes #
