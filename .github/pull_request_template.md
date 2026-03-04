@@ -12,3 +12,6 @@
 - [ ] I followed the Commit Convention (docs/conventions/commits.md)
 - [ ] I read the Git Flow Guide (docs/06-operations/git-flow.md)
 - [ ] CI is passing
+
+## Related Issue
+Closes #
