@@ -58,7 +58,7 @@ The curriculum is structured as a prerequisite graph with mastery-based progress
 
 ---
 
-## Operations & Governance (test)
+## Operations & Governance
 
 - [Development Workflow](docs/06-operations/workflow.md)
 - [Git Flow](docs/06-operations/git-flow.md)
