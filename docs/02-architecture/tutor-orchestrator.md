@@ -1,11 +1,11 @@
-# Intent Resolution
+# Tutor Orchestrator
 
-This document defines how the Tutor Orchestrator comprehends
-student input before any response planning or component coordination begins.
+This document defines the design and internal mechanics of the
+Tutor Orchestrator — the central decision-making component of AIGORA.
 
-It establishes the taxonomy of student inputs, the authority
-traversal model, and the constraints governing resolution efficiency,
-session design, and domain ownership.
+It covers the orchestrator's responsibilities, its intent resolution
+model, its reasoning transparency layer, and the constraints that
+govern its operation.
 
 This document is a direct extension of the
 [Interaction Model](interaction-model.md).
@@ -13,6 +13,40 @@ This document is a direct extension of the
 ---
 
 # Design Principle
+
+The Tutor Orchestrator is a **supervisor**.
+
+It does not execute tutoring actions directly.
+It comprehends student input, forms a resolution plan,
+and delegates to the right components at the right time.
+
+The separation between *deciding* and *executing* is what keeps
+the orchestrator coherent under complexity. A supervisor that
+begins executing before it has understood is not a supervisor —
+it is a reactive system.
+
+The orchestrator's primary obligation is to understand before acting.
+
+---
+
+# Responsibilities
+
+The Tutor Orchestrator is responsible for:
+
+- Classifying student input by nature and authority
+- Assessing classification confidence before committing to a plan
+- Requesting clarification when classification is ambiguous
+- Forming and committing to a resolution plan
+- Coordinating consultive component calls during authority traversal
+- Resolving scope from traversal output
+- Forming and executing a response strategy
+- Committing reflexive updates after the response is delivered
+- Projecting its reasoning to the student in real time
+- Enforcing the implementation boundary at all times
+
+---
+
+# Intent Resolution
 
 The orchestrator cannot route what it has not understood.
 
@@ -23,14 +57,6 @@ of what the student needs — before any component is invoked.
 Resolution is not binary. An input may carry multiple natures
 and require multiple authorities. The orchestrator must hold
 this multiplicity without collapsing it prematurely.
-
----
-
-# Two Upfront Dimensions
-
-Intent resolution begins with two dimensions that can be
-determined directly from the input itself, without invoking
-any component.
 
 ## Dimension 1 — Input Nature
 
@@ -72,9 +98,7 @@ Some input natures map with high determinism to specific authorities.
 Affective and strategic inputs are frequently resolved by the
 orchestrator itself, without invoking external components.
 
----
-
-# Scope as a Resolved Property
+## Scope as a Resolved Property
 
 Scope — the level of the curriculum an input refers to —
 is **not classified upfront**.
@@ -100,15 +124,15 @@ It informs response strategy but does not precede it.
 
 # Clarification as a Guardrail
 
-Before authority traversal begins, the orchestrator must assess
+Before committing to a resolution plan, the orchestrator must assess
 whether the upfront classification is confident enough to proceed.
 
 If it is not, the correct action is to ask the student —
 not to assume and traverse on a misclassified intent.
 
-This is a guardrail: it protects the student domain from
-consequential writes derived from misunderstood input,
-and it protects traversal efficiency from wasted consultive calls.
+This guardrail protects the student domain from consequential writes
+derived from misunderstood input, and protects traversal efficiency
+from wasted consultive calls.
 
 It is also pedagogically sound. A good tutor asks before assuming.
 
@@ -213,6 +237,96 @@ The orchestrator must not over-consult.
 
 ---
 
+# Resolution Plan
+
+The orchestrator forms a resolution plan before any action is taken.
+The plan is the orchestrator's structured intent — what it will do,
+in what order, and why — derived from the upfront classification
+and confirmed before traversal begins.
+
+The plan is not execution. It is the decision to execute.
+
+```
+1. Classify Input Nature        (from input, upfront, no components)
+2. Derive Resolution Authority  (from nature, upfront, no components)
+3. Assess Classification        (confidence check, no components)
+   → if ambiguous: request clarification from student (bounded to one round)
+   → if confident: form and commit to plan
+4. Traverse Authorities         (consultive calls, nature-guided, bounded)
+5. Resolve Scope                (output of traversal)
+6. Form Response Strategy       (using resolved intent + scope)
+7. Execute Response             (LLM Interface, student-facing)
+8. Commit Reflexive Updates     (Student Model, Assessment Engine)
+```
+
+Steps 1–3 are synchronous and component-free.
+Step 3 is a guardrail gate — it either loops back to the student or commits the plan.
+Steps 4–5 are consultive and must be parallelized where possible.
+Steps 6–7 are generative.
+Step 8 is reflexive and must occur after the response is delivered.
+
+---
+
+# Reasoning Transparency Layer
+
+The orchestrator projects its reasoning to the student in real time.
+
+This is not an implementation leak. It is an intentional
+pedagogical surface — a live, ordered view of what the
+orchestrator is working through, translated into language
+the student can follow and trust.
+
+The distinction is precise:
+
+> An **implementation leak** is unintentional, unframed,
+> and exposes architecture.
+>
+> The **reasoning surface** is intentional, pedagogically framed,
+> and exposes intent.
+
+The student never sees component names, traversal logic, or
+internal state. They see a tutor thinking out loud.
+
+## What the Student Sees
+
+Each step of the resolution plan has a corresponding
+student-facing signal. These signals are brief, natural,
+and pedagogically framed.
+
+| Resolution Plan Step | Student-Facing Signal |
+|---|---|
+| Classify Input Nature | *(silent — no signal needed)* |
+| Derive Resolution Authority | *(silent — no signal needed)* |
+| Assess Classification | "Let me make sure I understand what you're asking..." |
+| Clarification Request | "Could you tell me a bit more — ..." |
+| Traverse Authorities | "Let me check where this fits in what you've been working on..." |
+| Resolve Scope | *(silent — feeds into response strategy)* |
+| Form Response Strategy | "Ok, I think I know what will help here." |
+| Execute Response | *(the response itself)* |
+| Commit Reflexive Updates | *(silent — never student-facing)* |
+
+Silent steps are those where surfacing a signal would add
+noise without pedagogical value.
+
+## Properties of the Reasoning Surface
+
+- **Ordered** — signals follow the resolution plan in sequence.
+- **Bounded** — only steps with pedagogical signal value are surfaced.
+- **Collapsible** — the student may minimise or dismiss the surface without affecting orchestration.
+- **Non-blocking** — signals appear as the plan progresses, not after it completes.
+- **Framed as thinking, not processing** — the tutor thinks, it does not compute.
+
+## What the Reasoning Surface Is Not
+
+- It is not a progress bar or a loading indicator.
+- It is not a debug console.
+- It is not a transcript of internal decisions.
+- It is not a guarantee of what will happen next.
+
+It is a window into the tutor's intent — nothing more.
+
+---
+
 # Session Design Constraints
 
 ## Short Sessions
@@ -262,8 +376,7 @@ are consequential and must be intentional.
 The orchestrator is the boundary between the student's
 experience and the system's implementation.
 
-Nothing behind the orchestrator should be visible
-to the student:
+Nothing behind the orchestrator should be visible to the student:
 
 - No component names
 - No internal state representations
@@ -277,44 +390,29 @@ Violating this boundary is an implementation leak.
 It degrades trust, confuses the student, and
 couples the experience to internal design decisions.
 
----
-
-# Resolution Sequence
-
-The complete intent resolution sequence is:
-
-```
-1. Classify Input Nature        (from input, upfront, no components)
-2. Derive Resolution Authority  (from nature, upfront, no components)
-3. Assess Classification        (confidence check, no components)
-   → if ambiguous: request clarification from student (bounded to one round)
-   → if confident: proceed to traversal
-4. Traverse Authorities         (consultive calls, nature-guided, bounded)
-5. Resolve Scope                (output of traversal)
-6. Form Response Strategy       (using resolved intent + scope)
-7. Execute Response             (LLM Interface, student-facing)
-8. Commit Reflexive Updates     (Student Model, Assessment Engine)
-```
-
-Steps 1–3 are synchronous and component-free.
-Step 3 is a guardrail gate — it either loops back to the student or opens traversal.
-Steps 4–5 are consultive and must be parallelized where possible.
-Steps 6–7 are generative.
-Step 8 is reflexive and must occur after the response is delivered.
+The reasoning surface is the single controlled exception —
+it surfaces intent, not implementation, and only through
+the orchestrator's own framing.
 
 ---
 
 # Constraints Summary
 
+- The orchestrator is a supervisor. It decides before it acts.
 - Input Nature and Resolution Authority are always resolved upfront.
-- Classification confidence is always assessed before traversal begins.
+- Classification confidence is always assessed before the resolution plan is committed.
 - Ambiguous classifications trigger a clarification request, not a traversal assumption.
 - Clarification is bounded to one round per input. If still ambiguous, default to the most conservative nature.
 - Clarification questions are always pedagogically framed. Implementation must never be exposed.
+- The resolution plan is formed and committed before traversal begins.
 - Scope is always resolved through traversal, never assumed.
 - Traversal is nature-guided to minimize unnecessary consultive calls.
 - Reflexive calls must never occur during traversal or response planning.
+- The reasoning surface projects intent, not implementation.
+- Reflexive updates are never surfaced to the student.
 - Sessions are stateless. Continuity lives in the Student Model.
 - Context reconstruction at session start must be minimal and structured.
 - The orchestrator is the implementation boundary. Nothing leaks through it.
+- The reasoning surface is the single controlled exception to the implementation boundary.
 - Student-built domains are owned by the student. Writes are consequential.
+

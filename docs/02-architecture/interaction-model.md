@@ -200,18 +200,3 @@ flowchart TB
 - Staff-curated domains must not be modified at runtime by the orchestrator.
 - Intent resolution must precede all component coordination.
 
----
-
-# Documentation Index
-
-| Document | Description | Status |
-|---|---|---|
-| [Architecture Overview](overview.md) | High-level system architecture | ✅ Available |
-| [Interaction Model](interaction-model.md) | Orchestrator interaction dynamics | ✅ Available |
-| [Intent Resolution](intent-resolution.md) | Input taxonomy and orchestration guardrails | ✅ Available |
-| [Tutor Orchestrator](tutor-orchestrator.md) | Orchestration engine design | 🚧 Planned |
-| [Student Model](student-model.md) | Learner knowledge representation | 🚧 Planned |
-| [Curriculum Graph](curriculum-graph.md) | Learning dependency structure | 🚧 Planned |
-| [Assessment Engine](assessment-engine.md) | Diagnostic and exercise system | 🚧 Planned |
-| [Retrieval Layer](retrieval-layer.md) | Knowledge retrieval architecture | 🚧 Planned |
-| [LLM Interface](llm-interface.md) | Language model integration | 🚧 Planned |
