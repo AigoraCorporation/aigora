@@ -208,6 +208,7 @@ flowchart TB
 |---|---|---|
 | [Architecture Overview](overview.md) | High-level system architecture | ✅ Available |
 | [Interaction Model](interaction-model.md) | Orchestrator interaction dynamics | ✅ Available |
+| [Intent Resolution](intent-resolution.md) | Input taxonomy and orchestration guardrails | ✅ Available |
 | [Tutor Orchestrator](tutor-orchestrator.md) | Orchestration engine design | 🚧 Planned |
 | [Student Model](student-model.md) | Learner knowledge representation | 🚧 Planned |
 | [Curriculum Graph](curriculum-graph.md) | Learning dependency structure | 🚧 Planned |
