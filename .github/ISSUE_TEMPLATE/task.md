@@ -27,7 +27,8 @@ What is explicitly excluded?
 
 ## Related Documents
 
-- 
+- docs/01-requirements/constraints.md
+- docs/02-architecture/overview.md
 
 ## Related Issue
 

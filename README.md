@@ -101,7 +101,7 @@ The `main` branch is protected and cannot be updated directly.
 
 ---
 
-## Roadmap & Tasks
+# Roadmap & Tasks
 
 Project work is tracked through GitHub Issues and the project board.
 
@@ -109,6 +109,15 @@ All development activities must originate from a documented Issue.
 
 → View Issues  
 → View Project Board
+
+---
+
+# Related Requirements
+
+The architecture is guided by a set of system constraints that define
+key technical, architectural, and product boundaries.
+
+- [System Constraints](../01-requirements/constraints.md)
 
 ---
 
