@@ -45,8 +45,8 @@ flowchart TB
 
         subgraph components["Internal Components"]
             studentModel["**Student Model**<br/>Mastery, gaps, progress"]
-            curriculumGraph["**Curriculum Graph**<br/>Topics and prerequisites"]
             assessmentEngine["**Assessment Engine**<br/>Diagnostics and evaluation"]
+            curriculumGraph["**Curriculum Graph**<br/>Topics and prerequisites"]
             retrievalLayer["**Retrieval Layer (RAG)**<br/>Knowledge retrieval"]
             llmInterface["**LLM Interface**<br/>Model interaction"]
         end
@@ -64,6 +64,48 @@ The **Tutor Orchestrator** acts as the central decision-making component,
 coordinating learning interactions between the student and the system.
 
 ---
+
+# System Interaction Model
+
+The interaction model defines how the **Tutor Orchestrator** coordinates
+student interactions and communicates with internal system components.
+
+```mermaid
+flowchart TB
+    student["👤 Student"]
+
+    subgraph orchestrator["🧭 Tutor Orchestrator"]
+        intent["Intent Resolution"]
+        strategy["Response Strategy"]
+    end
+
+    subgraph consultive["Consultive Components (read-only)"]
+        curriculum["Curriculum Graph"]
+        retrieval["Retrieval Layer"]
+        llm["LLM Interface"]
+    end
+
+    subgraph reflexive["Reflexive Components (state-mutating)"]
+        studentModel["Student Model"]
+        assessment["Assessment Engine"]
+    end
+
+    student -->|"input"| intent
+    intent --> strategy
+
+    strategy -->|"query"| curriculum
+    strategy -->|"retrieve"| retrieval
+    strategy -->|"generate"| llm
+
+    strategy -->|"response"| student
+
+    strategy -->|"commit"| studentModel
+    strategy -->|"evaluate"| assessment
+```
+
+For a detailed description of the interaction flow, see: [Interaction Model](interaction-model.md)
+
+--- 
 
 # Core Architecture Components
 
@@ -185,6 +227,7 @@ The architecture documentation is organized into the following sections:
 | Document | Description | Status |
 |--------|-------------| ------- |
 | [Architecture Overview](overview.md) | High-level architecture description | ✅ Available | 
+| [Interaction Model](interaction-model.md) | Orchestrator interaction dynamics | ✅ Available |
 | [Tutor Orchestrator](tutor-orchestrator.md) | Pedagogical orchestration engine | 🚧 Planned |
 | [Student Model](student-model.md) | Representation of learner knowledge | 🚧 Planned |
 | [Curriculum Graph](curriculum-graph.md) | Learning dependency structure | 🚧 Planned |
