@@ -172,6 +172,15 @@ key technical, architectural, and product boundaries.
 
 ---
 
+# Related Requirements
+
+The architecture is guided by a set of system constraints that define
+key technical, architectural, and product boundaries.
+
+- [System Constraints](../01-requirements/constraints.md)
+
+---
+
 ## Setup (Required)
 
 After cloning the repository, run:
