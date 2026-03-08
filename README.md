@@ -133,10 +133,8 @@ engineering workflow.
 
 Before contributing, please read:
 
-- [Contributing Guide](CONTRIBUTING.md)
 - [Development Workflow](docs/06-operations/workflow.md)
-- [Branch Naming Convention](docs/conventions/branch-naming.md)
-- [Commit Convention](docs/conventions/commits.md)
+- [Contributing Guide](CONTRIBUTING.md)
 
 All changes must originate from a GitHub Issue.
 
@@ -149,7 +147,6 @@ To maintain consistency and quality, the repository enforces:
 - [Commit Convention](docs/conventions/commits.md)
 - [Branch Naming Convention](docs/conventions/branch-naming.md)
 - [Pull Request Template](.github/pull_request_template.md)
-- [Contributing Guide](CONTRIBUTING.md)
 
 The `main`,`release` and `dev` branch is protected and cannot be updated directly.
 
@@ -171,7 +168,7 @@ All development activities must originate from a documented Issue.
 The architecture is guided by a set of system constraints that define
 key technical, architectural, and product boundaries.
 
-- [System Constraints](../01-requirements/constraints.md)
+- [System Constraints](docs/01-requirements/constraints.md)
 
 ---
 
