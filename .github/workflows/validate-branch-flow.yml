@@ -17,7 +17,7 @@ jobs:
           echo "Head branch: $HEAD"
 
           if [ "$BASE" = "dev" ]; then
-            if [[ ! "$HEAD" =~ ^(feature|fix|docs|chore|refactor|test)/.+$ ]]; then
+            if [[ ! "$HEAD" =~ ^(feature|fix|docs|chore|refactor|test|ci)/.+$ ]]; then
               echo "Only feature/*, fix/*, docs/*, chore/*, refactor/*, ci/* or test/* branches can target dev."
               exit 1
             fi
