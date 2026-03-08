@@ -1,0 +1,34 @@
+name: Validate PR Branch Flow
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  validate-branch-flow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate source and target branches
+        run: |
+          BASE="${{ github.base_ref }}"
+          HEAD="${{ github.head_ref }}"
+
+          echo "Base branch: $BASE"
+          echo "Head branch: $HEAD"
+
+          if [ "$BASE" = "dev" ]; then
+            if [[ ! "$HEAD" =~ ^(feature|fix|docs|chore|refactor|test)/.+$ ]]; then
+              echo "Only feature/*, fix/*, docs/*, chore/*, refactor/*, or test/* branches can target dev."
+              exit 1
+            fi
+          elif [ "$BASE" = "release" ]; then
+            if [ "$HEAD" != "dev" ]; then
+              echo "Only dev can target release."
+              exit 1
+            fi
+          elif [ "$BASE" = "main" ]; then
+            if [ "$HEAD" != "release" ]; then
+              echo "Only release can target main."
+              exit 1
+            fi
+          fi
