@@ -155,7 +155,7 @@ The `main`,`release` and `dev` branch is protected and cannot be updated directl
 
 ---
 
-## Roadmap & Tasks
+# Roadmap & Tasks
 
 Project work is tracked through GitHub Issues and the project board.
 
@@ -163,6 +163,15 @@ All development activities must originate from a documented Issue.
 
 - [View Open Issues](https://github.com/AigoraCorporation/aigora/issues)
 - [View Project Board](https://github.com/AigoraCorporation?tab=projects)
+
+---
+
+# Related Requirements
+
+The architecture is guided by a set of system constraints that define
+key technical, architectural, and product boundaries.
+
+- [System Constraints](../01-requirements/constraints.md)
 
 ---
 
