@@ -65,6 +65,48 @@ coordinating learning interactions between the student and the system.
 
 ---
 
+# System Interaction Model
+
+The interaction model defines how the **Tutor Orchestrator** coordinates
+student interactions and communicates with internal system components.
+
+```mermaid
+flowchart TB
+    student["👤 Student"]
+
+    subgraph orchestrator["🧭 Tutor Orchestrator"]
+        intent["Intent Resolution"]
+        strategy["Response Strategy"]
+    end
+
+    subgraph consultive["Consultive Components (read-only)"]
+        curriculum["Curriculum Graph"]
+        retrieval["Retrieval Layer"]
+        llm["LLM Interface"]
+    end
+
+    subgraph reflexive["Reflexive Components (state-mutating)"]
+        studentModel["Student Model"]
+        assessment["Assessment Engine"]
+    end
+
+    student -->|"input"| intent
+    intent --> strategy
+
+    strategy -->|"query"| curriculum
+    strategy -->|"retrieve"| retrieval
+    strategy -->|"generate"| llm
+
+    strategy -->|"response"| student
+
+    strategy -->|"commit"| studentModel
+    strategy -->|"evaluate"| assessment
+```
+
+For a detailed description of the interaction flow, see: [Interaction Model](interaction-model.md)
+
+--- 
+
 # Core Architecture Components
 
 ## Tutor Orchestrator
@@ -84,8 +126,8 @@ Responsibilities:
 - coordinating system modules
 - guiding student progression
 
-> **Documentation Status**  
-> 🚧 This component documentation will be introduced in a future revision of the architecture docs.
+> **Documentation**  
+> See: [Tutor Orchestrator](tutor-orchestrator.md)
 
 ---
 
@@ -102,8 +144,8 @@ It tracks:
 
 This model enables **adaptive learning decisions**.
 
-> **Documentation Status**  
-> 🚧 This component documentation will be introduced in a future revision of the architecture docs.
+> **Documentation**  
+> See: [Student Model](student-model.md)
 
 ---
 
@@ -127,8 +169,8 @@ This structure enables:
 - curriculum navigation
 - concept dependency tracking
 
-> **Documentation Status**  
-> 🚧 This component documentation will be introduced in a future revision of the architecture docs.
+> **Documentation**  
+> See: [Curriculum Graph](curriculum-graph.md)
 
 ---
 
@@ -185,9 +227,9 @@ The architecture documentation is organized into the following sections:
 | Document | Description | Status |
 |--------|-------------| ------- |
 | [Architecture Overview](overview.md) | High-level architecture description | ✅ Available | 
-| [Tutor Orchestrator](tutor-orchestrator.md) | Pedagogical orchestration engine | 🚧 Planned |
-| [Student Model](student-model.md) | Representation of learner knowledge | 🚧 Planned |
-| [Curriculum Graph](curriculum-graph.md) | Learning dependency structure | 🚧 Planned |
+| [Tutor Orchestrator](tutor-orchestrator.md) | Pedagogical orchestration engine | ✅ Available |
+| [Student Model](student-model.md) | Representation of learner knowledge | ✅ Available |
+| [Curriculum Graph](curriculum-graph.md) | Learning dependency structure | ✅ Available |
 | [Assessment Engine](assessment-engine.md) | Diagnostic and exercise system | 🚧 Planned |
 | [Retrieval Layer](retrieval-layer.md) | Knowledge retrieval architecture | 🚧 Planned |
 | [LLM Interface](llm-interface.md) | Integration with language models | 🚧 Planned |
