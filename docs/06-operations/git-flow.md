@@ -1,207 +1,158 @@
 # Git Flow --- How code reaches `main`
 
-This document describes the official branching and contribution workflow
-for AIGORA.
+This document describes the official branching strategy for AIGORA.
 
 The goal is to ensure:
 
 -   Clean history
--   Predictable merges
--   Enforced standards
+-   Predictable releases
 -   Stable `main` branch
+-   Controlled integration of features
 
 ------------------------------------------------------------------------
 
-## Branch Model
+# Branch Model
 
-### `main`
+AIGORA follows a multi-stage integration model:
+
+main ↑ release ↑ dev ↑ feature branches
+
+Flow:
+
+feature → dev → release  → main
+
+Each stage has a specific responsibility in the delivery pipeline.
+
+------------------------------------------------------------------------
+
+## `main`
+
+The `main` branch represents the **stable state of the system**.
+
+Rules:
 
 -   Always stable
 -   Protected
 -   Updated **only via Pull Request**
+-   No direct pushes allowed
 -   All required checks must pass
 
-### Feature branches
-
-All work must be done in branches created from `main`.
-
-Naming convention:
-
-    feature/<short-description>
-    docs/<short-description>
-    chore/<short-description>
-    refactor/<short-description>
-    test/<short-description>
-
-Examples:
-
-    feature/adaptive-hint-policy
-    docs/curriculum-topic-map
-    chore/update-commitlint-rules
+`main` should always reflect a deployable state.
 
 ------------------------------------------------------------------------
 
-## Enforced Rules (Protected `main`)
+## `release`
 
-The following rules are enforced at the repository level:
+The `release` branch is used to prepare production-ready versions.
 
--   🔒 No direct push to `main`
--   🔒 No merge without Pull Request
--   🔒 No merge if Commitlint fails
+Responsibilities:
+
+-   Stabilization before release
+-   Final validation
+-   Release documentation
+
+Only the `dev` branch can be merged into `release`.
+
+Hotfixes may also be applied here if necessary.
+
+------------------------------------------------------------------------
+
+## `dev`
+
+The `dev` branch is the **integration branch**.
+
+All feature work must merge here first.
+
+Responsibilities:
+
+-   Integration of features
+-   Continuous validation
+-   Early detection of conflicts
+
+`dev` acts as the development baseline for the system.
+
+------------------------------------------------------------------------
+
+## Feature Branches
+
+All development work must be performed in branches created from `dev`.
+
+Feature branches must be short-lived and merged into `dev` via Pull Request.
+
+For branch naming rules, see:
+
+`docs/conventions/branch-naming.md`
+
+**Recommendations**
+
+- Use lowercase letters
+- Use hyphens to separate words
+- Keep names concise and descriptive
+
+------------------------------------------------------------------------
+
+# Enforced Rules
+
+Protected branches:
+
+-   `main`
+-   `release`
+-   `dev`
+
+Rules:
+
+-   🔒 No direct push
 -   🔒 No force push
--   🔒 Required status checks must pass
--   🔒 At least one PR approval (if enabled)
-
-These restrictions cannot be bypassed.
+-   🔒 Pull Request required
+-   🔒 CI checks must pass
 
 ------------------------------------------------------------------------
 
-## Step-by-step Contribution Flow
+# Merge Strategy
 
-### 1. Clone the repository
+Preferred merge strategy:
 
-``` bash
-git clone <repo-url>
-cd aigora
-npm install
-```
-
-> `npm install` enables local commit validation via Husky.
-
-------------------------------------------------------------------------
-
-### 2. Sync `main`
-
-``` bash
-git checkout main
-git pull origin main
-```
-
-------------------------------------------------------------------------
-
-### 3. Create a feature branch
-
-``` bash
-git checkout -b feature/your-feature-name
-```
-
-------------------------------------------------------------------------
-
-### 4. Make commits (Conventional Commits required)
-
-Commit messages must follow:
-
-    <type>(<scope>): <subject>
-
-Example:
-
-``` bash
-git commit -m "docs(curriculum): add topic dependency map"
-```
-
-Commit rules are defined in:
-
-    docs/conventions/commits.md
-
-------------------------------------------------------------------------
-
-### 5. Push the branch
-
-``` bash
-git push -u origin feature/your-feature-name
-```
-
-------------------------------------------------------------------------
-
-### 6. Open a Pull Request → `main`
-
--   Provide a clear description
--   Explain what changed and why
-
-------------------------------------------------------------------------
-
-### 7. CI (Commitlint) runs automatically
-
-If the check **fails**:
-
-``` bash
-git commit --amend
-git push
-```
-
-CI will run again.
-
-If the check **passes**:
-
-The PR can be merged.
-
-------------------------------------------------------------------------
-
-### 8. Merge into `main`
-
-After all requirements pass:
-
--   Status checks
--   Required approvals
-
-The branch can be merged.
-
-`main` remains protected.
-
-------------------------------------------------------------------------
-
-## Rebase Policy
-
-Before merging, contributors may rebase their feature branch onto the
-latest `main`:
-
-``` bash
-git checkout main
-git pull origin main
-git checkout feature/your-feature-name
-git rebase main
-git push --force-with-lease
-```
-
-### Important:
-
--   Rebase is allowed **only on your own feature branch**
--   Never rebase `main`
--   Never force push to `main`
--   Force push is blocked on protected branches
-
-------------------------------------------------------------------------
-
-## Recommended Merge Strategy
-
-Preferred:
-
--   **Squash and merge**
+**Merge commit**
 
 Benefits:
 
--   Clean linear history
--   One commit per PR
--   Easy to read blame and changelog
+-   Preserves complete commit history
+-   Maintains development context
+-   Improves debugging and investigation
+-   Improves debugging and investigatio
+-   Preserves commit authorship
+-   Improves architectural traceability
+-   Retains granular review history
+-   Avoids loss of information caused by squashing commits
+-   Provides a transparent evolution of the codebase
 
 ------------------------------------------------------------------------
 
-## Summary Flow
+# Rebase Policy
 
-    Clone → Feature Branch → Commit → Push → PR → CI → Merge → main
+Rebase is allowed **only on feature branches**.
 
-If CI fails:
+Example:
 
-    Fix → Push → CI again
+git checkout dev git pull origin dev git checkout feature/my-feature git
+rebase dev git push --force-with-lease
+
+Never rebase:
+
+-   `dev`
+-   `release`
+-   `main`
 
 ------------------------------------------------------------------------
 
-## Philosophy
+# Summary
 
-AIGORA prioritizes:
+Development flow:
 
--   Clarity over speed
--   Structure over chaos
--   Governance over convenience
+feature → dev → release → main
 
-A clean Git history is part of the system architecture.
+This ensures:
+
+-   Safe integration
+-   Controlled releases
+-   Stable production branch
