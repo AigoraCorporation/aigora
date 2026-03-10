@@ -1,5 +1,6 @@
 # Tutor Orchestrator
 
+## Overview
 This document defines the design and internal mechanics of the
 Tutor Orchestrator — the central decision-making component of AIGORA.
 
@@ -9,9 +10,63 @@ govern its operation.
 
 This document is a direct extension of the [Interaction Model](interaction-model.md).
 
+## Problem Statement
+
+An AI tutoring system involves multiple subsystems responsible for
+knowledge modeling, assessment, retrieval, and explanation generation.
+
+Without a coordination layer, these subsystems would interact directly,
+leading to tightly coupled logic and fragmented tutoring decisions.
+
+This creates several risks:
+
+- tutoring strategies becoming inconsistent
+- system behavior depending too heavily on individual components
+- difficulty evolving pedagogical strategies over time
+- loss of transparency in how tutoring decisions are made
+
+AIGORA addresses this challenge by introducing the Tutor Orchestrator.
+
+The Tutor Orchestrator acts as the central decision-making layer that
+interprets student input, forms a resolution plan, and coordinates
+the appropriate tutoring components while maintaining transparency
+in the reasoning process.
+
+## Architectural Context
+
+The following diagram illustrates the position of the Tutor Orchestrator
+within the AIGORA tutoring architecture.
+
+The orchestrator acts as the central coordination layer between the
+student interaction surface and the internal tutoring subsystems.
+It does not implement tutoring capabilities itself; instead,
+it delegates responsibilities to specialised components.
+
+```mermaid
+flowchart TB
+
+student["👤 Student"]
+
+orchestrator["🧭 Tutor Orchestrator"]
+
+studentModel["Student Model"]
+curriculum["Curriculum Graph"]
+assessment["Assessment Engine"]
+retrieval["Retrieval Layer (RAG)"]
+llm["LLM Interface"]
+
+student --> orchestrator
+
+orchestrator --> studentModel
+orchestrator --> curriculum
+orchestrator --> assessment
+orchestrator --> retrieval
+orchestrator --> llm
+```
+
 ---
 
-# Design Principle
+## Design Principle
 
 The Tutor Orchestrator is a **supervisor**.
 
@@ -28,7 +83,7 @@ The orchestrator's primary obligation is to understand before acting.
 
 ---
 
-# Responsibilities
+## Responsibilities
 
 The Tutor Orchestrator is responsible for:
 
@@ -45,11 +100,11 @@ The Tutor Orchestrator is responsible for:
 
 ---
 
-# Intent Resolution
+## Intent Resolution Model
 
 The orchestrator cannot route what it has not understood.
 
-Intent resolution is the process by which a raw student input
+Intent resolution model is the process by which a raw student input
 is transformed into a structured, actionable description
 of what the student needs — before any component is invoked.
 
@@ -57,7 +112,7 @@ Resolution is not binary. An input may carry multiple natures
 and require multiple authorities. The orchestrator must hold
 this multiplicity without collapsing it prematurely.
 
-## Dimension 1 — Input Nature
+### Dimension 1 — Input Nature
 
 Input Nature describes *what kind of thing* the student expressed.
 
@@ -76,7 +131,7 @@ A single input may carry more than one nature simultaneously.
 Input Nature is classified from the input alone.
 No component call is needed at this stage.
 
-## Dimension 2 — Resolution Authority
+### Dimension 2 — Resolution Authority
 
 Resolution Authority defines *which components* hold the
 knowledge required to resolve the input.
@@ -97,7 +152,7 @@ Some input natures map with high determinism to specific authorities.
 Affective and strategic inputs are frequently resolved by the
 orchestrator itself, without invoking external components.
 
-## Scope as a Resolved Property
+### Scope as a Resolved Property
 
 Scope — the level of the curriculum an input refers to —
 is **not classified upfront**.
@@ -121,7 +176,7 @@ It informs response strategy but does not precede it.
 
 ---
 
-# Clarification as a Guardrail
+## Clarification as a Guardrail
 
 Before committing to a resolution plan, the orchestrator must assess
 whether the upfront classification is confident enough to proceed.
@@ -135,7 +190,7 @@ from wasted consultive calls.
 
 It is also pedagogically sound. A good tutor asks before assuming.
 
-## Ambiguity Criteria
+### Ambiguity Criteria
 
 A classification is considered ambiguous when one or more of the
 following conditions is met:
@@ -177,7 +232,7 @@ Example: an input that simultaneously suggests Structural
 and Evaluative authority without a clear nature that
 bridges them indicates the input was not fully understood.
 
-## Clarification Constraints
+### Clarification Constraints
 
 When the orchestrator decides to request clarification:
 
@@ -187,7 +242,7 @@ When the orchestrator decides to request clarification:
 - Clarification rounds are **bounded to one** per input. If the clarified input remains ambiguous, the orchestrator defaults to the most conservative nature and proceeds.
 - Clarification must **never be used as a stall**. If the nature is clear enough to proceed, proceed.
 
-## Clarification Examples
+### Clarification Examples
 
 | Ambiguous Input | Clarification Question |
 |---|---|
@@ -198,13 +253,13 @@ When the orchestrator decides to request clarification:
 
 ---
 
-# Authority Traversal
+## Authority Traversal
 
 Authority traversal is the process of invoking consultive
 components to resolve scope and gather the context needed
 for response planning.
 
-## Nature-Guided Traversal
+### Nature-Guided Traversal
 
 Traversal is not uniform. It is guided by the Input Nature
 classification resolved upfront.
@@ -227,7 +282,7 @@ Traversal terminates as soon as sufficient context for
 response planning has been established.
 The orchestrator must not over-consult.
 
-## Traversal Constraints
+### Traversal Constraints
 
 - Consultive calls must be parallelized where dependencies permit.
 - Reflexive calls must never occur during traversal.
@@ -236,7 +291,7 @@ The orchestrator must not over-consult.
 
 ---
 
-# Resolution Plan
+## Resolution Plan
 
 The orchestrator forms a resolution plan before any action is taken.
 The plan is the orchestrator's structured intent — what it will do,
@@ -266,7 +321,7 @@ Step 8 is reflexive and must occur after the response is delivered.
 
 ---
 
-# Reasoning Transparency Layer
+## Reasoning Transparency Layer
 
 The orchestrator projects its reasoning to the student in real time.
 
@@ -286,7 +341,7 @@ The distinction is precise:
 The student never sees component names, traversal logic, or
 internal state. They see a tutor thinking out loud.
 
-## What the Student Sees
+### What the Student Sees
 
 Each step of the resolution plan has a corresponding
 student-facing signal. These signals are brief, natural,
@@ -307,7 +362,7 @@ and pedagogically framed.
 Silent steps are those where surfacing a signal would add
 noise without pedagogical value.
 
-## Properties of the Reasoning Surface
+### Properties of the Reasoning Surface
 
 - **Ordered** — signals follow the resolution plan in sequence.
 - **Bounded** — only steps with pedagogical signal value are surfaced.
@@ -315,7 +370,7 @@ noise without pedagogical value.
 - **Non-blocking** — signals appear as the plan progresses, not after it completes.
 - **Framed as thinking, not processing** — the tutor thinks, it does not compute.
 
-## What the Reasoning Surface Is Not
+### What the Reasoning Surface Is Not
 
 - It is not a progress bar or a loading indicator.
 - It is not a debug console.
@@ -326,9 +381,9 @@ It is a window into the tutor's intent — nothing more.
 
 ---
 
-# Session Design Constraints
+## Session Design Constraints
 
-## Short Sessions
+### Short Sessions
 
 Sessions are intentionally bounded.
 
@@ -339,7 +394,7 @@ which is fragile.
 
 Sessions must not be the unit of continuity.
 
-## Student Model as Memory
+### Student Model as Memory
 
 Continuity across sessions is the responsibility of the
 Student Model, not the session.
@@ -358,9 +413,9 @@ This means:
 
 ---
 
-# Domain Ownership and Implementation Boundary
+## Domain Ownership and Implementation Boundary
 
-## Student Domain Ownership
+### Student Domain Ownership
 
 The student owns their domain: mastery state, learning
 history, progression trajectory. These are built through
@@ -370,7 +425,7 @@ The orchestrator must treat student-built domains with
 corresponding care — reads inform decisions, writes
 are consequential and must be intentional.
 
-## Implementation Boundary
+### Implementation Boundary
 
 The orchestrator is the boundary between the student's
 experience and the system's implementation.
@@ -395,7 +450,7 @@ the orchestrator's own framing.
 
 ---
 
-# Constraints Summary
+## Constraints Summary
 
 - The orchestrator is a supervisor. It decides before it acts.
 - Input Nature and Resolution Authority are always resolved upfront.
