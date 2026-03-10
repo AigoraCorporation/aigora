@@ -14,8 +14,6 @@ This document is a companion to the
 
 ## Problem Statement
 
-## Problem Statement
-
 An adaptive tutoring system requires a reliable representation of
 the student's knowledge state.
 

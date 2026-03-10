@@ -1,5 +1,6 @@
 # Curriculum Graph
 
+## Overview
 This document defines the structure, design principles, and
 operational constraints of the AIGORA Curriculum Graph.
 
@@ -12,9 +13,85 @@ This document is a companion to the
 [Architecture Overview](overview.md) and
 [Tutor Orchestrator](tutor-orchestrator.md).
 
+## Problem Statement
+
+An AI tutoring system requires a structured representation of
+the knowledge it teaches and the relationships between concepts.
+
+Without an explicit knowledge structure, tutoring decisions become
+dependent on ad-hoc heuristics or model-generated associations,
+making it difficult to reason about learning progression.
+
+This creates several risks:
+
+- learning paths becoming inconsistent across sessions
+- prerequisite gaps remaining undetected
+- tutoring strategies drifting away from a coherent curriculum
+- difficulty adapting the system to different exams or educational goals
+
+AIGORA addresses this challenge by introducing the **Curriculum Graph**.
+
+The Curriculum Graph provides a canonical representation of
+mathematical concepts and their prerequisite relationships,
+allowing the Tutor Orchestrator to navigate knowledge progression
+systematically while applying exam-specific requirements through
+curriculum profiles.
+
+## Architectural Context
+
+The Curriculum Graph defines the structural knowledge model of AIGORA.
+
+It provides the canonical representation of mathematical concepts
+and their prerequisite relationships, independent of any specific exam.
+
+The Tutor Orchestrator navigates the graph to determine learning
+progression, detect prerequisite gaps, and guide tutoring decisions,
+while curriculum profiles apply exam-specific requirements over the
+canonical structure.
+
+The student's mastery state is stored separately in the Student Model,
+allowing the same canonical graph to serve multiple students and
+multiple curricula simultaneously.
+
+```mermaid
+flowchart TB
+
+student["👤 Student"]
+
+orchestrator["🧭 Tutor Orchestrator"]
+
+studentModel["📘 Student Model"]
+
+subgraph curriculumGraph["📚 Curriculum Graph"]
+    
+    subgraph canonical["Canonical Graph (Exam-Agnostic Knowledge)"]
+        nodes["Concept Nodes"]
+        edges["Prerequisite Edges"]
+        mastery["Mastery Criteria"]
+    end
+
+    subgraph profiles["Curriculum Profiles (Exam Layer)"]
+        fuvest["Fuvest Profile"]
+        enem["ENEM Profile"]
+    end
+
+end
+
+student --> orchestrator
+
+orchestrator --> curriculumGraph
+orchestrator --> studentModel
+
+canonical --> profiles
+
+studentModel --> orchestrator
+
+style curriculumGraph fill:#eef6ff,stroke:#2b6cb0,stroke-width:2px
+```
+
 ---
 
-# Design Principle
+## Design Principle
 
 The Curriculum Graph has one foundational rule:
 
@@ -36,11 +113,11 @@ Keeping these two layers separate is what makes the graph extensible.
 
 ---
 
-# Two-Layer Architecture
+## Two-Layer Architecture
 
 The Curriculum Graph is composed of two distinct layers.
 
-## Layer 1 — Canonical Graph
+### Layer 1 — Canonical Graph
 
 The canonical graph is the **exam-agnostic foundation**.
 
@@ -57,7 +134,7 @@ concepts are added to the system.
 
 No exam logic, no weighting, no prioritization lives here.
 
-## Layer 2 — Curriculum Profile
+### Layer 2 — Curriculum Profile
 
 A curriculum profile is an **exam-specific lens** applied over
 the canonical graph.
@@ -78,7 +155,7 @@ The canonical graph is untouched.
 
 ---
 
-# Node Anatomy
+## Node Anatomy
 
 Every node in the canonical graph represents a single,
 well-scoped mathematical concept.
@@ -100,7 +177,7 @@ Nodes are mathematical primitives. They carry no exam information.
 
 ---
 
-# Edge Anatomy
+## Edge Anatomy
 
 Edges in the canonical graph represent **prerequisite relationships**.
 
@@ -121,7 +198,7 @@ progression, recommend review, or trigger regression.
 
 ---
 
-# Mastery Representation
+## Mastery Representation
 
 Each node carries a mastery scale shared across the entire system.
 
@@ -144,7 +221,7 @@ while each student's mastery state is entirely their own.
 
 ---
 
-# Curriculum Profile Anatomy
+## Curriculum Profile Anatomy
 
 A curriculum profile selects and weights the canonical graph
 for a specific exam or educational context.
@@ -166,15 +243,15 @@ It can only select, weight, and sequence from what the canonical layer provides.
 
 ---
 
-# Fuvest Profile
+## Fuvest and ENEM Profiles
 
-The Fuvest profile is the initial curriculum profile of AIGORA.
+The Fuvest and ENEM profiles are the initial curriculum profiles of AIGORA.
 
 It selects the mathematical domains most heavily represented
 in the Fuvest exam and applies exam-specific weighting and
 skill overlays relevant to competitive university admission in Brazil.
 
-## Required Domains
+### Required Domains
 
 The Fuvest profile draws primarily from:
 
@@ -186,7 +263,7 @@ The Fuvest profile draws primarily from:
 - Trigonometry
 - Introductory logarithms and exponentials
 
-## Exam Skill Overlay
+### Exam Skill Overlay
 
 Beyond content mastery, the Fuvest profile adds:
 
@@ -202,7 +279,7 @@ These skills are not mathematical concepts. They are exam performance
 skills that the orchestrator layers over content mastery when the
 active profile is Fuvest.
 
-## Mastery Targets
+### Mastery Targets
 
 The Fuvest profile generally requires:
 
@@ -214,7 +291,7 @@ Exact targets are defined per node within the profile specification.
 
 ---
 
-# Profile Portability and Student Continuity
+## Profile Portability and Student Continuity
 
 A student's mastery state is stored in the Student Model
 against canonical node ids — not against profile-specific references.
@@ -234,7 +311,7 @@ Profiles are views over it. Students own their state within it.
 
 ---
 
-# Graph Traversal by the Orchestrator
+## Graph Traversal by the Orchestrator
 
 The orchestrator navigates the canonical graph through the lens
 of the active curriculum profile.
@@ -254,16 +331,16 @@ and at what mastery depth.
 
 ---
 
-# Multi-Profile Dynamics
+## Multi-Profile Dynamics
 
 When more than one curriculum profile is defined over the same
 canonical graph, several capabilities emerge from the architecture
 without additional design effort.
 
-These are not features to be built. They are properties of the
-two-layer structure.
+These capabilities are not features implemented by the system.
+They are natural properties of the two-layer architecture.
 
-## Gap Delta
+### Gap Delta
 
 When a student transitions from one profile to another —
 or prepares for multiple exams simultaneously — the system
@@ -280,7 +357,7 @@ state and the incoming profile's mastery targets.
 The orchestrator uses the gap delta to reorient the student's
 progression path without discarding prior work.
 
-## Overlap Optimisation
+### Overlap Optimisation
 
 When a student is preparing for more than one profile simultaneously,
 canonical nodes that are required by both profiles at comparable
@@ -290,7 +367,7 @@ The system can surface these shared high-weight nodes and
 prioritise them in the orchestrator's progression planning —
 maximising preparation efficiency across both curricula at once.
 
-## Mastery Transfer Credit
+### Mastery Transfer Credit
 
 A student's mastery state is anchored to canonical node ids.
 It does not belong to any profile.
@@ -303,7 +380,7 @@ mastery depth.
 
 This makes curriculum transitions structurally seamless.
 
-## Curriculum Readiness Score
+### Curriculum Readiness Score
 
 A student's canonical mastery state can be projected through
 any profile to produce a **curriculum readiness score** —
@@ -323,7 +400,7 @@ This projection is not a new computation — it is a natural
 consequence of profiles defining targets and weights over
 the canonical mastery scale.
 
-## Profile Difficulty Comparison
+### Profile Difficulty Comparison
 
 Because all profiles define mastery targets against the same
 canonical scale and the same canonical nodes, profiles are
@@ -339,7 +416,7 @@ against which all profiles are measured.
 
 ---
 
-# Extensibility Constraints
+## Extensibility Constraints
 
 To ensure the graph remains extensible across curricula:
 
@@ -351,7 +428,7 @@ To ensure the graph remains extensible across curricula:
 
 ---
 
-# Constraints Summary
+## Constraints Summary
 
 - The canonical graph is exam-agnostic. No exam logic lives in nodes or edges.
 - Curriculum profiles are lenses over the canonical graph, not extensions of it.
