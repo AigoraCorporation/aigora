@@ -1,5 +1,6 @@
 # Student Model
 
+## Overview
 This document defines the structure, computation model, and
 operational constraints of the AIGORA Student Model.
 
@@ -11,9 +12,80 @@ This document is a companion to the
 [Curriculum Graph](curriculum-graph.md) and
 [Tutor Orchestrator](tutor-orchestrator.md).
 
+## Problem Statement
+
+An adaptive tutoring system requires a reliable representation of
+the student's knowledge state.
+
+If mastery is stored as a mutable value and updated directly after
+each interaction, the system loses traceability and cannot easily
+reassess what the student truly demonstrated over time.
+
+This creates several risks:
+
+- mastery updates becoming opaque and difficult to justify
+- historical performance data being overwritten or lost
+- misconceptions and error patterns becoming harder to detect
+
+AIGORA addresses this by defining the Student Model as an
+**evidence-based representation of the learner**.
+
+Instead of storing mastery levels directly, the system stores
+immutable evidence of student performance and computes mastery
+from that record when needed.
+
+The Student Model therefore acts as the **persistent learning memory
+of the system**, grounding tutoring decisions in observable
+student behaviour.
+
+## Architectural Context
+
+The Student Model acts as the central learning memory of AIGORA.
+
+Evidence generated through tutoring interactions is written to the
+Student Model. From this evidence, the system derives computations
+such as mastery levels, readiness projections, and session
+reconstruction signals used by the Tutor Orchestrator.
+
+```mermaid
+flowchart TB
+
+subgraph top
+assessment["Assessment Engine"]
+orchestrator["Tutor Orchestrator"]
+end
+
+subgraph middle
+studentModel["📘 Student Model (Evidence Store)"]
+curriculum["Curriculum Graph"]
+end
+
+subgraph lower
+mastery["Mastery Computation (Derived)"]
+session["Session Reconstruction"]
+end
+
+readiness["Readiness Projection"]
+
+assessment -- write evidence --> studentModel
+orchestrator -- interaction signals --> studentModel
+
+studentModel --> mastery
+curriculum --> mastery
+
+studentModel --> session
+
+mastery --> readiness
+session --> orchestrator
+readiness --> orchestrator
+
+%% Highlight the central component
+style studentModel fill:#e8f4ff,stroke:#2b6cb0,stroke-width:2px
+```
+
 ---
 
-# Design Principle
+## Design Principles
 
 Mastery is not assigned. It is computed.
 
@@ -33,7 +105,7 @@ The Student Model holds the evidence and exposes the computation.
 
 ---
 
-# Responsibilities
+## Responsibilities
 
 The Student Model is responsible for:
 
@@ -47,7 +119,7 @@ The Student Model is responsible for:
 
 ---
 
-# Evidence Store
+## Evidence Store
 
 The Student Model is an **evidence store**.
 
@@ -55,7 +127,7 @@ Every meaningful student interaction produces evidence.
 Evidence is stored against canonical node ids and is never
 modified after being written — it accumulates over time.
 
-## Evidence Record
+### Evidence Record
 
 Each evidence record captures a single demonstrated performance event.
 
@@ -74,7 +146,7 @@ Each evidence record captures a single demonstrated performance event.
 Evidence records are immutable once written.
 They are never updated — only appended.
 
-## Write Authority
+### Write Authority
 
 Only two components may write evidence to the Student Model:
 
@@ -88,14 +160,14 @@ A mastery computation is only as trustworthy as the evidence beneath it.
 
 ---
 
-# Mastery Computation
+## Mastery Computation
 
 Mastery at any canonical node is a **computed property**.
 
 It is derived on demand from the evidence store, weighted by
 graph structure and recency. It is never stored as a direct value.
 
-## Computation Inputs
+### Computation Inputs
 
 | Input | Source | Role |
 |---|---|---|
@@ -105,7 +177,7 @@ graph structure and recency. It is never stored as a direct value.
 | **Recency weights** | Student Model | How recently evidence was produced |
 | **Error persistence** | Student Model | Whether misconceptions have been resolved |
 
-## Computation Logic
+### Computation Logic
 
 Mastery at a node is computed as follows:
 
@@ -119,7 +191,7 @@ Mastery at a node is computed as follows:
 
 **5. Apply mastery criteria** — the canonical mastery criteria for this node define what the evidence must demonstrate to reach each level. The computation returns the highest level the evidence supports.
 
-## Mastery Decay
+### Mastery Decay
 
 Because mastery is computed from recency-weighted evidence,
 it naturally reflects the passage of time.
@@ -135,12 +207,12 @@ It reduces its weight in the computation until new evidence is added.
 
 ---
 
-# Error Taxonomy
+## Error Taxonomy
 
 The error taxonomy is a structured classification of misconceptions
 and error patterns observed in student performance.
 
-## Error Record
+### Error Record
 
 Each error entry in the Student Model captures:
 
@@ -155,7 +227,7 @@ Each error entry in the Student Model captures:
 | **resolved** | Whether subsequent evidence shows the misconception is corrected |
 | **resolution\_timestamp** | When resolution was confirmed, if applicable |
 
-## Error Classification
+### Error Classification
 
 Errors are classified by type across two dimensions:
 
@@ -181,7 +253,7 @@ and address before progression can be reliable.
 
 ---
 
-# Confidence Layer
+## Confidence Layer
 
 Mastery and confidence are tracked separately.
 
@@ -213,7 +285,7 @@ interaction-level observations, separate from evidence records.
 
 ---
 
-# Session Reconstruction
+## Session Reconstruction
 
 At the start of each session, the orchestrator reconstructs
 a minimal working context from the Student Model.
@@ -222,7 +294,7 @@ The reconstruction is **bounded and purposeful** — it extracts
 only what is needed to be pedagogically coherent, not a replay
 of prior sessions.
 
-## Reconstruction Elements
+### Reconstruction Elements
 
 | Element | Description | Source |
 |---|---|---|
@@ -233,7 +305,7 @@ of prior sessions.
 | **Readiness snapshot** | Computed mastery state projected through active profile | Computed on demand |
 | **Confidence state** | Most recent confidence signals per active node | Student Model |
 
-## Reconstruction Constraints
+### Reconstruction Constraints
 
 - Reconstruction must not reproduce session history verbatim.
 - The context must be minimal — sufficient for coherence, not exhaustive.
@@ -242,7 +314,7 @@ of prior sessions.
 
 ---
 
-# Readiness Projection
+## Readiness Projection
 
 The Student Model exposes a readiness projection operation.
 
@@ -250,7 +322,7 @@ Given an active or candidate curriculum profile, the readiness
 projection computes how prepared the student currently is for
 that curriculum — expressed as a score per node and in aggregate.
 
-## Projection Formula
+### Projection Formula
 
 For each required node in the profile:
 
@@ -265,7 +337,7 @@ normalised to a 0.0–1.0 scale.
 A readiness score of 1.0 means all required nodes are at or above
 their mastery targets, weighted by exam importance.
 
-## Projection Uses
+### Projection Uses
 
 - **Gap delta** — comparing readiness under two profiles to identify transition gaps
 - **Progress reporting** — showing the student how far they have come toward exam readiness
@@ -274,7 +346,7 @@ their mastery targets, weighted by exam importance.
 
 ---
 
-# Domain Ownership
+## Domain Ownership
 
 The Student Model belongs to the student.
 
@@ -283,7 +355,7 @@ confidence signals, and readiness projections are the student's
 data. They are built through the student's own interaction
 and effort, and they represent the student's intellectual journey.
 
-## Ownership Implications
+### Ownership Implications
 
 - The student may request a view of their own mastery state and readiness at any time.
 - The student may not directly write to or modify the evidence store.
@@ -296,7 +368,7 @@ They do not see an evidence store, a computation formula, or a data model.
 
 ---
 
-# Constraints Summary
+## Constraints Summary
 
 - Mastery is computed from evidence, never assigned or stored directly.
 - Evidence records are immutable. They accumulate and are never modified.
