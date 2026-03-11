@@ -4,12 +4,26 @@
   <img src="assets/logo.png" alt="AIGORA" width="200"/>
 </p>
 
-<h3>AIGORA</h3>
+<h3 align="center">AIGORA</h3>
+
+<p align="center">
+
+![Architecture Status](https://img.shields.io/badge/status-architecture%20design-blue)
+![Language](https://img.shields.io/badge/learning%20language-Portuguese-green)
+![Docs](https://img.shields.io/badge/docs-doc--first-orange)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
+
+</p>
 
 An AI-driven mathematics learning architecture designed to guide
 students from foundational knowledge to competitive university-level performance.
 
 Structured. Adaptive. Elite-focused.
+
+**Current stage:** Architecture Design
+
+Primary learning language: **Portuguese 🇧🇷**
+Engineering documentation: **English**
 
 </div>
 
@@ -31,6 +45,37 @@ Unlike generic AI chatbots, AIGORA is conceived as a **designed educational syst
 with explicit curriculum modeling and architectural governance.
 
 --- 
+
+# Core Concepts
+
+AIGORA is built around three central architectural components:
+
+| Component | Role |
+|------|------|
+| **Tutor Orchestrator** | Coordinates tutoring decisions and system behavior |
+| **Student Model** | Stores evidence of student performance and computes mastery |
+| **Curriculum Graph** | Represents mathematical knowledge and prerequisite structure |
+
+Together, these components allow the system to guide learning progression
+while maintaining transparency, consistency, and curriculum grounding.
+
+---
+
+# Target Audience
+
+AIGORA is designed for Portuguese-speaking students,
+particularly those preparing for Brazilian university entrance exams
+such as **FUVEST**, **ENEM**, and other vestibular examinations.
+
+---
+
+# Language Policy
+
+See the full language policy:
+
+- [Language Policy](docs/conventions/language-policy.md)
+
+---
 
 # Documentation Map
 
@@ -80,7 +125,7 @@ establish clear boundaries for its scope.
 
 ---
 
-# Architecture System
+# System Architecture
 
 The system architecture defines how AI components, curriculum models,
 and evaluation mechanisms interact.
@@ -148,7 +193,7 @@ To maintain consistency and quality, the repository enforces:
 - [Branch Naming Convention](docs/conventions/branch-naming.md)
 - [Pull Request Template](.github/pull_request_template.md)
 
-The `main`,`release` and `dev` branch is protected and cannot be updated directly.
+The `main`, `release`, and `dev` branches are protected and cannot be updated directly.
 
 ---
 
