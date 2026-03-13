@@ -87,6 +87,11 @@ and evaluation mechanisms interact.
 
 - [System Overview](docs/02-architecture/overview.md)
 
+- Engineering architecture docs:
+  - [Interaction Model](docs/engineering/architecture/interaction-model.md)
+  - [Tutor Orchestrator](docs/engineering/architecture/tutor-orchestrator.md)
+  - [Curriculum Graph](docs/engineering/architecture/curriculum-graph.md)
+
 Architecture is designed **before implementation** to ensure scalability
 and conceptual consistency.
 
