@@ -231,7 +231,7 @@ The architecture documentation is organized into the following sections:
 | [Student Model](student-model.md) | Representation of learner knowledge | ✅ Available |
 | [Curriculum Graph](curriculum-graph.md) | Learning dependency structure | ✅ Available |
 | [Assessment Engine](assessment-engine.md) | Diagnostic and exercise system | 🚧 Planned |
-| [Retrieval Layer](retrieval-layer.md) | Knowledge retrieval architecture | 🚧 Planned |
+| [Retrieval Layer](retrieval-layer.md) | Knowledge retrieval architecture | ✅ Available |
 | [LLM Interface](llm-interface.md) | Integration with language models | 🚧 Planned |
 
 ---
