@@ -113,6 +113,18 @@ design stabilizes.
 
 ---
 
+# Releases & Changelog
+
+All notable changes to this project are documented in:
+
+- [CHANGELOG.md](./CHANGELOG.md)
+
+Latest release:
+
+- v0.1.0 — Architecture Foundations
+
+---
+
 # Strategic Foundation
 
 The conceptual basis of the project is defined in the following documents:
