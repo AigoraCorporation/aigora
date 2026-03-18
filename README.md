@@ -113,6 +113,18 @@ design stabilizes.
 
 ---
 
+# Releases & Changelog
+
+All notable changes to this project are documented in:
+
+- [CHANGELOG.md](./CHANGELOG.md)
+
+Latest release:
+
+- v0.1.0 — Architecture Foundations
+
+---
+
 # Strategic Foundation
 
 The conceptual basis of the project is defined in the following documents:
@@ -133,9 +145,11 @@ and evaluation mechanisms interact.
 - [System Overview](docs/02-architecture/overview.md)
 
 - Engineering architecture docs:
-  - [Interaction Model](docs/engineering/architecture/interaction-model.md)
-  - [Tutor Orchestrator](docs/engineering/architecture/tutor-orchestrator.md)
-  - [Curriculum Graph](docs/engineering/architecture/curriculum-graph.md)
+  - [Interaction Model](docs/02-architecture/interaction-model.md)
+  - [Tutor Orchestrator](docs/02-architecture/tutor-orchestrator.md)
+  - [Curriculum Graph](docs/02-architecture/curriculum-graph.md)
+  - [Student Model](docs/02-architecture/student-model.md) 
+  - [Retrieval Layer](docs/02-architecture/retrieval-layer.md) 
 
 Architecture is designed **before implementation** to ensure scalability
 and conceptual consistency.
