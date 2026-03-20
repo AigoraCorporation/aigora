@@ -9,7 +9,7 @@ It is the memory of the system, the foundation of adaptive decisions,
 and the property of the student it represents.
 
 This document is a companion to the
-[Curriculum Graph](curriculum-graph.md) and
+[Curriculum Graph](curriculum-graph/index.md) and
 [Tutor Orchestrator](tutor-orchestrator.md).
 
 ## Problem Statement

@@ -129,6 +129,6 @@ The Assessment Engine must respect the following constraints defined in [System 
 |----------|-------------|
 | [Architecture Overview](overview.md) | High-level system architecture |
 | [Student Model](student-model.md) | Learner state representation |
-| [Curriculum Graph](curriculum-graph.md) | Topic dependency structure |
+| [Curriculum Graph](curriculum-graph/index.md) | Topic dependency structure |
 | [Tutor Orchestrator](tutor-orchestrator.md) | Central orchestration engine |
 | [Retrieval Layer](retrieval-layer.md) | Knowledge retrieval architecture |
