@@ -147,7 +147,7 @@ and evaluation mechanisms interact.
 - Engineering architecture docs:
   - [Interaction Model](docs/02-architecture/interaction-model.md)
   - [Tutor Orchestrator](docs/02-architecture/tutor-orchestrator.md)
-  - [Curriculum Graph](docs/02-architecture/curriculum-graph.md)
+  - [Curriculum Graph](docs/02-architecture/curriculum-graph/index.md)
   - [Student Model](docs/02-architecture/student-model.md) 
   - [Retrieval Layer](docs/02-architecture/retrieval-layer.md) 
 
