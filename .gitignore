@@ -52,6 +52,15 @@ __pycache__/
 .venv/
 venv/
 env/
+.pytest_cache/
+htmlcov/
+.coverage
+uv.lock
+
+# ------------------------------
+# Lab / Experimental
+# ------------------------------
+lab/
 
 # ------------------------------
 # .NET (future-proof)
