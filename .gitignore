@@ -55,6 +55,7 @@ env/
 .pytest_cache/
 htmlcov/
 .coverage
+coverage.json
 uv.lock
 
 # ------------------------------
