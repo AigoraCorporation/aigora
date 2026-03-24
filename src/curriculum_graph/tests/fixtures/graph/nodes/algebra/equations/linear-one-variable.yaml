@@ -1,0 +1,24 @@
+id: algebra.equations.linear-one-variable
+name: Linear Equations in One Variable
+domain: algebra
+description: >
+  Solving linear equations in one variable using inverse operations, including
+  equations with fractions and negative coefficients.
+status: active
+mastery_criteria:
+  '1': Identifies a linear equation and solves simple one-step equations.
+  '2': Solves two-step linear equations with guidance.
+  '3': Independently solves multi-step linear equations including those with fractions.
+  '4': Efficiently solves linear equations in varied contexts; sets up equations from word problems.
+  '5': Transfers equation-solving to systems and inequalities; interprets solutions in context.
+error_taxonomy:
+  - name: Balance error
+    description: Applies an operation to only one side of the equation.
+  - name: Sign error in transposition
+    description: Incorrectly changes the sign of a term when moving it across the equals sign.
+prerequisite_ids:
+  - node_id: algebra.arithmetic.integer-operations
+    edge_type: hard
+  - node_id: algebra.arithmetic.fractions
+    edge_type: soft
+regression_ids: []

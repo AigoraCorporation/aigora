@@ -1,0 +1,20 @@
+id: algebra.arithmetic.integer-operations
+name: Integer Operations
+domain: algebra
+description: >
+  Foundational operations on integers including addition, subtraction,
+  multiplication, and division. Includes representation on the number line.
+status: active
+mastery_criteria:
+  '1': Recognises integers on the number line and performs simple additions.
+  '2': Applies integer operations with guidance; handles simple negative numbers.
+  '3': Independently applies all four operations on integers including negatives.
+  '4': Efficiently solves multi-step integer problems; applies to algebraic contexts.
+  '5': Transfers mastery to novel contexts; constructs integer-based models.
+error_taxonomy:
+  - name: Sign reversal
+    description: Incorrectly applies sign rules in subtraction of negative numbers.
+  - name: Order of operations error
+    description: Ignores precedence rules when evaluating integer expressions.
+prerequisite_ids: []
+regression_ids: []

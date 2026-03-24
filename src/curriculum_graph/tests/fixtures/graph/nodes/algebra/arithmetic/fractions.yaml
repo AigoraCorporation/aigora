@@ -1,0 +1,23 @@
+id: algebra.arithmetic.fractions
+name: Fractions
+domain: algebra
+description: >
+  Arithmetic with fractions including simplification, equivalent fractions,
+  and the four operations on rational numbers.
+status: active
+mastery_criteria:
+  '1': Identifies and represents simple fractions on a number line.
+  '2': Simplifies fractions and finds equivalent forms with guidance.
+  '3': Independently performs addition, subtraction, multiplication and division of fractions.
+  '4': Efficiently solves multi-step problems involving mixed numbers and fractions.
+  '5': Transfers fraction reasoning to algebra; connects fractions to rational expressions.
+error_taxonomy:
+  - name: Denominator addition error
+    description: Incorrectly adds denominators when adding fractions instead of finding a common denominator.
+  - name: Inversion error in division
+    description: Fails to invert the divisor when dividing fractions.
+prerequisite_ids:
+  - node_id: algebra.arithmetic.integer-operations
+    edge_type: hard
+regression_ids:
+  - algebra.arithmetic.integer-operations

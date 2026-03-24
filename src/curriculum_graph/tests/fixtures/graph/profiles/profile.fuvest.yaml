@@ -1,0 +1,22 @@
+id: profile.fuvest
+name: Fuvest
+version: '1.0.0'
+requires_graph_version: '1.0.0'
+status: active
+required_nodes:
+  - node_id: algebra.arithmetic.integer-operations
+    mastery_target: 3
+    weight: 1.0
+  - node_id: algebra.arithmetic.fractions
+    mastery_target: 3
+    weight: 1.2
+  - node_id: algebra.equations.linear-one-variable
+    mastery_target: 4
+    weight: 1.5
+progression_path:
+  - algebra.arithmetic.integer-operations
+  - algebra.arithmetic.fractions
+  - algebra.equations.linear-one-variable
+exam_skill_overlay:
+  - name: Time management under pressure
+    description: Ability to allocate time efficiently across questions of varying difficulty.
