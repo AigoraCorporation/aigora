@@ -230,8 +230,13 @@ class TestIsReachable:
         BFS from D to E (unreachable) causes A to be queued twice;
         the 'already visited' continue branch is exercised on the second dequeue."""
         a = _node("algebra.a.one")
-        b = _node("algebra.a.two", prereqs=(PrerequisiteEdge("algebra.a.one", EdgeType.HARD),))
-        c = _node("algebra.a.three", prereqs=(PrerequisiteEdge("algebra.a.one", EdgeType.HARD),))
+        b = _node(
+            "algebra.a.two", prereqs=(PrerequisiteEdge("algebra.a.one", EdgeType.HARD),)
+        )
+        c = _node(
+            "algebra.a.three",
+            prereqs=(PrerequisiteEdge("algebra.a.one", EdgeType.HARD),),
+        )
         d = _node(
             "algebra.a.four",
             prereqs=(

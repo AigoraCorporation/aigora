@@ -117,9 +117,7 @@ class YAMLGraphLoader:
                 replaced_by=data.get("replaced_by"),
             )
         except (KeyError, TypeError, ValueError) as exc:
-            raise GraphLoadError(
-                f"Failed to parse node file '{path}': {exc}"
-            ) from exc
+            raise GraphLoadError(f"Failed to parse node file '{path}': {exc}") from exc
 
     # ── Profiles ──────────────────────────────────────────────────────────────
 

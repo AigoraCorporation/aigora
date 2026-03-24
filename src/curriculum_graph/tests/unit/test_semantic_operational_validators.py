@@ -2,6 +2,7 @@
 Tests for SemanticValidator and OperationalValidator, covering the cases
 that fire review hooks and structural errors from the operational layer.
 """
+
 import pytest
 
 from curriculum_graph.domain.enums import EdgeType
@@ -26,7 +27,9 @@ from curriculum_graph.application.validators import (
 
 
 def _mc(**overrides) -> MasteryCriteria:
-    defaults = dict(level_1="L1", level_2="L2", level_3="L3", level_4="L4", level_5="L5")
+    defaults = dict(
+        level_1="L1", level_2="L2", level_3="L3", level_4="L4", level_5="L5"
+    )
     defaults.update(overrides)
     return MasteryCriteria(**defaults)
 
@@ -56,7 +59,9 @@ def _node(
 
 
 def _empty_graph() -> CanonicalGraph:
-    return CanonicalGraph(version="1.0.0", published_at="2026-01-01", nodes={}, profiles={})
+    return CanonicalGraph(
+        version="1.0.0", published_at="2026-01-01", nodes={}, profiles={}
+    )
 
 
 def _profile(
@@ -82,19 +87,25 @@ def _profile(
 class TestSE2DescriptionExamNeutrality:
     def test_description_mentioning_fuvest_fires_hook(self):
         g = _empty_graph()
-        g.nodes["algebra.a.one"] = _node(description="This concept appears in the fuvest exam.")
+        g.nodes["algebra.a.one"] = _node(
+            description="This concept appears in the fuvest exam."
+        )
         hooks = SemanticValidator().validate(g)
         assert any(h.code == "SE2" for h in hooks)
 
     def test_description_mentioning_enem_fires_hook(self):
         g = _empty_graph()
-        g.nodes["algebra.a.one"] = _node(description="Frequently tested in ENEM vestibular.")
+        g.nodes["algebra.a.one"] = _node(
+            description="Frequently tested in ENEM vestibular."
+        )
         hooks = SemanticValidator().validate(g)
         assert any(h.code == "SE2" for h in hooks)
 
     def test_neutral_description_does_not_fire_hook(self):
         g = _empty_graph()
-        g.nodes["algebra.a.one"] = _node(description="A pure mathematics concept without exam references.")
+        g.nodes["algebra.a.one"] = _node(
+            description="A pure mathematics concept without exam references."
+        )
         hooks = SemanticValidator().validate(g)
         assert not any(h.code == "SE2" for h in hooks)
 
@@ -124,7 +135,9 @@ class TestSE3MasteryGradation:
 class TestSE4ErrorTaxonomySpecificity:
     def test_generic_phrase_fires_hook(self):
         g = _empty_graph()
-        generic_err = (ErrorTaxonomyEntry("Generic", "Student may make calculation errors here."),)
+        generic_err = (
+            ErrorTaxonomyEntry("Generic", "Student may make calculation errors here."),
+        )
         g.nodes["algebra.a.one"] = _node(error_taxonomy=generic_err)
         hooks = SemanticValidator().validate(g)
         assert any(h.code == "SE4" for h in hooks)
@@ -236,30 +249,36 @@ class TestSE7ProfilePrerequisiteCompleteness:
 class TestSE8ExamSkillOverlayContainment:
     def test_math_keyword_in_overlay_name_fires_hook(self):
         g = _empty_graph()
-        overlay = (ExamSkillOverlayEntry(
-            name="Quadratic equation solving speed",
-            description="Solve parabola problems faster.",
-        ),)
+        overlay = (
+            ExamSkillOverlayEntry(
+                name="Quadratic equation solving speed",
+                description="Solve parabola problems faster.",
+            ),
+        )
         g.profiles["profile.test"] = _profile(overlay=overlay)
         hooks = SemanticValidator().validate(g)
         assert any(h.code == "SE8" for h in hooks)
 
     def test_math_keyword_in_overlay_description_fires_hook(self):
         g = _empty_graph()
-        overlay = (ExamSkillOverlayEntry(
-            name="Time management",
-            description="Efficiently handle algebra problems under pressure.",
-        ),)
+        overlay = (
+            ExamSkillOverlayEntry(
+                name="Time management",
+                description="Efficiently handle algebra problems under pressure.",
+            ),
+        )
         g.profiles["profile.test"] = _profile(overlay=overlay)
         hooks = SemanticValidator().validate(g)
         assert any(h.code == "SE8" for h in hooks)
 
     def test_non_math_overlay_does_not_fire_hook(self):
         g = _empty_graph()
-        overlay = (ExamSkillOverlayEntry(
-            name="Time pressure management",
-            description="Recognise when to skip a problem to optimise exam score.",
-        ),)
+        overlay = (
+            ExamSkillOverlayEntry(
+                name="Time pressure management",
+                description="Recognise when to skip a problem to optimise exam score.",
+            ),
+        )
         g.profiles["profile.test"] = _profile(overlay=overlay)
         hooks = SemanticValidator().validate(g)
         assert not any(h.code == "SE8" for h in hooks)

@@ -117,9 +117,7 @@ class CurriculumGraphQueryService:
                     forward[edge.node_id].append(nid)
                     in_degree[nid] += 1
 
-        queue: deque[str] = deque(
-            nid for nid, deg in in_degree.items() if deg == 0
-        )
+        queue: deque[str] = deque(nid for nid, deg in in_degree.items() if deg == 0)
         result: list[str] = []
         while queue:
             nid = queue.popleft()

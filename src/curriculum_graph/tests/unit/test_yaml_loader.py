@@ -2,6 +2,7 @@
 Unit tests for YAMLGraphLoader, covering error paths in metadata,
 node, and profile loading.
 """
+
 import pytest
 
 from curriculum_graph.infrastructure.loaders.yaml_loader import (

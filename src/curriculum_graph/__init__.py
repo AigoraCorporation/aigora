@@ -1,20 +1,20 @@
-from .infrastructure.repositories.file_repository import (
-    FileBasedCurriculumGraphRepository,
-    GraphValidationError,
-)
 from .application.repository import CurriculumGraphRepository
-from .application.validators import validate_graph, ValidationReport, ValidationError
+from .application.validators import ValidationError, ValidationReport, validate_graph
+from .domain.enums import EdgeType, MasteryLevel, NodeStatus, ProfileStatus
 from .domain.models import (
     CanonicalGraph,
     CanonicalNode,
     CurriculumProfile,
-    PrerequisiteEdge,
-    ProfileNode,
-    MasteryCriteria,
     ErrorTaxonomyEntry,
     ExamSkillOverlayEntry,
+    MasteryCriteria,
+    PrerequisiteEdge,
+    ProfileNode,
 )
-from .domain.enums import EdgeType, MasteryLevel, NodeStatus, ProfileStatus
+from .infrastructure.repositories.file_repository import (
+    FileBasedCurriculumGraphRepository,
+    GraphValidationError,
+)
 
 __all__ = [
     # Repository pattern — primary external interface

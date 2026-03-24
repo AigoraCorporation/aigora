@@ -42,7 +42,9 @@ def _node(id: str, prereqs: tuple = (), regressions: tuple = ()) -> CanonicalNod
 
 
 def _empty_graph() -> CanonicalGraph:
-    return CanonicalGraph(version="1.0.0", published_at="2026-01-01", nodes={}, profiles={})
+    return CanonicalGraph(
+        version="1.0.0", published_at="2026-01-01", nodes={}, profiles={}
+    )
 
 
 def _profile(id="profile.test", required=(), path=()) -> CurriculumProfile:
@@ -63,7 +65,9 @@ def _profile(id="profile.test", required=(), path=()) -> CurriculumProfile:
 class TestS2IDFormat:
     def test_valid_node_id_passes(self):
         g = _empty_graph()
-        g.nodes["algebra.arithmetic.operations"] = _node("algebra.arithmetic.operations")
+        g.nodes["algebra.arithmetic.operations"] = _node(
+            "algebra.arithmetic.operations"
+        )
         errors = StructuralValidator().validate(g)
         assert not [e for e in errors if e.code == "S2"]
 
@@ -140,7 +144,9 @@ class TestS3RequiredFields:
 
     def test_empty_mastery_level_fails(self):
         g = _empty_graph()
-        mc_with_gap = MasteryCriteria(level_1="L1", level_2="", level_3="L3", level_4="L4", level_5="L5")
+        mc_with_gap = MasteryCriteria(
+            level_1="L1", level_2="", level_3="L3", level_4="L4", level_5="L5"
+        )
         node = CanonicalNode(
             id="algebra.a.b",
             name="Node",
@@ -351,16 +357,30 @@ class TestS7MasteryTargetBounds:
         return g
 
     def test_target_1_passes(self):
-        assert not [e for e in StructuralValidator().validate(self._graph_with_target(1)) if e.code == "S7"]
+        assert not [
+            e
+            for e in StructuralValidator().validate(self._graph_with_target(1))
+            if e.code == "S7"
+        ]
 
     def test_target_5_passes(self):
-        assert not [e for e in StructuralValidator().validate(self._graph_with_target(5)) if e.code == "S7"]
+        assert not [
+            e
+            for e in StructuralValidator().validate(self._graph_with_target(5))
+            if e.code == "S7"
+        ]
 
     def test_target_0_fails(self):
-        assert any(e.code == "S7" for e in StructuralValidator().validate(self._graph_with_target(0)))
+        assert any(
+            e.code == "S7"
+            for e in StructuralValidator().validate(self._graph_with_target(0))
+        )
 
     def test_target_6_fails(self):
-        assert any(e.code == "S7" for e in StructuralValidator().validate(self._graph_with_target(6)))
+        assert any(
+            e.code == "S7"
+            for e in StructuralValidator().validate(self._graph_with_target(6))
+        )
 
 
 # ── S8: Weight Non-Negativity ─────────────────────────────────────────────────
@@ -377,13 +397,23 @@ class TestS8WeightNonNegativity:
         return g
 
     def test_positive_weight_passes(self):
-        assert not [e for e in StructuralValidator().validate(self._graph_with_weight(0.5)) if e.code == "S8"]
+        assert not [
+            e
+            for e in StructuralValidator().validate(self._graph_with_weight(0.5))
+            if e.code == "S8"
+        ]
 
     def test_zero_weight_fails(self):
-        assert any(e.code == "S8" for e in StructuralValidator().validate(self._graph_with_weight(0.0)))
+        assert any(
+            e.code == "S8"
+            for e in StructuralValidator().validate(self._graph_with_weight(0.0))
+        )
 
     def test_negative_weight_fails(self):
-        assert any(e.code == "S8" for e in StructuralValidator().validate(self._graph_with_weight(-1.0)))
+        assert any(
+            e.code == "S8"
+            for e in StructuralValidator().validate(self._graph_with_weight(-1.0))
+        )
 
 
 # ── validate_graph convenience ────────────────────────────────────────────────

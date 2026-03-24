@@ -5,7 +5,7 @@ from ...application.queries import CurriculumGraphQueryService
 from ...application.repository import CurriculumGraphRepository
 from ...application.validators import ValidationReport, validate_graph
 from ...domain.models import CanonicalNode, CurriculumProfile, PrerequisiteEdge
-from ..loaders.yaml_loader import GraphLoadError, YAMLGraphLoader
+from ..loaders.yaml_loader import YAMLGraphLoader
 
 
 class GraphValidationError(Exception):

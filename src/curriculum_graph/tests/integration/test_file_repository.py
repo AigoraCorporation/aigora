@@ -36,7 +36,9 @@ class TestLoading:
         graph_dir = tmp_path / "graph"
         (graph_dir / "nodes").mkdir(parents=True)
         (graph_dir / "profiles").mkdir(parents=True)
-        (graph_dir / "metadata.yaml").write_text("version: '1.0.0'\npublished_at: '2026-01-01'\n")
+        (graph_dir / "metadata.yaml").write_text(
+            "version: '1.0.0'\npublished_at: '2026-01-01'\n"
+        )
         repo = FileBasedCurriculumGraphRepository(graph_dir)
         assert repo is not None
 
@@ -45,7 +47,9 @@ class TestLoading:
         nodes_dir = graph_dir / "nodes" / "algebra" / "a"
         nodes_dir.mkdir(parents=True)
         (graph_dir / "profiles").mkdir(parents=True)
-        (graph_dir / "metadata.yaml").write_text("version: '1.0.0'\npublished_at: '2026-01-01'\n")
+        (graph_dir / "metadata.yaml").write_text(
+            "version: '1.0.0'\npublished_at: '2026-01-01'\n"
+        )
         # Node file with an id that violates S2 (uppercase segment)
         (nodes_dir / "bad.yaml").write_text(
             "id: Algebra.a.bad\n"
@@ -111,8 +115,12 @@ class TestGetPrerequisites:
 
     def test_hard_before_soft_in_result(self, repo):
         prereqs = repo.get_prerequisites("algebra.equations.linear-one-variable")
-        hard_indices = [i for i, e in enumerate(prereqs) if e.edge_type == EdgeType.HARD]
-        soft_indices = [i for i, e in enumerate(prereqs) if e.edge_type == EdgeType.SOFT]
+        hard_indices = [
+            i for i, e in enumerate(prereqs) if e.edge_type == EdgeType.HARD
+        ]
+        soft_indices = [
+            i for i, e in enumerate(prereqs) if e.edge_type == EdgeType.SOFT
+        ]
         assert max(hard_indices) < min(soft_indices)
 
 

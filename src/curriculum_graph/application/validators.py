@@ -5,7 +5,6 @@ from dataclasses import dataclass, field
 
 from ..domain.models import CanonicalGraph
 
-
 # ─── Validation result types ──────────────────────────────────────────────────
 
 
@@ -129,11 +128,15 @@ class StructuralValidator:
         for nid, node in graph.nodes.items():
             if not node.name or not node.name.strip():
                 errors.append(
-                    ValidationError("S3", f"Node '{nid}' has empty 'name'.", {"id": nid})
+                    ValidationError(
+                        "S3", f"Node '{nid}' has empty 'name'.", {"id": nid}
+                    )
                 )
             if not node.domain or not node.domain.strip():
                 errors.append(
-                    ValidationError("S3", f"Node '{nid}' has empty 'domain'.", {"id": nid})
+                    ValidationError(
+                        "S3", f"Node '{nid}' has empty 'domain'.", {"id": nid}
+                    )
                 )
             if not node.description or not node.description.strip():
                 errors.append(
@@ -247,7 +250,9 @@ class StructuralValidator:
                     )
         return errors
 
-    def _s6_progression_path_order(self, graph: CanonicalGraph) -> list[ValidationError]:
+    def _s6_progression_path_order(
+        self, graph: CanonicalGraph
+    ) -> list[ValidationError]:
         """S6: progression_path must respect the hard prerequisite edges of included nodes."""
         errors: list[ValidationError] = []
         for pid, profile in graph.profiles.items():
@@ -285,7 +290,11 @@ class StructuralValidator:
                             "S7",
                             f"Profile '{pid}', node '{pn.node_id}': mastery_target "
                             f"{pn.mastery_target} is outside [1, 5].",
-                            {"profile": pid, "node": pn.node_id, "value": pn.mastery_target},
+                            {
+                                "profile": pid,
+                                "node": pn.node_id,
+                                "value": pn.mastery_target,
+                            },
                         )
                     )
         return errors
@@ -542,7 +551,9 @@ class OperationalValidator:
                 )
         return errors
 
-    def _o3_mastery_scale_alignment(self, graph: CanonicalGraph) -> list[ValidationError]:
+    def _o3_mastery_scale_alignment(
+        self, graph: CanonicalGraph
+    ) -> list[ValidationError]:
         """O3: Profile mastery targets must not exceed the system maximum of 5."""
         errors: list[ValidationError] = []
         for pid, profile in graph.profiles.items():

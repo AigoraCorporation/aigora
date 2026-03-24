@@ -15,7 +15,9 @@ from curriculum_graph.domain.models import (
 
 
 def _mc(**overrides) -> MasteryCriteria:
-    defaults = dict(level_1="L1", level_2="L2", level_3="L3", level_4="L4", level_5="L5")
+    defaults = dict(
+        level_1="L1", level_2="L2", level_3="L3", level_4="L4", level_5="L5"
+    )
     defaults.update(overrides)
     return MasteryCriteria(**defaults)
 
@@ -40,7 +42,9 @@ def _node(id: str = "algebra.arithmetic.operations", **overrides) -> CanonicalNo
 
 class TestMasteryCriteria:
     def test_for_level_returns_correct_text(self):
-        mc = MasteryCriteria(level_1="L1", level_2="L2", level_3="L3", level_4="L4", level_5="L5")
+        mc = MasteryCriteria(
+            level_1="L1", level_2="L2", level_3="L3", level_4="L4", level_5="L5"
+        )
         assert mc.for_level(1) == "L1"
         assert mc.for_level(3) == "L3"
         assert mc.for_level(5) == "L5"
@@ -118,10 +122,19 @@ class TestCurriculumProfile:
             version="1.0.0",
             requires_graph_version="1.0.0",
             required_nodes=(
-                ProfileNode(node_id="algebra.arithmetic.operations", mastery_target=3, weight=1.0),
-                ProfileNode(node_id="algebra.equations.linear", mastery_target=4, weight=1.5),
+                ProfileNode(
+                    node_id="algebra.arithmetic.operations",
+                    mastery_target=3,
+                    weight=1.0,
+                ),
+                ProfileNode(
+                    node_id="algebra.equations.linear", mastery_target=4, weight=1.5
+                ),
             ),
-            progression_path=("algebra.arithmetic.operations", "algebra.equations.linear"),
+            progression_path=(
+                "algebra.arithmetic.operations",
+                "algebra.equations.linear",
+            ),
             exam_skill_overlay=(),
         )
 
