@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [v0.2.0] - 2026-03-27
+## [v0.1.1] - 2026-03-27
 
 ### Added
 - Release roadmap table for version planning
