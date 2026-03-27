@@ -131,20 +131,6 @@ Release Roadmap:
 | v0.3.0  | Curriculum Graph Persistence & Change Management | TBD          | ⏳ Planned      | —                                                                          |
 
 ---
-## Release Planning
-
-We follow a structured release planning process.
-
-Each release is tracked through a dedicated issue that defines:
-
-- scope and objectives
-- included issues
-- release date
-- validation criteria
-
-See current release: [v0.2.0 — Curriculum Graph Runtime](https://github.com/AigoraCorporation/aigora/issues/71)  
-
----
 
 # Strategic Foundation
 
@@ -254,24 +240,6 @@ The architecture is guided by a set of system constraints that define
 key technical, architectural, and product boundaries.
 
 - [System Constraints](docs/01-requirements/constraints.md)
-
----
-
-# Related Requirements
-
-The architecture is guided by a set of system constraints that define
-key technical, architectural, and product boundaries.
-
-- [System Constraints](../01-requirements/constraints.md)
-
----
-
-# Related Requirements
-
-The architecture is guided by a set of system constraints that define
-key technical, architectural, and product boundaries.
-
-- [System Constraints](../01-requirements/constraints.md)
 
 ---
 
