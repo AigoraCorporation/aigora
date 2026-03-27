@@ -1,0 +1,23 @@
+name: Validate Tag Name
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  validate-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate semantic tag format
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+
+          echo "Tag detected: $TAG_NAME"
+
+          if [[ ! "$TAG_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid tag format: $TAG_NAME"
+            echo "Expected format: vMAJOR.MINOR.PATCH (example: v0.1.0)"
+            exit 1
+          fi

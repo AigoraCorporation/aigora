@@ -1,0 +1,39 @@
+name: Validate Release PR
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate-release-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check source branch is release
+        run: |
+          echo "Base branch: ${{ github.base_ref }}"
+          echo "Head branch: ${{ github.head_ref }}"
+
+          if [ "${{ github.head_ref }}" != "release" ]; then
+            echo "Only PRs from 'release' to 'main' are allowed for release publication."
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check CHANGELOG.md was modified
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          echo "$CHANGED_FILES" | grep -Fx "CHANGELOG.md" >/dev/null || {
+            echo "CHANGELOG.md must be updated in release PRs to main."
+            exit 1
+          }
