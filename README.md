@@ -123,6 +123,27 @@ Latest release:
 
 - v0.1.0 — Architecture Foundations
 
+Release Roadmap:
+| Version | Name                                             | Planned Date | Status         | Details                                                                    |
+| ------- | ------------------------------------------------ | ------------ | -------------- | -------------------------------------------------------------------------- |
+| v0.1.0  | Architecture Foundations                         | 2026-03-06   | ✅ Released     | [Release](https://github.com/AigoraCorporation/aigora/releases/tag/v0.1.0) |
+| v0.2.0  | Curriculum Graph (Core Runtime)                  | 2026-04-29   | 🚧 In Progress | [Plan](https://github.com/AigoraCorporation/aigora/issues/71)              |
+| v0.3.0  | Curriculum Graph Persistence & Change Management | TBD          | ⏳ Planned      | —                                                                          |
+
+---
+## Release Planning
+
+We follow a structured release planning process.
+
+Each release is tracked through a dedicated issue that defines:
+
+- scope and objectives
+- included issues
+- release date
+- validation criteria
+
+See current release: [v0.2.0 — Curriculum Graph Runtime](https://github.com/AigoraCorporation/aigora/issues/71)  
+
 ---
 
 # Strategic Foundation
