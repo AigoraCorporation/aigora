@@ -73,7 +73,7 @@ such as **FUVEST**, **ENEM**, and other vestibular examinations.
 
 See the full language policy:
 
-- [Language Policy](docs/conventions/language-policy.md)
+- [Language Policy](docs/06-engineering/conventions/language-policy.md)
 
 ---
 
@@ -86,14 +86,13 @@ The project documentation is organized as follows:
 | Vision | Strategic direction of the project |
 | Architecture | System design and interaction model |
 | Curriculum | Mathematical curriculum structure |
-| Operations | Development workflow and Git processes |
-| Conventions | Repository standards and guidelines |
+| Engineering | Workflow, governance and development processes |
 
 Key documents:
 
 - [Project Vision](docs/00-vision/vision.md)
 - [Architecture Overview](docs/02-architecture/overview.md)
-- [Development Workflow](docs/06-operations/workflow.md)
+- [Engineering](docs/06-engineering/README.md)
 
 ---
 
@@ -182,13 +181,28 @@ This structure allows the system to:
 
 ---
 
-# Development Workflow
+# Engineering Workflow & Governance
 
-All project work follows a strict engineering workflow.
+All project work follows a structured engineering workflow and governance model.
 
-- [Development Workflow](docs/06-operations/workflow.md)
-- [Git Flow](docs/06-operations/git-flow.md)
-- [Branch Naming Convention](docs/conventions/branch-naming.md)
+## Workflow
+
+- [Development Workflow](docs/06-engineering/workflow/development-workflow.md)
+- [Git Flow](docs/06-engineering/workflow/git-flow.md)
+- [Release Workflow](docs/06-engineering/workflow/release-workflow.md)
+
+## Governance
+
+AIGORA follows a structured engineering governance model to ensure code quality,
+consistency, and long-term maintainability.
+
+This includes:
+
+- Engineering policies (DDD, SOLID, etc.)
+- Pull request rules and validation criteria
+- Development workflow and branching strategy
+
+- [See full documentation: Engineering](docs/06-engineering/README.md)
 
 Every change must:
 
@@ -197,6 +211,17 @@ Every change must:
 3. follow the commit convention
 4. be submitted via Pull Request
 5. pass CI checks
+
+
+## Conventions
+
+To maintain consistency and quality, the repository enforces:
+
+- [Commit Convention](docs/06-engineering/conventions/commits.md)
+- [Branch Naming Convention](docs/06-engineering/conventions/branch-naming.md)
+- [Pull Request Template](.github/PULL_REQUEST_TEMPLATE/pull_request_template.md)
+
+The `main`, `release`, and `dev` branches are protected and cannot be updated directly.
 
 ---
 
@@ -207,22 +232,10 @@ engineering workflow.
 
 Before contributing, please read:
 
-- [Development Workflow](docs/06-operations/workflow.md)
+- [Development Workflow](docs/06-engineering/workflow/development-workflow.md)
 - [Contributing Guide](CONTRIBUTING.md)
 
 All changes must originate from a GitHub Issue.
-
----
-
-# Repository Governance
-
-To maintain consistency and quality, the repository enforces:
-
-- [Commit Convention](docs/conventions/commits.md)
-- [Branch Naming Convention](docs/conventions/branch-naming.md)
-- [Pull Request Template](.github/pull_request_template.md)
-
-The `main`, `release`, and `dev` branches are protected and cannot be updated directly.
 
 ---
 
