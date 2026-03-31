@@ -199,7 +199,7 @@ incompatible with the evidence store's key format are invalid.
 ### O3 — Mastery Scale Alignment
 
 The mastery scale used in `mastery_criteria` must be the canonical
-0–5 scale defined in [curriculum-graph.md](../02-architecture/curriculum-graph.md).
+0–5 scale defined in [overview.md](./overview.md).
 Any node that implicitly assumes a different scale breaks mastery
 computation in the Student Model.
 
