@@ -34,6 +34,28 @@ jobs:
           echo "$CHANGED_FILES"
 
           echo "$CHANGED_FILES" | grep -Fx "CHANGELOG.md" >/dev/null || {
-            echo "CHANGELOG.md must be updated in release PRs to main."
+            echo "❌ CHANGELOG.md must be updated in release PRs to main."
+            echo ""
+            echo "📝 To automatically generate the CHANGELOG.md:"
+            echo "1. Go to Actions → Generate Changelog"
+            echo "2. Click 'Run workflow'"
+            echo "3. Enter your version (e.g., v0.2.0)"
+            echo "4. Click 'Run workflow'"
+            echo ""
+            echo "Or manually update CHANGELOG.md with the release notes."
             exit 1
           }
+
+      - name: Validate changelog format
+        run: |
+          # Check if CHANGELOG.md contains valid sections
+          if ! grep -q "^### " CHANGELOG.md; then
+            echo "⚠️ Warning: CHANGELOG.md sections not found (Added, Changed, Fixed, Removed)"
+          fi
+          
+          # Check if version entry exists
+          if grep -q "^## \[" CHANGELOG.md; then
+            echo "✓ CHANGELOG.md contains version entries"
+          else
+            echo "⚠️ Warning: CHANGELOG.md does not contain version entries"
+          fi
