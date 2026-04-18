@@ -24,10 +24,10 @@ dev → release → main
 2. Open a Pull Request from `dev` to `release`
 3. Validate documentation, structure, and CI checks
 4. Open a Pull Request from `release` to `main`
-5. Merge into `main`
-6. Create a version tag on `main`
-7. Publish the GitHub release
-8. Update `CHANGELOG.md`
+5. **Automated**: CHANGELOG.md is generated automatically
+6. Merge into `main`
+7. Create a version tag on `main`
+8. Publish the GitHub release
 
 ---
 
@@ -99,15 +99,81 @@ While the project is in early stages:
 
 ---
 
+## Automated Changelog Generation
+
+The CHANGELOG.md file is automatically generated based on commits in the release branch.
+This reduces manual effort and ensures consistency between commits and release notes.
+
+### How It Works
+
+1. When a Pull Request is opened from `release` to `main`, a GitHub Action automatically
+   generates changelog entries from all commits since the last release
+2. The entries are grouped by type (Added, Changed, Fixed, Removed) based on the
+   commit type in the Conventional Commits format
+3. CHANGELOG.md is automatically updated in the release PR
+4. The validation workflow confirms the changelog was properly updated
+
+### Changelog Generation Workflow
+
+The changelog is generated using the `tools/changelog_generator.py` script, which:
+
+- Parses commits using the **Conventional Commits** format
+- Maps commit types to changelog sections:
+  - `feat` → **Added**
+  - `fix` → **Fixed**
+  - `refactor`, `perf`, `ci`, `build`, `docs` → **Changed**
+  - `revert` → **Removed**
+  - Detects **Breaking Changes** (marked with `!`)
+- Generates entries with scope information for clarity
+
+### Running Changelog Generation Manually
+
+If you need to manually trigger changelog generation:
+
+1. Go to **Actions** → **Generate Changelog**
+2. Click **Run workflow**
+3. Enter the version (e.g., `v0.2.0`)
+4. (Optional) Enter a Git revision range (e.g., `v0.1.0..HEAD`)
+5. Click **Run workflow**
+
+The workflow will:
+- Generate changelog entries from the specified commits
+- Automatically commit the changes to the release PR
+- Post a comment confirming the update
+
+### Conventional Commits Requirement
+
+To ensure proper changelog generation, all commits must follow the **Conventional Commits** format:
+
+```
+<type>(<scope>): <subject>
+```
+
+Example:
+```
+feat(tutor): add adaptive hint policy
+fix(assessment): handle empty answer input
+docs(architecture): add C4 diagram
+```
+
+See [Commit Convention](../conventions/commits.md) for detailed guidelines.
+
+### What Gets Included in the Changelog
+
+Only commits that follow the Conventional Commits format are included in the changelog.
+Non-conventional commits are automatically excluded, preventing errors or empty entries.
+
+---
+
 ## Release Preparation
 
-The `CHANGELOG.md` file must be finalized in the `release` branch before
+The `CHANGELOG.md` file is automatically finalized in the `release` branch before
 merging the Pull Request from `release` to `main`.
 
 The `main` branch must always reflect the final state of the release,
 including:
 
-- updated `CHANGELOG.md`
+- updated `CHANGELOG.md` (automatically generated)
 - finalized documentation
 - release-ready content
 
@@ -121,7 +187,8 @@ After merging into `main`, no additional changes related to the release
 - Tags must be created from the `main` branch only
 - Releases must not be created from `dev` or `release`
 - All release notes must follow the standard template
-- `CHANGELOG.md` must be updated before publishing a release
+- **CHANGELOG.md is automatically generated** from commits using Conventional Commits
+- All commits must follow the Conventional Commits format for proper changelog generation
 - No release-related changes must be made directly on `main`
 
 ---
