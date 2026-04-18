@@ -1,200 +1,104 @@
 # Changelog Generator
 
-Automated changelog generation based on Conventional Commits for the AIGORA project.
+Automated changelog generation based on Conventional Commits.
 
-## Overview
-
-The changelog generator parses git commits following the Conventional Commits format
-and generates structured changelog entries organized by type (Added, Changed, Fixed, Removed).
-
-## Features
-
-- **Conventional Commits parsing**: Extracts type, scope, and subject from commit messages
-- **Semantic grouping**: Automatically categorizes commits by type
-- **Breaking change detection**: Identifies commits with breaking changes (marked with `!`)
-- **Flexible version ranges**: Generate entries for specific commit ranges or since last tag
-- **Dry-run mode**: Preview changes without modifying files
-- **GitHub Actions integration**: Automated changelog generation in release workflows
-
-## Usage
-
-### Command Line
-
-Generate changelog entries and preview them:
+## Quick Start
 
 ```bash
+# Preview changelog for v0.2.0
 python3 tools/changelog_generator.py --version v0.2.0 --dry-run
-```
 
-Update CHANGELOG.md with generated entries:
-
-```bash
+# Update CHANGELOG.md
 python3 tools/changelog_generator.py --version v0.2.0
 ```
 
-Generate entries for specific commit range:
+## How It Works
 
-```bash
-python3 tools/changelog_generator.py \
-  --version v0.2.0 \
-  --rev-range v0.1.0..HEAD
-```
+Parses git commits following Conventional Commits format and generates structured changelog entries:
+- `feat` → **Added**
+- `fix` → **Fixed**
+- `refactor`, `perf`, `ci`, `build`, `docs`, `test`, `chore` → **Changed**
+- `revert` → **Removed**
+- Breaking changes (marked with `!`) → **Breaking** section
 
-### Options
+## Command Line Options
 
-- `--version VERSION` (required): Version for the changelog entry (e.g., v0.2.0)
-- `--date DATE`: Release date in YYYY-MM-DD format (defaults to today)
-- `--changelog PATH`: Path to CHANGELOG.md file (default: CHANGELOG.md)
-- `--rev-range RANGE`: Git revision range (e.g., v0.1.0..HEAD). Defaults to commits since last tag
-- `--repo PATH`: Path to git repository (default: current directory)
-- `--dry-run`: Print changelog entry without updating file
+| Option | Description | Example |
+|--------|-------------|---------|
+| `--version` | Version for changelog (required) | `v0.2.0` |
+| `--date` | Release date (YYYY-MM-DD) | `2026-04-20` |
+| `--changelog` | Path to CHANGELOG.md | `CHANGELOG.md` |
+| `--rev-range` | Git revision range | `v0.1.0..HEAD` |
+| `--repo` | Repository path | `.` |
+| `--dry-run` | Preview only | (flag) |
 
-### Examples
+## Examples
 
-#### Generate entries since last tag
-
+### Generate since last tag
 ```bash
 python3 tools/changelog_generator.py --version v0.2.0 --dry-run
 ```
 
-#### Generate entries for a specific date
-
+### Generate for specific date
 ```bash
-python3 tools/changelog_generator.py \
-  --version v0.2.0 \
-  --date 2026-04-20
+python3 tools/changelog_generator.py --version v0.2.0 --date 2026-04-20
 ```
 
-#### Generate entries for commits between two tags
-
+### Generate for commit range
 ```bash
-python3 tools/changelog_generator.py \
-  --version v0.2.0 \
-  --rev-range v0.1.0..v0.2.0-rc1
+python3 tools/changelog_generator.py --version v0.2.0 --rev-range v0.1.0..v0.2.0
 ```
 
 ## Conventional Commits Format
 
-Commits must follow the format:
+Commits must follow: `<type>(<scope>): <subject>`
 
+**Valid types:** feat, fix, docs, refactor, test, perf, build, ci, chore, revert
+
+**Examples:**
 ```
-<type>(<scope>): <subject>
-```
-
-### Supported Types
-
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation
-- `refactor`: Code refactoring
-- `test`: Test additions/updates
-- `perf`: Performance improvement
-- `build`: Build system changes
-- `ci`: CI/CD changes
-- `chore`: Maintenance (no functional impact)
-- `revert`: Revert previous commit
-
-### Breaking Changes
-
-Mark breaking changes with `!`:
-
-```
+feat(tutor): add adaptive hint policy
+fix(assessment): handle empty answer input
+docs(architecture): add C4 diagram
 feat(api)!: change session schema
 ```
 
-## Changelog Sections
-
-Commits are automatically categorized into changelog sections:
-
-| Commit Type | Changelog Section |
-|-------------|-------------------|
-| feat | Added |
-| fix | Fixed |
-| refactor, perf, ci, build, docs, test, chore | Changed |
-| revert | Removed |
-
 ## GitHub Actions Integration
 
-The changelog generator is integrated into the release workflow via the
-`generate-changelog.yml` GitHub Action.
+The workflow `generate-changelog.yml` automatically:
+- Generates changelog when PR is opened from `release` to `main`
+- Accepts manual triggers via GitHub Actions UI
+- Commits and pushes changes automatically
+- Posts confirmation comment
 
-### Automatic Generation on Release PR
+**Manual trigger:** Actions → Generate Changelog → Run workflow
 
-When a Pull Request is opened from `release` to `main`, the action:
-
-1. Parses commits since the last version tag
-2. Generates changelog entries
-3. Updates CHANGELOG.md
-4. Automatically commits the changes
-5. Posts a comment confirming the update
-
-### Manual Trigger
-
-Manually trigger the workflow in GitHub Actions:
-
-1. Go to **Actions** → **Generate Changelog**
-2. Click **Run workflow**
-3. Enter version and optional revision range
-4. Click **Run workflow**
-
-## Implementation Details
-
-### Code Structure
-
-- `tools/changelog_generator.py`: Main script with classes:
-  - `ConventionalCommit`: Parses individual commits
-  - `ChangelogGenerator`: Generates changelog entries and updates files
-
-### Testing
-
-Run tests to verify functionality:
+## Testing
 
 ```bash
 python3 -m pytest tests/unit/changelog_generator_test.py -v
 ```
 
-Test coverage includes:
-- Conventional commit parsing
-- Type to section mapping
-- Changelog formatting
-- File updates
-- Integration tests
-
 ## Validation
 
-The CI pipeline validates release PRs:
+Release PR checks:
+- CHANGELOG.md must be modified
+- At least one changelog section must have entries
+- Format validation (headers and structure)
 
-- Checks that CHANGELOG.md was modified
-- Validates changelog format
-- Ensures at least one section has entries
+## Key Points
 
-Manual validation before merging:
+- ✅ Only conventional commits are included (non-standard commits excluded)
+- ✅ Follows existing CHANGELOG.md structure
+- ✅ Supports semantic versioning (v0.1.0, v1.0.0, etc.)
+- ✅ Detects breaking changes automatically
+- ⚠️ Non-conventional commits are skipped (not an error)
 
-1. Review generated changelog entries
-2. Verify sections are properly formatted
-3. Check that entries are readable and consistent
-4. Ensure version matches intended release
+## Implementation
 
-## Limitations
+- `tools/changelog_generator.py`: Main script
+- `tests/unit/changelog_generator_test.py`: Test suite (15 tests)
+- `.github/workflows/generate-changelog.yml`: GitHub Action
 
-- Only processes commits following Conventional Commits format
-- Non-conventional commits are automatically excluded
-- Does not support historical changelog reconstruction
-- Changelog entries are text-based (no commit hashes in entries)
+See [Release Workflow](../docs/06-engineering/workflow/release-workflow.md) for integration details.
 
-## Future Enhancements
-
-Potential improvements:
-
-- Support for commit bodies in changelog entries
-- Custom mapping of types to sections
-- Markdown link generation for commit references
-- Support for pull request summaries
-- Interactive changelog review before commit
-- Automatic version bumping
-
-## See Also
-
-- [Release Workflow](./release-workflow.md)
-- [Commit Convention](./conventions/commits.md)
-- [Git Flow](./git-flow.md)

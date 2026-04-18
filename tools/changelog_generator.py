@@ -2,7 +2,39 @@
 """
 Changelog Generator for AIGORA Project
 
-Generates CHANGELOG.md entries based on conventional commits between versions.
+Generates CHANGELOG.md entries based on Conventional Commits between versions.
+
+Usage:
+    Generate and preview changelog for v0.2.0:
+    $ python3 tools/changelog_generator.py --version v0.2.0 --dry-run
+
+    Update CHANGELOG.md with new entries:
+    $ python3 tools/changelog_generator.py --version v0.2.0
+
+    Generate entries for specific commit range:
+    $ python3 tools/changelog_generator.py --version v0.2.0 --rev-range v0.1.0..HEAD
+
+Options:
+    --version VERSION       Version for changelog entry (required)
+    --date DATE            Release date (YYYY-MM-DD, defaults to today)
+    --changelog PATH       Path to CHANGELOG.md (default: CHANGELOG.md)
+    --rev-range RANGE      Git revision range (default: commits since last tag)
+    --repo PATH            Git repository path (default: current directory)
+    --dry-run              Preview without modifying file
+
+Commit Mapping:
+    feat         → Added
+    fix          → Fixed
+    refactor, perf, ci, build, docs, test, chore → Changed
+    revert       → Removed
+    ! (breaking) → Breaking (separate section)
+
+Example Conventional Commits:
+    feat(tutor): add adaptive hint policy
+    fix(assessment): handle empty answer input
+    feat(api)!: change session schema (breaking change)
+
+See tools/CHANGELOG_GENERATOR_README.md for detailed documentation.
 """
 
 import argparse
