@@ -1,0 +1,101 @@
+name: Generate Staging Changelog
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version for staging changelog (e.g., staging-v0.2.0)'
+        required: true
+        type: string
+      rev-range:
+        description: 'Git revision range for preview (default: release..develop)'
+        required: false
+        type: string
+
+jobs:
+  generate-staging-changelog:
+    # Manual trigger - preview and commit staging changelog (develop → release)
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Determine version and range
+        id: version
+        run: |
+          echo "VERSION=${{ inputs.version }}" >> $GITHUB_OUTPUT
+          
+          if [ -n "${{ inputs.rev-range }}" ]; then
+            echo "REV_RANGE=${{ inputs.rev-range }}" >> $GITHUB_OUTPUT
+          else
+            # Default: develop → release (all commits in develop that aren't in release)
+            echo "REV_RANGE=release..develop" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "📊 Staging changelog comparison:"
+          echo "   From: release"
+          echo "   To: develop"
+
+      - name: Install dependencies
+        run: |
+          cd tools/changelog_generator
+          pip install -e .
+
+      - name: Generate staging changelog (dry-run preview)
+        run: |
+          cd tools/changelog_generator
+          python3 cli.py \
+            --version "${{ steps.version.outputs.VERSION }}" \
+            --rev-range "${{ steps.version.outputs.REV_RANGE }}" \
+            --mode deterministic \
+            --dry-run
+
+      - name: Update CHANGELOG-STAGING.md (preview only)
+        id: changelog-check
+        run: |
+          cd tools/changelog_generator
+          
+          # Create a temporary staging changelog for preview
+          python3 cli.py \
+            --version "${{ steps.version.outputs.VERSION }}" \
+            --rev-range "${{ steps.version.outputs.REV_RANGE }}" \
+            --mode deterministic \
+            > /tmp/staging_preview.txt 2>&1
+          
+          echo "✅ Preview generated. Review above output."
+          echo ""
+          echo "To commit this staging changelog to release branch:"
+          echo "  1. Review the output above"
+          echo "  2. Switch to release branch: git checkout release"
+          echo "  3. Run generation again without --dry-run"
+          echo "  4. Or manually edit CHANGELOG-STAGING.md"
+
+      - name: Prompt for manual review
+        run: |
+          echo "════════════════════════════════════════════════════════════"
+          echo "📋 STAGING CHANGELOG PREVIEW - MANUAL REVIEW REQUIRED"
+          echo "════════════════════════════════════════════════════════════"
+          echo ""
+          echo "Review the changelog preview above."
+          echo ""
+          echo "Next steps:"
+          echo "1. If satisfied, commit to release branch manually:"
+          echo "   git checkout release"
+          echo "   python3 tools/changelog_generator/cli.py \\"
+          echo "     --version '${{ steps.version.outputs.VERSION }}' \\"
+          echo "     --rev-range '${{ steps.version.outputs.REV_RANGE }}' \\"
+          echo "     --mode deterministic"
+          echo ""
+          echo "2. Then push to release branch"
+          echo ""

@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version for changelog entry (e.g., v0.2.0)'
+        description: 'Production version (e.g., v0.2.0). Default: release → main comparison'
         required: true
         type: string
       rev-range:
-        description: 'Git revision range (e.g., v0.1.0..HEAD). Leave empty for commits since last tag.'
+        description: 'Git revision range override (e.g., v0.1.0..HEAD). Leave empty for release...main'
         required: false
         type: string
       force-regenerate:
@@ -19,7 +19,8 @@ on:
 
 jobs:
   generate-changelog:
-    # Manual trigger only - full control over changelog generation
+    # Manual trigger for production releases (release → main)
+    # Preview with dry-run, then commit when ready
     runs-on: ubuntu-latest
 
     permissions:
@@ -41,7 +42,17 @@ jobs:
         id: version
         run: |
           echo "VERSION=${{ inputs.version }}" >> $GITHUB_OUTPUT
-          echo "REV_RANGE=${{ inputs.rev-range }}" >> $GITHUB_OUTPUT
+          
+          if [ -n "${{ inputs.rev-range }}" ]; then
+            echo "REV_RANGE=${{ inputs.rev-range }}" >> $GITHUB_OUTPUT
+          else
+            # Default: release → main (commits ready for production)
+            echo "REV_RANGE=main..release" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "📊 Production changelog comparison:"
+          echo "   From: main (production)"
+          echo "   To: release (staged)"
 
       - name: Install dependencies
         run: |
