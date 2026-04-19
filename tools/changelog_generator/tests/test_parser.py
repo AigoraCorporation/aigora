@@ -10,8 +10,8 @@ import pytest
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.models import Commit
-from src.parser import ConventionalCommitParser, GitCommitReader
+from changelog_generator.models import Commit
+from changelog_generator.parser import ConventionalCommitParser, GitCommitReader
 
 
 class TestConventionalCommitParser:

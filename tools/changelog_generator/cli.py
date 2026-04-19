@@ -35,8 +35,8 @@ from typing import Optional
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from src.agent import ChangelogAgent
-from src.parser import GitCommitReader
+from changelog_generator.agent import ChangelogAgent
+from changelog_generator.parser import GitCommitReader
 
 
 def load_env_config() -> dict:
