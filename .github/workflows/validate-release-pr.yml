@@ -27,11 +27,27 @@ jobs:
 
       - name: Check CHANGELOG.md was modified
         run: |
-          git fetch origin ${{ github.base_ref }} --depth=1
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          # Ensure we have both remote branches for comparison
+          git fetch origin ${{ github.base_ref }} ${{ github.head_ref }} --depth=1
+          
+          # Establish tracking for remote branches
+          git remote set-head origin -a
+          
+          # Get the merge base to ensure proper comparison
+          BASE_COMMIT=$(git merge-base origin/${{ github.base_ref }} origin/${{ github.head_ref }})
+          HEAD_COMMIT=$(git rev-parse origin/${{ github.head_ref }})
+          
+          echo "📊 Comparing remote states:"
+          echo "Base branch (origin/${{ github.base_ref }}): $BASE_COMMIT"
+          echo "Head branch (origin/${{ github.head_ref }}): $HEAD_COMMIT"
+          echo ""
+          
+          # Compare remote branches directly
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...origin/${{ github.head_ref }})
 
           echo "Changed files:"
           echo "$CHANGED_FILES"
+          echo ""
 
           echo "$CHANGED_FILES" | grep -Fx "CHANGELOG.md" >/dev/null || {
             echo "❌ CHANGELOG.md must be updated in release PRs to main."
