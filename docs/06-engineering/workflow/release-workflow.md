@@ -76,6 +76,24 @@ This flow ensures that:
 
 ---
 
+## Handling Late-Arriving PRs
+
+**Scenario**: A PR merges into `release` after the CHANGELOG has been generated and the release PR is open.
+
+**Solution**: The system automatically detects stale CHANGELOG and provides regeneration instructions:
+
+1. **Automatic Detection**: The validation workflow detects if commits exist without a recent changelog commit
+2. **User-Friendly Warning**: PR shows a message suggesting regeneration
+3. **One-Click Regeneration**:
+   - Go to **Actions** → **Generate Changelog**
+   - Click **Run workflow**
+   - Enable **force-regenerate** checkbox
+   - This updates the PR with the latest CHANGELOG
+
+**Note**: You don't need to manually fix anything—just trigger the workflow again. Rebasing is safe; the automation will catch it.
+
+---
+
 ## Versioning
 
 The project follows **Semantic Versioning**: **MAJOR.MINOR.PATCH**

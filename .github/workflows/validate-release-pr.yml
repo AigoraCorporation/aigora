@@ -62,6 +62,37 @@ jobs:
             exit 1
           }
 
+      - name: Detect stale CHANGELOG (late-arriving PRs)
+        run: |
+          git fetch origin release --depth=1
+          
+          # Count commits since last version tag in the diff
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            COMMIT_COUNT=$(git rev-list --count origin/release)
+          else
+            COMMIT_COUNT=$(git rev-list --count "${LAST_TAG}..origin/release")
+          fi
+          
+          echo "📝 Commits in release branch: $COMMIT_COUNT"
+          
+          # Check if CHANGELOG was just committed (within last 5 commits)
+          RECENT_CHANGELOG=$(git log --oneline -5 origin/release | grep -i changelog || true)
+          
+          if [ -z "$RECENT_CHANGELOG" ] && [ "$COMMIT_COUNT" -gt 0 ]; then
+            echo ""
+            echo "⚠️ Warning: CHANGELOG may be stale (no recent changelog commit)"
+            echo "   Late-arriving PRs may have been merged after initial generation."
+            echo ""
+            echo "✨ To regenerate with latest commits:"
+            echo "   1. Go to Actions → Generate Changelog"
+            echo "   2. Click 'Run workflow'"
+            echo "   3. Enter your version and enable 'force-regenerate'"
+            echo "   4. This will update the PR with fresh CHANGELOG"
+          else
+            echo "✓ CHANGELOG appears to be up-to-date"
+          fi
+
       - name: Validate changelog format
         run: |
           # Check if CHANGELOG.md contains valid sections
