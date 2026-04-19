@@ -10,21 +10,21 @@ including branching strategy, versioning, and release publication workflow.
 ## Branch Flow
 
 The project follows a structured release flow:
-dev → release → main
+develop → release → main
 
-- `dev`: active development
-- `release`: stabilization and validation
+- `develop`: active development
+- `release`: stabilization and changelog finalization
 - `main`: production-ready state (source of truth for releases)
 
 ---
 
 ## Release Steps
 
-1. Merge approved work into `dev`
-2. Open a Pull Request from `dev` to `release`
+1. Merge approved work into `develop`
+2. Open a Pull Request from `develop` to `release`
 3. Validate documentation, structure, and CI checks
-4. Open a Pull Request from `release` to `main`
-5. **Automated**: CHANGELOG.md is generated automatically
+4. Generate and review the CHANGELOG.md (see [Changelog Generation](#changelog-generation))
+5. Open a Pull Request from `release` to `main`
 6. Merge into `main`
 7. Create a version tag on `main`
 8. Publish the GitHub release
@@ -35,12 +35,12 @@ dev → release → main
 
 ```mermaid
 flowchart LR
-    dev["dev<br/>Feature Integration"]
+    develop["develop<br/>Feature Integration"]
     release["release<br/>Validation and Changelog"]
     main["main<br/>Production State"]
     tag["vX.Y.Z<br/>Tag and GitHub Release"]
 
-    dev -->|PR| release
+    develop -->|PR| release
     release -->|PR| main
     main -->|Tag| tag
 ```
@@ -52,13 +52,13 @@ flowchart LR
 Below is a typical release workflow:
 
 ```
-feature/docs-x → dev
-feature/docs-y → dev
+feature/docs-x → develop
+feature/docs-y → develop
 
-dev → release
+develop → release
 
 release:
-  update CHANGELOG.md
+  generate and review CHANGELOG.md
   finalize documentation
 
 release → main
@@ -69,28 +69,10 @@ main:
 
 This flow ensures that:
 
-- all changes are consolidated in `dev`
-- the `release` branch is used for final adjustments (e.g., changelog and documentation)
+- all changes are consolidated in `develop`
+- the `release` branch is used for final adjustments (changelog and documentation)
 - the `main` branch always reflects the final, production-ready state
 - tags are created only from `main`
-
----
-
-## Handling Late-Arriving PRs
-
-**Scenario**: A PR merges into `release` after the CHANGELOG has been generated and the release PR is open.
-
-**Solution**: The system automatically detects stale CHANGELOG and provides regeneration instructions:
-
-1. **Automatic Detection**: The validation workflow detects if commits exist without a recent changelog commit
-2. **User-Friendly Warning**: PR shows a message suggesting regeneration
-3. **One-Click Regeneration**:
-   - Go to **Actions** → **Generate Changelog**
-   - Click **Run workflow**
-   - Enable **force-regenerate** checkbox
-   - This updates the PR with the latest CHANGELOG
-
-**Note**: You don't need to manually fix anything—just trigger the workflow again. Rebasing is safe; the automation will catch it.
 
 ---
 
@@ -117,69 +99,62 @@ While the project is in early stages:
 
 ---
 
-## Automated Changelog Generation
+## Changelog Generation
 
-The CHANGELOG.md file is automatically generated based on commits in the release branch.
-This reduces manual effort and ensures consistency between commits and release notes.
+CHANGELOG.md is generated using `tools/changelog_generator/cli.py`, which parses
+Commits following the Conventional Commits format and groups them by type.
 
-### How It Works
+### Commit-to-Section Mapping
 
-1. When a Pull Request is opened from `release` to `main`, a GitHub Action automatically
-   generates changelog entries from all commits since the last release
-2. The entries are grouped by type (Added, Changed, Fixed, Removed) based on the
-   commit type in the Conventional Commits format
-3. CHANGELOG.md is automatically updated in the release PR
-4. The validation workflow confirms the changelog was properly updated
+| Commit type | Changelog section |
+|---|---|
+| `feat` | Added |
+| `fix` | Fixed |
+| `refactor`, `perf`, `ci`, `build`, `docs` | Changed |
+| `revert` | Removed |
+| Any type with `!` | Breaking |
 
-### Changelog Generation Workflow
+Non-conventional commits are excluded. See [Commit Convention](../conventions/commits.md).
 
-The changelog is generated using the `tools/changelog_generator.py` script, which:
+### CI Previews
 
-- Parses commits using the **Conventional Commits** format
-- Maps commit types to changelog sections:
-  - `feat` → **Added**
-  - `fix` → **Fixed**
-  - `refactor`, `perf`, `ci`, `build`, `docs` → **Changed**
-  - `revert` → **Removed**
-  - Detects **Breaking Changes** (marked with `!`)
-- Generates entries with scope information for clarity
+The `changelog-check` workflow runs automatically and posts dry-run output:
 
-### Running Changelog Generation Manually
+- **PR to `develop`**: previews what that PR contributes relative to `develop`
+- **Push to `release`**: previews what `release` has relative to `main`
 
-If you need to manually trigger changelog generation:
+Output appears in the workflow logs. On PRs to `develop`, a summary comment is posted.
+No files are modified — these are previews only.
 
-1. Go to **Actions** → **Generate Changelog**
-2. Click **Run workflow**
-3. Enter the version (e.g., `v0.2.0`)
-4. (Optional) Enter a Git revision range (e.g., `v0.1.0..HEAD`)
-5. Click **Run workflow**
+### Generating the Changelog Locally
 
-The workflow will:
-- Generate changelog entries from the specified commits
-- Automatically commit the changes to the release PR
-- Post a comment confirming the update
+Run from `tools/changelog_generator/`:
 
-### Conventional Commits Requirement
+```bash
+# Preview (dry-run)
+python3 cli.py --version v0.2.0 --rev-range main..release --dry-run
 
-To ensure proper changelog generation, all commits must follow the **Conventional Commits** format:
+# Commit to CHANGELOG.md
+python3 cli.py --version v0.2.0 --rev-range main..release
 
-```
-<type>(<scope>): <subject>
+# Auto-detect version from last tag
+python3 cli.py --version auto --rev-range main..release
 ```
 
-Example:
+The `--version auto` flag increments the patch number from the latest tag.
+
+### Handling Late-Arriving PRs
+
+If a PR merges into `release` after the CHANGELOG was generated, re-run the
+generation locally:
+
+```bash
+python3 tools/changelog_generator/cli.py \
+  --version v0.2.0 \
+  --rev-range main..release
 ```
-feat(tutor): add adaptive hint policy
-fix(assessment): handle empty answer input
-docs(architecture): add C4 diagram
-```
 
-See [Commit Convention](../conventions/commits.md) for detailed guidelines.
-
-### What Gets Included in the Changelog
-
-Only commits that follow the Conventional Commits format are included in the changelog.
-Non-conventional commits are automatically excluded, preventing errors or empty entries.
+This overwrites the previous entry for that version.
 
 ---
 

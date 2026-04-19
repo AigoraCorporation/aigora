@@ -1,0 +1,155 @@
+name: Changelog Check
+
+on:
+  pull_request:
+    branches:
+      - develop
+  push:
+    branches:
+      - release
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (e.g., v0.2.0) or 'auto' to increment from last tag"
+        required: false
+        default: auto
+        type: string
+      rev-range:
+        description: "Git revision range override. Leave empty for context-based default."
+        required: false
+        type: string
+
+jobs:
+  changelog-check:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          cd tools/changelog_generator
+          pip install -e .
+
+      - name: Resolve context
+        id: context
+        run: |
+          EVENT="${{ github.event_name }}"
+
+          if [ "$EVENT" = "pull_request" ]; then
+            # PR to develop: show what this PR contributes relative to develop
+            VERSION="${{ inputs.version || 'auto' }}"
+            REV_RANGE="${{ inputs.rev-range }}"
+            if [ -z "$REV_RANGE" ]; then
+              REV_RANGE="origin/${{ github.base_ref }}..HEAD"
+            fi
+            LABEL="Staging preview (PR -> develop)"
+
+          elif [ "$EVENT" = "push" ]; then
+            # Push to release: show what release has relative to main
+            VERSION="${{ inputs.version || 'auto' }}"
+            REV_RANGE="${{ inputs.rev-range }}"
+            if [ -z "$REV_RANGE" ]; then
+              REV_RANGE="origin/main..origin/release"
+            fi
+            LABEL="Release preview (release -> main)"
+
+          else
+            # Manual trigger: use provided inputs
+            VERSION="${{ inputs.version }}"
+            REV_RANGE="${{ inputs.rev-range }}"
+            LABEL="Manual trigger"
+          fi
+
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "REV_RANGE=$REV_RANGE" >> $GITHUB_OUTPUT
+          echo "LABEL=$LABEL" >> $GITHUB_OUTPUT
+
+          echo "Context: $LABEL"
+          echo "Version: $VERSION"
+          echo "Range:   $REV_RANGE"
+
+      - name: Generate changelog preview
+        id: preview
+        run: |
+          cd tools/changelog_generator
+
+          SUMMARY=$(python3 cli.py \
+            --version "${{ steps.context.outputs.VERSION }}" \
+            --rev-range "${{ steps.context.outputs.REV_RANGE }}" \
+            --mode deterministic \
+            --format summary \
+            --dry-run 2>&1)
+
+          EXIT_CODE=$?
+
+          if [ $EXIT_CODE -eq 2 ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "summary=No new commits in range." >> $GITHUB_OUTPUT
+          elif [ $EXIT_CODE -ne 0 ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "summary=Error generating changelog." >> $GITHUB_OUTPUT
+            echo "$SUMMARY"
+            exit 1
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "summary=$SUMMARY" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate full markdown preview
+        if: steps.preview.outputs.has_changes == 'true'
+        run: |
+          cd tools/changelog_generator
+
+          echo "--- Changelog preview: ${{ steps.context.outputs.LABEL }} ---"
+          echo ""
+
+          python3 cli.py \
+            --version "${{ steps.context.outputs.VERSION }}" \
+            --rev-range "${{ steps.context.outputs.REV_RANGE }}" \
+            --mode deterministic \
+            --format markdown \
+            --dry-run
+
+      - name: Post summary to PR
+        if: github.event_name == 'pull_request' && steps.preview.outputs.has_changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = "${{ steps.context.outputs.LABEL }}";
+            const summary = "${{ steps.preview.outputs.summary }}";
+            const range = "${{ steps.context.outputs.REV_RANGE }}";
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: [
+                "**Changelog preview** (" + label + ")",
+                "",
+                "Range: `" + range + "`",
+                "Result: " + summary,
+                "",
+                "Full output available in the [workflow run](" +
+                  context.serverUrl + "/" + context.repo.owner + "/" +
+                  context.repo.repo + "/actions/runs/" + context.runId + ").",
+              ].join("\n"),
+            });
+
+      - name: Report no changes
+        if: steps.preview.outputs.has_changes == 'false'
+        run: |
+          echo "No changelog entries found in range '${{ steps.context.outputs.REV_RANGE }}'."
+          echo "This is expected if no conventional commits are present."
