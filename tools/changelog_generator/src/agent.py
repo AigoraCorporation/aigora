@@ -93,6 +93,7 @@ class ChangelogAgent:
         self,
         model: str = "claude-3-5-sonnet-20241022",
         repo_path: str = ".",
+        api_key: Optional[str] = None,
     ):
         """
         Initialize the changelog agent.
@@ -100,6 +101,7 @@ class ChangelogAgent:
         Args:
             model: LLM model to use (claude-3-5-sonnet, gpt-4o-mini, etc.)
             repo_path: Path to git repository
+            api_key: Optional API key for the model (overrides environment variable)
 
         Raises:
             ValueError: If repo_path is not a git repository
@@ -114,11 +116,22 @@ class ChangelogAgent:
 
         # Initialize Pydantic AI agent with result type
         system_prompt = self._get_system_prompt()
-        self.agent: Agent[ChangelogContent] = Agent(
-            model=model,
-            result_type=ChangelogContent,
-            system_prompt=system_prompt,
-        )
+        
+        # If api_key is provided and model is gpt-4o-mini, use OpenAI provider explicitly
+        if api_key and "gpt-4o-mini" in model:
+            from pydantic_ai.models.openai import OpenAIModel
+            model_instance = OpenAIModel("gpt-4o-mini", api_key=api_key)
+            self.agent: Agent[ChangelogContent] = Agent(
+                model=model_instance,
+                result_type=ChangelogContent,
+                system_prompt=system_prompt,
+            )
+        else:
+            self.agent: Agent[ChangelogContent] = Agent(
+                model=model,
+                result_type=ChangelogContent,
+                system_prompt=system_prompt,
+            )
 
     def _get_system_prompt(self) -> str:
         """Get the system prompt for the changelog agent."""
