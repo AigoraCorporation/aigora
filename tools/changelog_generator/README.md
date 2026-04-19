@@ -11,29 +11,39 @@ AI-powered automated changelog generation with fallback to deterministic generat
 
 ## Quick Start
 
-### 1. Deterministic Preview (No API Key Required)
-```bash
-python3 demo_dryrun.py
-```
-Shows raw structured changelog from commits (no AI summarization).
+### Unified CLI Interface
 
-### 2. AI-Powered Generation (Requires API Key)
+Use `cli.py` for all changelog generation with `--mode` parameter:
+
+**Deterministic mode** (no API key needed):
 ```bash
-# Option A: Environment variables
+python3 cli.py --mode deterministic --version v0.2.0
+```
+
+**AI-powered mode** (intelligent summarization):
+```bash
 export OPENAI_API_KEY=sk-proj-...
-python3 demo_ai.py
-
-# Option B: .env file
-cp .env.example .env
-# Edit .env and add your API key
-python3 demo_ai.py
-
-# Option C: Alternative provider
-export CHANGELOG_PROVIDER=anthropic
-export CHANGELOG_MODEL=claude-3-5-sonnet
-export ANTHROPIC_API_KEY=sk-ant-...
-python3 demo_ai.py
+python3 cli.py --mode ai --version v0.2.0
 ```
+
+**Compare branches:**
+```bash
+python3 cli.py --mode ai --version v0.2.0 --rev-range main..dev
+```
+
+**Alternative provider:**
+```bash
+python3 cli.py --mode ai --version v0.2.0 \
+  --provider anthropic \
+  --model claude-3-5-sonnet \
+  --api-key sk-ant-...
+```
+
+### Legacy Demo Scripts
+
+For quick testing without CLI arguments:
+- `demo_dryrun.py` - Deterministic preview (no API key needed)
+- `demo_ai.py` - AI-powered generation (requires API key)
 
 ## Configuration
 
@@ -76,14 +86,51 @@ When API key is available, uses LLM to intelligently:
 - Group related changes logically
 - Summarize at component level
 
-## Command Line Options (via demo_ai.py)
+## CLI Reference
 
-| Option | Description | Example |
-|--------|-------------|---------|
-| version | Version for changelog | `v0.2.0` |
-| rev-range | Git revision range | `v0.1.1..HEAD` |
-| date | Release date (YYYY-MM-DD) | `2026-04-20` |
-| docs-scope | Documentation scope filter | `curriculum,architecture` |
+### Basic Usage
+```bash
+python3 cli.py --version VERSION [--mode {deterministic,ai}] [options]
+```
+
+### Arguments
+
+| Argument | Required | Default | Example |
+|----------|----------|---------|---------|
+| `--version` | Yes | - | `v0.2.0` |
+| `--mode` | No | deterministic | `ai` or `deterministic` |
+| `--repo` | No | Repository root | `/path/to/repo` |
+| `--rev-range` | No | Commits since last tag | `main..dev` or `v0.1.1..HEAD` |
+| `--date` | No | Today | `2026-04-20` |
+| `--docs-scope` | No | - | `curriculum,architecture` |
+| `--provider` | No | openai | `anthropic` |
+| `--model` | No | gpt-4o-mini | `claude-3-5-sonnet` |
+| `--api-key` | No | From .env or env vars | `sk-proj-...` |
+
+### Full Examples
+```bash
+# Show help
+python3 cli.py --help
+
+# Deterministic mode - fast preview
+python3 cli.py --mode deterministic --version v0.2.0
+
+# AI mode with default OpenAI
+python3 cli.py --mode ai --version v0.2.0
+
+# Compare dev against main
+python3 cli.py --mode ai --version v0.2.0 --rev-range main..dev
+
+# Anthropic Claude model
+python3 cli.py --mode ai --version v0.2.0 \
+  --provider anthropic \
+  --model claude-3-5-sonnet
+
+# Custom date and scope filter
+python3 cli.py --mode ai --version v0.2.0 \
+  --date 2026-04-20 \
+  --docs-scope curriculum,architecture
+```
 
 ## Testing
 
@@ -99,22 +146,42 @@ python3 -m pytest tests/ -v
 
 ## Examples
 
-### Preview changelog (no API key needed)
+### Using the Unified CLI
+
+**Preview with deterministic mode:**
+```bash
+python3 cli.py --mode deterministic --version v0.2.0
+```
+
+**Generate with AI (requires API key):**
+```bash
+export OPENAI_API_KEY=sk-proj-...
+python3 cli.py --mode ai --version v0.2.0
+```
+
+**Compare branches (e.g., dev vs main):**
+```bash
+python3 cli.py --mode ai --version v0.2.0 --rev-range main..dev
+```
+
+**Use Anthropic Claude:**
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+python3 cli.py --mode ai --version v0.2.0 \
+  --provider anthropic \
+  --model claude-3-5-sonnet
+```
+
+### Using Legacy Demo Scripts
+
+**Quick preview without CLI:**
 ```bash
 python3 demo_dryrun.py
 ```
 
-### Generate with AI (requires OPENAI_API_KEY)
+**AI generation with environment setup:**
 ```bash
 export OPENAI_API_KEY=sk-proj-...
-python3 demo_ai.py
-```
-
-### Specify alternative provider
-```bash
-CHANGELOG_PROVIDER=anthropic \
-CHANGELOG_MODEL=claude-3-5-sonnet \
-ANTHROPIC_API_KEY=sk-ant-... \
 python3 demo_ai.py
 ```
 
