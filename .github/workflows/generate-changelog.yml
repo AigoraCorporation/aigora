@@ -18,8 +18,8 @@ on:
 
 jobs:
   generate-changelog:
-    # Only run this job for manual trigger or when release branch is the source
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.head_ref == 'release')
+    # Auto-run when release PR to main is created/updated, or on manual trigger
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.head_ref == 'release' && github.base_ref == 'main')
     runs-on: ubuntu-latest
 
     permissions:
@@ -35,7 +35,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Determine version
         id: version
@@ -58,27 +58,32 @@ jobs:
             echo "REV_RANGE=${{ inputs.rev-range }}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Generate changelog
+      - name: Install dependencies
         run: |
-          ARGS="--version ${{ steps.version.outputs.VERSION }} --repo ."
+          cd tools/changelog_generator
+          pip install -e .
+
+      - name: Generate changelog (dry-run preview)
+        run: |
+          cd tools/changelog_generator
+          ARGS="--version ${{ steps.version.outputs.VERSION }} --mode deterministic --dry-run"
           
           if [ -n "${{ steps.version.outputs.REV_RANGE }}" ]; then
             ARGS="${ARGS} --rev-range ${{ steps.version.outputs.REV_RANGE }}"
           fi
           
-          python3 tools/changelog_generator.py ${ARGS} --dry-run > /tmp/changelog_entry.txt
-          echo "Generated changelog entry:"
-          cat /tmp/changelog_entry.txt
+          python3 cli.py ${ARGS}
 
       - name: Update CHANGELOG.md
         run: |
-          ARGS="--version ${{ steps.version.outputs.VERSION }} --repo ."
+          cd tools/changelog_generator
+          ARGS="--version ${{ steps.version.outputs.VERSION }} --mode deterministic"
           
           if [ -n "${{ steps.version.outputs.REV_RANGE }}" ]; then
             ARGS="${ARGS} --rev-range ${{ steps.version.outputs.REV_RANGE }}"
           fi
           
-          python3 tools/changelog_generator.py ${ARGS}
+          python3 cli.py ${ARGS}
 
       - name: Check if changelog was modified
         id: changelog-check
