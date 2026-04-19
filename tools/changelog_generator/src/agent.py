@@ -251,8 +251,8 @@ Provide the changelog content with appropriate sections."""
 
         try:
             result = await self.agent.run(prompt)
-            # In pydantic-ai 1.83.0, output_type returns the object directly
-            changelog = result.data if hasattr(result, 'data') else result
+            # pydantic-ai 1.83.0: agent.run() returns AgentRunResult with .output attribute
+            changelog = result.output
         except Exception as e:
             print(f"Warning: AI generation failed: {e}", file=sys.stderr)
             # Fallback to structured output
