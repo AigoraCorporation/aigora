@@ -1,0 +1,15 @@
+[project]
+name = "changelog-generator"
+version = "0.1.0"
+description = "A cli tool to automate CHANGELOG additions along versioning"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pydantic>=2.13.2",
+    "pydantic-ai>=1.84.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]
