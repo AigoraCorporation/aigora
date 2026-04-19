@@ -32,11 +32,14 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-# Add src to path
+# Add current directory to path so imports work when running directly
 sys.path.insert(0, str(Path(__file__).parent))
 
-from changelog_generator.agent import ChangelogAgent
-from changelog_generator.parser import GitCommitReader
+# Load .env file if it exists
+from dotenv import load_dotenv
+
+from agent import ChangelogAgent
+from parser import GitCommitReader
 
 
 def load_env_config() -> dict:

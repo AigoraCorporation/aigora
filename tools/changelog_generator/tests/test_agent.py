@@ -11,8 +11,8 @@ import pytest
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from changelog_generator.agent import ChangelogAgent, CommitInfo
-from changelog_generator.models import ChangelogContent
+from agent import ChangelogAgent, CommitInfo
+from models import ChangelogContent
 
 
 class TestCommitInfo:
@@ -79,7 +79,7 @@ class TestChangelogAgent:
         with pytest.raises(ValueError, match="Not a git repository"):
             ChangelogAgent(repo_path="/nonexistent/path")
 
-    @patch("changelog_generator.agent.Agent")
+    @patch("agent.Agent")
     def test_agent_initialization_valid_repo(self, mock_agent_class, temp_git_repo):
         """Test successful agent initialization."""
         # Mock the Agent to avoid requiring API keys
@@ -90,7 +90,7 @@ class TestChangelogAgent:
         assert agent.model == "claude-3-5-sonnet-20241022"
         assert agent.repo_path == temp_git_repo
 
-    @patch("changelog_generator.agent.Agent")
+    @patch("agent.Agent")
     def test_agent_custom_model(self, mock_agent_class, temp_git_repo):
         """Test agent with custom model."""
         mock_agent_class.return_value = MagicMock()
@@ -99,7 +99,7 @@ class TestChangelogAgent:
 
         assert agent.model == "gpt-4o-mini"
 
-    @patch("changelog_generator.agent.Agent")
+    @patch("agent.Agent")
     def test_get_system_prompt(self, mock_agent_class, temp_git_repo):
         """Test that system prompt is generated."""
         mock_agent_class.return_value = MagicMock()
@@ -112,7 +112,7 @@ class TestChangelogAgent:
         assert "Changed" in prompt
         assert "Fixed" in prompt
 
-    @patch("changelog_generator.agent.Agent")
+    @patch("agent.Agent")
     def test_format_commits_for_agent(self, mock_agent_class, temp_git_repo):
         """Test formatting commits for agent."""
         mock_agent_class.return_value = MagicMock()
@@ -143,7 +143,7 @@ class TestChangelogAgent:
         assert "fix(bug)" in formatted
         assert "fix issue" in formatted
 
-    @patch("changelog_generator.agent.Agent")
+    @patch("agent.Agent")
     def test_format_commits_with_breaking(self, mock_agent_class, temp_git_repo):
         """Test formatting commits with breaking changes."""
         mock_agent_class.return_value = MagicMock()
@@ -164,7 +164,7 @@ class TestChangelogAgent:
 
         assert "[BREAKING]" in formatted
 
-    @patch("changelog_generator.agent.Agent")
+    @patch("agent.Agent")
     def test_format_commits_with_docs_scope(self, mock_agent_class, temp_git_repo):
         """Test formatting with documentation scope."""
         mock_agent_class.return_value = MagicMock()
@@ -186,7 +186,7 @@ class TestChangelogAgent:
         assert "Documentation scope:" in formatted
         assert "curriculum,architecture" in formatted
 
-    @patch("changelog_generator.agent.Agent")
+    @patch("agent.Agent")
     def test_generate_fallback_changelog(self, mock_agent_class, temp_git_repo):
         """Test fallback changelog generation."""
         mock_agent_class.return_value = MagicMock()
@@ -224,7 +224,7 @@ class TestChangelogAgent:
         assert "Fixed" in changelog.sections
         assert "Changed" in changelog.sections
 
-    @patch("changelog_generator.agent.Agent")
+    @patch("agent.Agent")
     def test_generate_fallback_changelog_with_breaking(self, mock_agent_class, temp_git_repo):
         """Test fallback with breaking changes."""
         mock_agent_class.return_value = MagicMock()
@@ -245,7 +245,7 @@ class TestChangelogAgent:
 
         assert "Breaking" in changelog.sections
 
-    @patch("changelog_generator.agent.Agent")
+    @patch("agent.Agent")
     def test_generate_fallback_changelog_deduplicates(self, mock_agent_class, temp_git_repo):
         """Test that fallback deduplicates identical commits."""
         mock_agent_class.return_value = MagicMock()
@@ -264,7 +264,7 @@ class TestChangelogAgent:
         assert len(changelog.sections["Added"]) == 1
         assert len(changelog.sections["Fixed"]) == 1
 
-    @patch("changelog_generator.agent.Agent")
+    @patch("agent.Agent")
     def test_format_changelog_entry(self, mock_agent_class, temp_git_repo):
         """Test changelog formatting."""
         mock_agent_class.return_value = MagicMock()
@@ -286,7 +286,7 @@ class TestChangelogAgent:
         assert "### Added" in formatted
         assert "### Fixed" in formatted
 
-    @patch("changelog_generator.agent.Agent")
+    @patch("agent.Agent")
     def test_update_changelog_file_not_found(self, mock_agent_class, temp_git_repo):
         """Test error when changelog file doesn't exist."""
         mock_agent_class.return_value = MagicMock()
@@ -309,7 +309,7 @@ class TestChangelogAgent:
             import shutil
             shutil.rmtree(repo_without_changelog)
 
-    @patch("changelog_generator.agent.Agent")
+    @patch("agent.Agent")
     def test_update_changelog_inserts_new_entry(self, mock_agent_class, temp_git_repo):
         """Test that update_changelog inserts new entry."""
         mock_agent_class.return_value = MagicMock()
@@ -333,7 +333,7 @@ class TestChangelogAgent:
         assert "### Added" in content
         assert "- (feature): new feature" in content
 
-    @patch("changelog_generator.agent.Agent")
+    @patch("agent.Agent")
     def test_no_commits_in_range(self, mock_agent_class, temp_git_repo):
         """Test handling of no commits."""
         mock_agent_class.return_value = MagicMock()
@@ -436,7 +436,7 @@ class TestChangelogAgentIntegration:
 
     def test_full_changelog_generation_flow(self, temp_git_repo_with_commits):
         """Test the full changelog generation flow."""
-        with patch("changelog_generator.agent.Agent"):
+        with patch("agent.Agent"):
             agent = ChangelogAgent(repo_path=str(temp_git_repo_with_commits))
 
             # Get commits since last tag
