@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Demo script to show changelog generation with real AI or fallback."""
+"""Demo script to show changelog generation with real AI."""
 
 import asyncio
 import os
@@ -13,23 +13,62 @@ from src.agent import ChangelogAgent, CommitInfo
 from src.parser import GitCommitReader
 
 
+def load_env_config():
+    """Load configuration from .env file or environment variables."""
+    env_file = Path(__file__).parent / ".env"
+    
+    # Load .env file if it exists
+    if env_file.exists():
+        with open(env_file) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#"):
+                    if "=" in line:
+                        key, value = line.split("=", 1)
+                        if value and not value.startswith("your-"):
+                            os.environ.setdefault(key.strip(), value.strip())
+    
+    # Return configuration
+    return {
+        "provider": os.environ.get("CHANGELOG_PROVIDER", "openai"),
+        "model": os.environ.get("CHANGELOG_MODEL", "gpt-4o-mini"),
+        "api_key": os.environ.get("CHANGELOG_API_KEY") or os.environ.get("OPENAI_API_KEY"),
+        "date": os.environ.get("CHANGELOG_DATE"),
+        "rev_range": os.environ.get("CHANGELOG_REV_RANGE"),
+        "docs_scope": os.environ.get("CHANGELOG_DOCS_SCOPE"),
+    }
+
+
 async def demo_with_ai():
-    """Demonstrate changelog generation with real AI agent (requires API key)."""
+    """Demonstrate changelog generation with real AI agent."""
+    
+    # Load configuration
+    config = load_env_config()
+    provider = config["provider"]
+    model = config["model"]
+    api_key = config["api_key"]
+    
     repo = Path("/home/pingu/github/aigora")
     
     print(f"📍 Current repository: {repo}")
     
     # Check for API key
-    api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
-        print("\n❌ Error: OPENAI_API_KEY environment variable not set")
-        print("\n💡 Please set your API key:")
-        print("   export OPENAI_API_KEY=sk-proj-...")
-        print("\nOr pass it to this script:")
-        print("   OPENAI_API_KEY=sk-proj-... python3 demo_ai.py")
+        print(f"\n❌ Error: API key not found")
+        print(f"\n💡 Set one of these environment variables or in .env file:")
+        if provider == "openai":
+            print(f"   OPENAI_API_KEY=sk-proj-...")
+            print(f"   CHANGELOG_API_KEY=sk-proj-...")
+        elif provider == "anthropic":
+            print(f"   ANTHROPIC_API_KEY=sk-ant-...")
+            print(f"   CHANGELOG_API_KEY=sk-ant-...")
+        else:
+            print(f"   CHANGELOG_API_KEY=your-key")
+        print(f"\n   Or copy .env.example to .env and fill in your values:")
+        print(f"   cp .env.example .env")
         sys.exit(1)
     
-    print(f"🔑 Using LLM (OpenAI GPT-4o-mini) for intelligent changelog summarization")
+    print(f"🔑 Using {provider} provider: {model}")
     print(f"   API Key: {api_key[:20]}...\n")
     
     # Read commits since last tag
@@ -38,10 +77,9 @@ async def demo_with_ai():
     
     print(f"🏷️  Last tag: {last_tag}")
     
-    if last_tag:
-        rev_range = f"{last_tag}..HEAD"
-    else:
-        rev_range = "HEAD"
+    rev_range = config["rev_range"]
+    if not rev_range:
+        rev_range = f"{last_tag}..HEAD" if last_tag else "HEAD"
     
     commits = reader.get_commits(rev_range)
     
@@ -49,12 +87,12 @@ async def demo_with_ai():
     print(f"{'─' * 70}\n")
     
     try:
-        # Initialize agent and generate changelog with AI
-        # Pass the API key directly to avoid environment variable issues
+        # Initialize agent with configuration
         agent = ChangelogAgent(
-            model="gpt-4o-mini",
+            model=model,
             repo_path=str(repo),
             api_key=api_key,
+            provider=provider,
         )
         
         print("🤖 Generating changelog with AI analysis...")
@@ -63,7 +101,8 @@ async def demo_with_ai():
         changelog = await agent.generate_changelog(
             version="v0.2.0",
             rev_range=rev_range,
-            date=None,
+            docs_scope=config["docs_scope"],
+            date=config["date"],
         )
         
         # Format and display
@@ -80,8 +119,10 @@ async def demo_with_ai():
         
     except Exception as e:
         print(f"❌ Error: {e}")
-        print("\n💡 This typically means the API key isn't configured correctly.")
-        print("   The script needs OPENAI_API_KEY set in the environment.")
+        print("\n💡 Troubleshooting:")
+        print(f"   1. Check that API key is valid")
+        print(f"   2. Verify provider '{provider}' is correct")
+        print(f"   3. Ensure model '{model}' is available")
         import traceback
         traceback.print_exc()
         sys.exit(1)
