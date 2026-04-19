@@ -232,8 +232,8 @@ async def generate_ai_changelog(
         
         if not dry_run:
             # Update CHANGELOG.md
+            agent.update_changelog(changelog)
             changelog_path = repo / "CHANGELOG.md"
-            agent.update_changelog(str(changelog_path), changelog)
             print(f"\n✅ Updated: {changelog_path}")
         else:
             print(f"\n💡 Dry-run mode: CHANGELOG.md not modified")
