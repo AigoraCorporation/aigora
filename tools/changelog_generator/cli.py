@@ -88,6 +88,13 @@ def parse_arguments() -> argparse.Namespace:
         help="Generation mode: 'deterministic' (fast, no API key) or 'ai' (intelligent, requires API key) [default: deterministic]",
     )
     
+    # Dry-run flag
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Preview only, don't update CHANGELOG.md",
+    )
+    
     # Optional arguments
     parser.add_argument(
         "--repo",
@@ -140,6 +147,7 @@ async def generate_ai_changelog(
     api_key: str,
     date: Optional[str],
     docs_scope: Optional[str],
+    dry_run: bool = False,
 ) -> None:
     """Generate changelog using AI-powered mode."""
     
@@ -197,11 +205,22 @@ async def generate_ai_changelog(
         # Format and display
         formatted = agent.format_changelog_entry(changelog)
         
-        print("📝 AI-POWERED CHANGELOG")
+        if dry_run:
+            print("📝 AI-POWERED CHANGELOG (dry-run preview)")
+        else:
+            print("📝 AI-POWERED CHANGELOG")
         print("=" * 70)
         print(formatted)
         print("=" * 70)
         print(f"\n✓ Summary: {changelog.summary}")
+        
+        if not dry_run:
+            # Update CHANGELOG.md
+            changelog_path = repo / "CHANGELOG.md"
+            agent.update_changelog(str(changelog_path), changelog)
+            print(f"\n✅ Updated: {changelog_path}")
+        else:
+            print(f"\n💡 Dry-run mode: CHANGELOG.md not modified")
         
     except Exception as e:
         print(f"❌ Error: {e}")
@@ -220,6 +239,7 @@ def generate_deterministic_changelog(
     rev_range: Optional[str],
     date: Optional[str],
     docs_scope: Optional[str],
+    dry_run: bool = False,
 ) -> None:
     """Generate changelog using deterministic mode (no API key needed)."""
     
@@ -272,12 +292,23 @@ def generate_deterministic_changelog(
             # Format and display
             formatted = agent.format_changelog_entry(changelog)
             
-            print("📝 DETERMINISTIC CHANGELOG")
+            if dry_run:
+                print("📝 DETERMINISTIC CHANGELOG (dry-run preview)")
+            else:
+                print("📝 DETERMINISTIC CHANGELOG")
             print("=" * 70)
             print(formatted)
             print("=" * 70)
             print(f"\n✓ Summary: {changelog.summary}")
-            print("\n✨ Deterministic mode: No API key needed, fast preview")
+            
+            if not dry_run:
+                # Update CHANGELOG.md
+                changelog_path = repo / "CHANGELOG.md"
+                agent.update_changelog(str(changelog_path), changelog)
+                print(f"\n✅ Updated: {changelog_path}")
+            else:
+                print(f"\n💡 Dry-run mode: CHANGELOG.md not modified")
+                print(f"✨ Use without --dry-run to apply changes")
         
     except Exception as e:
         print(f"❌ Error: {e}")
@@ -308,6 +339,7 @@ async def main():
             rev_range=rev_range,
             date=date,
             docs_scope=docs_scope,
+            dry_run=args.dry_run,
         )
     else:  # ai mode
         await generate_ai_changelog(
@@ -319,6 +351,7 @@ async def main():
             api_key=api_key,
             date=date,
             docs_scope=docs_scope,
+            dry_run=args.dry_run,
         )
 
 
