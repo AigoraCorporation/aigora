@@ -52,13 +52,12 @@ jobs:
           echo "$CHANGED_FILES" | grep -Fx "CHANGELOG.md" >/dev/null || {
             echo "❌ CHANGELOG.md must be updated in release PRs to main."
             echo ""
-            echo "📝 To automatically generate the CHANGELOG.md:"
+            echo "📝 Before opening a release PR, generate the CHANGELOG:"
             echo "1. Go to Actions → Generate Changelog"
             echo "2. Click 'Run workflow'"
             echo "3. Enter your version (e.g., v0.2.0)"
-            echo "4. Click 'Run workflow'"
-            echo ""
-            echo "Or manually update CHANGELOG.md with the release notes."
+            echo "4. Click 'Run workflow' to generate and push to release branch"
+            echo "5. Then open the PR to main"
             exit 1
           }
 
@@ -66,31 +65,18 @@ jobs:
         run: |
           git fetch origin release --depth=1
           
-          # Count commits since last version tag in the diff
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          if [ -z "$LAST_TAG" ]; then
-            COMMIT_COUNT=$(git rev-list --count origin/release)
-          else
-            COMMIT_COUNT=$(git rev-list --count "${LAST_TAG}..origin/release")
-          fi
+          # Count commits in release branch
+          COMMIT_COUNT=$(git rev-list --count origin/release)
           
           echo "📝 Commits in release branch: $COMMIT_COUNT"
+          echo ""
           
-          # Check if CHANGELOG was just committed (within last 5 commits)
-          RECENT_CHANGELOG=$(git log --oneline -5 origin/release | grep -i changelog || true)
-          
-          if [ -z "$RECENT_CHANGELOG" ] && [ "$COMMIT_COUNT" -gt 0 ]; then
-            echo ""
-            echo "⚠️ Warning: CHANGELOG may be stale (no recent changelog commit)"
-            echo "   Late-arriving PRs may have been merged after initial generation."
-            echo ""
-            echo "✨ To regenerate with latest commits:"
+          if [ "$COMMIT_COUNT" -gt 0 ]; then
+            echo "ℹ️  If new commits were merged to release after CHANGELOG generation,"
+            echo "   consider regenerating the CHANGELOG:"
             echo "   1. Go to Actions → Generate Changelog"
-            echo "   2. Click 'Run workflow'"
-            echo "   3. Enter your version and enable 'force-regenerate'"
-            echo "   4. This will update the PR with fresh CHANGELOG"
-          else
-            echo "✓ CHANGELOG appears to be up-to-date"
+            echo "   2. Click 'Run workflow' with force-regenerate enabled"
+            echo "   3. This will update the PR with fresh CHANGELOG"
           fi
 
       - name: Validate changelog format

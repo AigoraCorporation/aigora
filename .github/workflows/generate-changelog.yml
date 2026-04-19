@@ -16,21 +16,10 @@ on:
         required: false
         type: boolean
         default: false
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches:
-      - main
-  push:
-    branches:
-      - release
 
 jobs:
   generate-changelog:
-    # Auto-run when:
-    # 1. release PR to main is created/updated/reopened, OR
-    # 2. Manual workflow_dispatch, OR  
-    # 3. New commits pushed to release branch (catch late-arriving PRs before main PR)
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.head_ref == 'release' && github.base_ref == 'main') || github.event_name == 'push'
+    # Manual trigger only - full control over changelog generation
     runs-on: ubuntu-latest
 
     permissions:
@@ -51,31 +40,8 @@ jobs:
       - name: Determine version
         id: version
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "VERSION=${{ inputs.version }}" >> $GITHUB_OUTPUT
-            echo "REV_RANGE=${{ inputs.rev-range }}" >> $GITHUB_OUTPUT
-            echo "SOURCE=workflow_dispatch" >> $GITHUB_OUTPUT
-          elif [ "${{ github.event_name }}" == "push" ]; then
-            # For push to release, check commits since last tag
-            LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-            echo "VERSION=${LATEST_TAG}..HEAD" >> $GITHUB_OUTPUT
-            echo "REV_RANGE=" >> $GITHUB_OUTPUT
-            echo "SOURCE=release_push" >> $GITHUB_OUTPUT
-            echo "📦 New commits pushed to release branch - will regenerate CHANGELOG"
-          else
-            # For PR events, extract version from branch or tags
-            LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-            
-            # Simple increment for patch version
-            BASE_VERSION="${LATEST_TAG%.*}"
-            PATCH="${LATEST_TAG##*.}"
-            NEXT_PATCH=$((PATCH + 1))
-            NEXT_VERSION="${BASE_VERSION}.${NEXT_PATCH}"
-            
-            echo "VERSION=${NEXT_VERSION}" >> $GITHUB_OUTPUT
-            echo "REV_RANGE=${{ inputs.rev-range }}" >> $GITHUB_OUTPUT
-            echo "SOURCE=release_pr" >> $GITHUB_OUTPUT
-          fi
+          echo "VERSION=${{ inputs.version }}" >> $GITHUB_OUTPUT
+          echo "REV_RANGE=${{ inputs.rev-range }}" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
         run: |
@@ -114,25 +80,13 @@ jobs:
           fi
 
       - name: Commit changelog changes
-        if: steps.changelog-check.outputs.modified == 'true' && github.event_name == 'pull_request'
+        if: steps.changelog-check.outputs.modified == 'true'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add CHANGELOG.md
           git commit -m "chore(changelog): generate changelog for ${{ steps.version.outputs.VERSION }}"
           git push
-
-      - name: Comment on PR
-        if: github.event_name == 'pull_request' && steps.changelog-check.outputs.modified == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '✅ Changelog automatically generated for ${{ steps.version.outputs.VERSION }}\n\nThe CHANGELOG.md has been updated with entries from the latest commits.'
-            })
 
       - name: Report if no changelog entries found
         if: steps.changelog-check.outputs.modified == 'false'
