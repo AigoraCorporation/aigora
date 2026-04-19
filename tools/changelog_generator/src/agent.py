@@ -269,6 +269,7 @@ Provide the changelog content with appropriate sections."""
     ) -> ChangelogContent:
         """Generate changelog without AI when agent fails."""
         sections: Dict[str, List[str]] = {}
+        seen: set = set()
 
         type_to_section = {
             "feat": "Added",
@@ -284,6 +285,11 @@ Provide the changelog content with appropriate sections."""
         }
 
         for commit in commits:
+            key = (commit.type, commit.scope, commit.subject.lower())
+            if key in seen:
+                continue
+            seen.add(key)
+
             section = type_to_section.get(commit.type, "Changed")
             entry = f"({commit.scope}): {commit.subject}" if commit.scope else commit.subject
 
@@ -300,7 +306,7 @@ Provide the changelog content with appropriate sections."""
             version=version,
             date=date or datetime.now().strftime("%Y-%m-%d"),
             sections=sections,
-            summary=f"Release {version} with {len(commits)} changes",
+            summary=f"Release {version} with {len(seen)} changes",
         )
 
     def format_changelog_entry(

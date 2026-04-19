@@ -128,9 +128,10 @@ class GitCommitReader:
             Latest tag string or None if no tags exist
         """
         try:
-            return self._run_git("describe", "--tags", "--abbrev=0")
+            output = self._run_git("tag", "--sort=-version:refname")
+            tags = [t.strip() for t in output.splitlines() if t.strip()]
+            return tags[0] if tags else None
         except RuntimeError:
-            # No tags found
             return None
 
     def get_commits_since_last_tag(self) -> list[Commit]:

@@ -246,6 +246,25 @@ class TestChangelogAgent:
         assert "Breaking" in changelog.sections
 
     @patch("src.agent.Agent")
+    def test_generate_fallback_changelog_deduplicates(self, mock_agent_class, temp_git_repo):
+        """Test that fallback deduplicates identical commits."""
+        mock_agent_class.return_value = MagicMock()
+
+        agent = ChangelogAgent(repo_path=str(temp_git_repo))
+
+        # Same commit appearing twice (e.g., present in two branches merged together)
+        commits = [
+            CommitInfo(hash="abc123", type="feat", scope="api", subject="add endpoint", breaking=False),
+            CommitInfo(hash="def456", type="feat", scope="api", subject="add endpoint", breaking=False),
+            CommitInfo(hash="ghi789", type="fix", scope="bug", subject="fix crash", breaking=False),
+        ]
+
+        changelog = agent._generate_fallback_changelog("v0.2.0", commits)
+
+        assert len(changelog.sections["Added"]) == 1
+        assert len(changelog.sections["Fixed"]) == 1
+
+    @patch("src.agent.Agent")
     def test_format_changelog_entry(self, mock_agent_class, temp_git_repo):
         """Test changelog formatting."""
         mock_agent_class.return_value = MagicMock()
