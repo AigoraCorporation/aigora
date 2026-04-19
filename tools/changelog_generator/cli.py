@@ -178,7 +178,20 @@ async def generate_ai_changelog(
     if not rev_range:
         rev_range = f"{last_tag}..HEAD" if last_tag else "HEAD"
     
-    commits = reader.get_commits(rev_range)
+    try:
+        commits = reader.get_commits(rev_range)
+    except RuntimeError as e:
+        if "unknown revision" in str(e) or "not in the working tree" in str(e):
+            print(f"\n❌ Error: Branch/revision not found")
+            print(f"\n💡 The revision '{rev_range}' doesn't exist locally.")
+            print(f"\n   Try one of these:")
+            print(f"   1. Fetch the branch: git fetch origin")
+            print(f"   2. Use an existing branch/tag: git branch -a")
+            print(f"   3. Use commits since last tag (default): omit --rev-range")
+            print(f"   4. Use a valid local range: git log --oneline --graph --decorate --all")
+            sys.exit(1)
+        else:
+            raise
     
     print(f"📊 Commits in range: {len(commits)} total\n")
     print(f"{'─' * 70}\n")
@@ -254,7 +267,20 @@ def generate_deterministic_changelog(
     if not rev_range:
         rev_range = f"{last_tag}..HEAD" if last_tag else "HEAD"
     
-    commits = reader.get_commits(rev_range)
+    try:
+        commits = reader.get_commits(rev_range)
+    except RuntimeError as e:
+        if "unknown revision" in str(e) or "not in the working tree" in str(e):
+            print(f"\n❌ Error: Branch/revision not found")
+            print(f"\n💡 The revision '{rev_range}' doesn't exist locally.")
+            print(f"\n   Try one of these:")
+            print(f"   1. Fetch the branch: git fetch origin")
+            print(f"   2. Use an existing branch/tag: git branch -a")
+            print(f"   3. Use commits since last tag (default): omit --rev-range")
+            print(f"   4. Use a valid local range: git log --oneline --graph --decorate --all")
+            sys.exit(1)
+        else:
+            raise
     
     print(f"📊 Commits in range: {len(commits)} total\n")
     
