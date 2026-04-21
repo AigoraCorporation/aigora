@@ -8,6 +8,7 @@ from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
 from .graph_assembler import GraphAssembler
 from .graph_mapper import GraphMapper
 from .graph_parser import GraphParser
+from .graph_validator import GraphValidator
 from .loader_errors import GraphLoaderError
 
 
@@ -18,6 +19,7 @@ class GraphLoader:
     - Read a graph definition file through GraphParser.
     - Map parsed payload data into domain objects through GraphMapper.
     - Assemble the final in-memory CurriculumGraph through GraphAssembler.
+    - Validate the assembled graph through GraphValidator.
 
     This class acts as the application-level entry point for the file-based
     Curriculum Graph loading pipeline.
@@ -28,10 +30,12 @@ class GraphLoader:
         parser: GraphParser | None = None,
         mapper: GraphMapper | None = None,
         assembler: GraphAssembler | None = None,
+        validator: GraphValidator | None = None,
     ) -> None:
         self._parser = parser or GraphParser()
         self._mapper = mapper or GraphMapper()
         self._assembler = assembler or GraphAssembler()
+        self._validator = validator or GraphValidator()
 
     def load(self, file_path: str | Path) -> CurriculumGraph:
         try:
@@ -41,11 +45,15 @@ class GraphLoader:
             edges = self._map_edges(payload)
             profiles = self._map_profiles(payload)
 
-            return self._assembler.assemble(
+            graph = self._assembler.assemble(
                 nodes=nodes,
                 edges=edges,
                 profiles=profiles,
             )
+
+            self._validator.validate(graph)
+
+            return graph
         except Exception as exc:
             raise GraphLoaderError(
                 f"Failed to load CurriculumGraph from file: {file_path}"
