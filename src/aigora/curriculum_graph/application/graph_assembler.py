@@ -31,12 +31,13 @@ class GraphAssembler:
         nodes: list[Node],
         edges: list[Edge],
         profiles: list[CurriculumProfile],
+        version: str | None = None,
     ) -> CurriculumGraph:
         node_ids = self._collect_node_ids(nodes)
         self._validate_edges(edges, node_ids)
         self._validate_profiles(profiles, node_ids)
 
-        graph = CurriculumGraph()
+        graph = CurriculumGraph(version=version)
 
         for node in nodes:
             graph.add_node(node)
