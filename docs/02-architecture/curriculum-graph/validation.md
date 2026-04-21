@@ -44,6 +44,9 @@ All node ids must conform to the format defined in [authoring.md](authoring.md):
 Lowercase, dot-separated, hyphens within segments. No spaces, no
 uppercase characters, no underscores.
 
+The identifier format defines the canonical structure of ids; uniqueness
+is enforced separately at the graph level (see S1).
+
 Profile ids must conform to `profile.<name>`.
 
 ### S3 — Required Fields Present
