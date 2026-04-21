@@ -13,6 +13,7 @@ class CurriculumGraph:
     nodes: dict[str, Node] = field(default_factory=dict)
     edges: list[Edge] = field(default_factory=list)
     profiles: dict[str, CurriculumProfile] = field(default_factory=dict)
+    version: str | None = field(default=None)
 
     def add_node(self, node: Node) -> None:
         if node.id in self.nodes:
