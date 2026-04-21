@@ -46,11 +46,11 @@ Issues must be labeled appropriately.
 
 Branches must follow the branching strategy defined in:
 
-`docs/06-engineering/workflow/git-flow.md`
+`docs/05-engineering/workflow/git-flow.md`
 
 Branch naming conventions are defined in:
 
-`docs/06-engineering/conventions/branch-naming.md`
+`docs/05-engineering/conventions/branch-naming.md`
 
 Feature branches originate from the **`dev` branch`.
 
@@ -64,7 +64,7 @@ All commits must follow the **Conventional Commits** standard.
 
 Reference:
 
-docs/06-engineering/conventions/commits.md
+docs/05-engineering/conventions/commits.md
 
 Commits are validated via **commitlint** locally and in CI.
 

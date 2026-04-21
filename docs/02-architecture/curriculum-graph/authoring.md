@@ -21,7 +21,7 @@ Students and the tutoring runtime do not author graph content.
 | **Student Model** | Stores mastery state against node ids; never modifies graph structure |
 
 All changes to the canonical graph and all profiles must go through
-the standard review process defined in [pull-request-policy.md](../../06-engineering/governance/pull-request-policy.md).
+the standard review process defined in [pull-request-policy.md](../../05-engineering/governance/pull-request-policy.md).
 
 ---
 

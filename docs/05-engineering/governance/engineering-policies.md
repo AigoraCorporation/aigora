@@ -269,8 +269,8 @@ Reviewers must flag violations before approval.
 # References
 
 - docs/02-architecture/overview.md
-- docs/06-engineering/workflow/development-workflow.md
-- docs/06-engineering/workflow/pull-request-policy.md
-- docs/06-engineering/conventions/commits.md
+- docs/05-engineering/workflow/development-workflow.md
+- docs/05-engineering/workflow/pull-request-policy.md
+- docs/05-engineering/conventions/commits.md
 
 

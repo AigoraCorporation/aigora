@@ -81,7 +81,7 @@ Feature branches must be short-lived and merged into `dev` via Pull Request.
 
 For branch naming rules, see:
 
-`docs/06-engineering/conventions/branch-naming.md`
+`docs/05-engineering/conventions/branch-naming.md`
 
 **Recommendations**
 

@@ -29,7 +29,7 @@ All contributions must align with the defined strategic scope.
 
 ## Branching & Git Flow
 
-→ [Git Flow Guide](docs/06-engineering/workflow/git-flow.md)
+→ [Git Flow Guide](docs/05-engineering/workflow/git-flow.md)
 
 - Work must be done in feature branches.
 - `main` is protected.
@@ -55,7 +55,7 @@ No feature or architectural change should start without an associated Issue.
 
 All work must follow the official development lifecycle:
 
-→ [Development Workflow](docs/06-engineering/workflow/development-workflow.md)
+→ [Development Workflow](docs/05-engineering/workflow/development-workflow.md)
 
 No change reaches `main` without:
 
@@ -71,7 +71,7 @@ This workflow is mandatory.
 
 ## Commit Convention
 
-→ [Commit Convention](docs/06-engineering/conventions/commits.md)
+→ [Commit Convention](docs/05-engineering/conventions/commits.md)
 
 Commits that do not follow the standard will fail CI checks.
 

@@ -73,7 +73,7 @@ such as **FUVEST**, **ENEM**, and other vestibular examinations.
 
 See the full language policy:
 
-- [Language Policy](docs/06-engineering/conventions/language-policy.md)
+- [Language Policy](docs/05-engineering/conventions/language-policy.md)
 
 ---
 
@@ -92,7 +92,7 @@ Key documents:
 
 - [Project Vision](docs/00-vision/vision.md)
 - [Architecture Overview](docs/02-architecture/overview.md)
-- [Engineering](docs/06-engineering/README.md)
+- [Engineering](docs/05-engineering/README.md)
 
 ---
 
@@ -187,9 +187,9 @@ All project work follows a structured engineering workflow and governance model.
 
 ## Workflow
 
-- [Development Workflow](docs/06-engineering/workflow/development-workflow.md)
-- [Git Flow](docs/06-engineering/workflow/git-flow.md)
-- [Release Workflow](docs/06-engineering/workflow/release-workflow.md)
+- [Development Workflow](docs/05-engineering/workflow/development-workflow.md)
+- [Git Flow](docs/05-engineering/workflow/git-flow.md)
+- [Release Workflow](docs/05-engineering/workflow/release-workflow.md)
 
 ## Governance
 
@@ -202,7 +202,7 @@ This includes:
 - Pull request rules and validation criteria
 - Development workflow and branching strategy
 
-- [See full documentation: Engineering](docs/06-engineering/README.md)
+- [See full documentation: Engineering](docs/05-engineering/README.md)
 
 Every change must:
 
@@ -217,8 +217,8 @@ Every change must:
 
 To maintain consistency and quality, the repository enforces:
 
-- [Commit Convention](docs/06-engineering/conventions/commits.md)
-- [Branch Naming Convention](docs/06-engineering/conventions/branch-naming.md)
+- [Commit Convention](docs/05-engineering/conventions/commits.md)
+- [Branch Naming Convention](docs/05-engineering/conventions/branch-naming.md)
 - [Pull Request Template](.github/PULL_REQUEST_TEMPLATE/pull_request_template.md)
 
 The `main`, `release`, and `dev` branches are protected and cannot be updated directly.
@@ -232,7 +232,7 @@ engineering workflow.
 
 Before contributing, please read:
 
-- [Development Workflow](docs/06-engineering/workflow/development-workflow.md)
+- [Development Workflow](docs/05-engineering/workflow/development-workflow.md)
 - [Contributing Guide](CONTRIBUTING.md)
 
 All changes must originate from a GitHub Issue.
