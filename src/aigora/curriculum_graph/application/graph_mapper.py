@@ -33,7 +33,11 @@ class GraphMapper:
         if not isinstance(profiles_payload, list):
             raise InvalidGraphPayloadError("Graph payload field 'profiles' must be a list.")
 
-        graph = CurriculumGraph()
+        version = payload.get("version")
+        if version is not None and not isinstance(version, str):
+            raise InvalidGraphPayloadError("Graph payload field 'version' must be a string.")
+
+        graph = CurriculumGraph(version=version)
 
         for raw_node in nodes_payload:
             graph.add_node(self.map_node(raw_node))
