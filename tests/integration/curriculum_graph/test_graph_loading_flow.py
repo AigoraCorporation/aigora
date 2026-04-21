@@ -22,6 +22,10 @@ from aigora.curriculum_graph.domain.enums import EdgeType, MasteryLevel
 
 _EXAMPLES_DIR = Path(__file__).parents[3] / "examples" / "curriculum_graph"
 
+FRACTIONS_ID = "math.arithmetic.fractions"
+EQUATIONS_ID = "math.algebra.linear-equations"
+SAT_MATH_PROFILE_ID = "profile.sat-math"
+
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -51,14 +55,18 @@ def canonical_json_graph(parser: GraphParser, mapper: GraphMapper) -> Curriculum
 # ── Full pipeline ─────────────────────────────────────────────────────────────
 
 
-def test_should_load_canonical_yaml_file_to_assembled_graph(canonical_yaml_graph: CurriculumGraph):
+def test_should_load_canonical_yaml_file_to_assembled_graph(
+    canonical_yaml_graph: CurriculumGraph,
+):
     assert isinstance(canonical_yaml_graph, CurriculumGraph)
     assert len(canonical_yaml_graph.nodes) == 2
     assert len(canonical_yaml_graph.edges) == 1
     assert len(canonical_yaml_graph.profiles) == 1
 
 
-def test_should_load_canonical_json_file_to_assembled_graph(canonical_json_graph: CurriculumGraph):
+def test_should_load_canonical_json_file_to_assembled_graph(
+    canonical_json_graph: CurriculumGraph,
+):
     assert isinstance(canonical_json_graph, CurriculumGraph)
     assert len(canonical_json_graph.nodes) == 2
     assert len(canonical_json_graph.edges) == 1
@@ -77,20 +85,22 @@ def test_yaml_and_json_canonical_files_produce_structurally_equivalent_graphs(
 
 
 def test_should_assemble_nodes_with_correct_ids(canonical_yaml_graph: CurriculumGraph):
-    assert "fractions" in canonical_yaml_graph.nodes
-    assert "equations" in canonical_yaml_graph.nodes
+    assert FRACTIONS_ID in canonical_yaml_graph.nodes
+    assert EQUATIONS_ID in canonical_yaml_graph.nodes
 
 
 def test_should_assemble_node_with_correct_fields(canonical_yaml_graph: CurriculumGraph):
-    node = canonical_yaml_graph.nodes["fractions"]
+    node = canonical_yaml_graph.nodes[FRACTIONS_ID]
 
     assert node.name == "Fractions"
     assert node.domain == "arithmetic"
     assert "fraction" in node.description.lower()
 
 
-def test_should_assemble_node_with_correct_mastery_criteria(canonical_yaml_graph: CurriculumGraph):
-    node = canonical_yaml_graph.nodes["fractions"]
+def test_should_assemble_node_with_correct_mastery_criteria(
+    canonical_yaml_graph: CurriculumGraph,
+):
+    node = canonical_yaml_graph.nodes[FRACTIONS_ID]
 
     assert node.mastery_criteria.has_level(MasteryLevel.RECOGNISES)
     assert node.mastery_criteria.has_level(MasteryLevel.INDEPENDENT)
@@ -99,78 +109,98 @@ def test_should_assemble_node_with_correct_mastery_criteria(canonical_yaml_graph
     assert criterion.description == "Recognises fractions in simple contexts."
 
 
-def test_should_assemble_node_with_correct_prerequisite_ids(canonical_yaml_graph: CurriculumGraph):
-    equations = canonical_yaml_graph.nodes["equations"]
+def test_should_assemble_node_with_correct_prerequisite_ids(
+    canonical_yaml_graph: CurriculumGraph,
+):
+    equations = canonical_yaml_graph.nodes[EQUATIONS_ID]
 
-    assert "fractions" in equations.prerequisite_ids
+    assert FRACTIONS_ID in equations.prerequisite_ids
 
 
 # ── Edge assembly ─────────────────────────────────────────────────────────────
 
 
-def test_should_assemble_edge_with_correct_type_and_endpoints(canonical_yaml_graph: CurriculumGraph):
+def test_should_assemble_edge_with_correct_type_and_endpoints(
+    canonical_yaml_graph: CurriculumGraph,
+):
     edge = canonical_yaml_graph.edges[0]
 
     assert edge.type == EdgeType.HARD_PREREQUISITE
-    assert edge.source == "fractions"
-    assert edge.target == "equations"
+    assert edge.source == FRACTIONS_ID
+    assert edge.target == EQUATIONS_ID
 
 
-def test_should_resolve_outgoing_edges_from_assembled_graph(canonical_yaml_graph: CurriculumGraph):
-    outgoing = canonical_yaml_graph.outgoing_edges("fractions")
+def test_should_resolve_outgoing_edges_from_assembled_graph(
+    canonical_yaml_graph: CurriculumGraph,
+):
+    outgoing = canonical_yaml_graph.outgoing_edges(FRACTIONS_ID)
 
     assert len(outgoing) == 1
-    assert outgoing[0].target == "equations"
+    assert outgoing[0].target == EQUATIONS_ID
 
 
-def test_should_resolve_incoming_edges_from_assembled_graph(canonical_yaml_graph: CurriculumGraph):
-    incoming = canonical_yaml_graph.incoming_edges("equations")
+def test_should_resolve_incoming_edges_from_assembled_graph(
+    canonical_yaml_graph: CurriculumGraph,
+):
+    incoming = canonical_yaml_graph.incoming_edges(EQUATIONS_ID)
 
     assert len(incoming) == 1
-    assert incoming[0].source == "fractions"
+    assert incoming[0].source == FRACTIONS_ID
 
 
 # ── Profile assembly ──────────────────────────────────────────────────────────
 
 
-def test_should_assemble_profile_with_correct_id_and_name(canonical_yaml_graph: CurriculumGraph):
-    assert "sat-math" in canonical_yaml_graph.profiles
+def test_should_assemble_profile_with_correct_id_and_name(
+    canonical_yaml_graph: CurriculumGraph,
+):
+    assert SAT_MATH_PROFILE_ID in canonical_yaml_graph.profiles
 
-    profile = canonical_yaml_graph.profiles["sat-math"]
+    profile = canonical_yaml_graph.profiles[SAT_MATH_PROFILE_ID]
     assert profile.name == "SAT Math"
 
 
-def test_should_assemble_profile_with_correct_required_nodes(canonical_yaml_graph: CurriculumGraph):
-    profile = canonical_yaml_graph.profiles["sat-math"]
+def test_should_assemble_profile_with_correct_required_nodes(
+    canonical_yaml_graph: CurriculumGraph,
+):
+    profile = canonical_yaml_graph.profiles[SAT_MATH_PROFILE_ID]
 
-    assert "fractions" in profile.required_nodes
-    assert "equations" in profile.required_nodes
-
-
-def test_should_assemble_profile_with_correct_mastery_targets(canonical_yaml_graph: CurriculumGraph):
-    profile = canonical_yaml_graph.profiles["sat-math"]
-
-    assert profile.mastery_targets["fractions"] == MasteryLevel.INDEPENDENT
-    assert profile.mastery_targets["equations"] == MasteryLevel.EFFICIENT
+    assert FRACTIONS_ID in profile.required_nodes
+    assert EQUATIONS_ID in profile.required_nodes
 
 
-def test_should_assemble_profile_with_correct_node_weights(canonical_yaml_graph: CurriculumGraph):
-    profile = canonical_yaml_graph.profiles["sat-math"]
+def test_should_assemble_profile_with_correct_mastery_targets(
+    canonical_yaml_graph: CurriculumGraph,
+):
+    profile = canonical_yaml_graph.profiles[SAT_MATH_PROFILE_ID]
 
-    assert profile.node_weights["fractions"] == pytest.approx(1.0)
-    assert profile.node_weights["equations"] == pytest.approx(2.0)
+    assert profile.mastery_targets[FRACTIONS_ID] == MasteryLevel.INDEPENDENT
+    assert profile.mastery_targets[EQUATIONS_ID] == MasteryLevel.EFFICIENT
 
 
-def test_should_assemble_profile_with_correct_progression_path(canonical_yaml_graph: CurriculumGraph):
-    profile = canonical_yaml_graph.profiles["sat-math"]
+def test_should_assemble_profile_with_correct_node_weights(
+    canonical_yaml_graph: CurriculumGraph,
+):
+    profile = canonical_yaml_graph.profiles[SAT_MATH_PROFILE_ID]
 
-    assert profile.progression_path == ["fractions", "equations"]
+    assert profile.node_weights[FRACTIONS_ID] == pytest.approx(1.0)
+    assert profile.node_weights[EQUATIONS_ID] == pytest.approx(2.0)
+
+
+def test_should_assemble_profile_with_correct_progression_path(
+    canonical_yaml_graph: CurriculumGraph,
+):
+    profile = canonical_yaml_graph.profiles[SAT_MATH_PROFILE_ID]
+
+    assert profile.progression_path == [FRACTIONS_ID, EQUATIONS_ID]
 
 
 # ── Error paths ───────────────────────────────────────────────────────────────
 
 
-def test_should_raise_structure_error_for_file_with_missing_nodes_key(parser: GraphParser):
+def test_should_raise_structure_error_for_file_with_missing_nodes_key(
+    parser: GraphParser,
+):
     path = _EXAMPLES_DIR / "invalid" / "missing_nodes.json"
 
     with pytest.raises(GraphStructureError):

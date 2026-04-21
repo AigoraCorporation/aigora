@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "id": "fractions",
+      "id": "math.arithmetic.fractions",
       "name": "Fractions",
       "domain": "arithmetic",
       "description": "Understand fraction representation and operations.",
@@ -21,7 +21,7 @@
       "regressions": []
     },
     {
-      "id": "equations",
+      "id": "math.algebra.linear-equations",
       "name": "Linear Equations",
       "domain": "algebra",
       "description": "Solve linear equations in one variable.",
@@ -37,31 +37,39 @@
           }
         ]
       },
-      "prerequisites": ["fractions"],
+      "prerequisites": [
+        "math.arithmetic.fractions"
+      ],
       "regressions": []
     }
   ],
   "edges": [
     {
       "type": "hard_prerequisite",
-      "source": "fractions",
-      "target": "equations"
+      "source": "math.arithmetic.fractions",
+      "target": "math.algebra.linear-equations"
     }
   ],
   "profiles": [
     {
-      "id": "sat-math",
+      "id": "profile.sat-math",
       "name": "SAT Math",
-      "required_nodes": ["fractions", "equations"],
+      "required_nodes": [
+        "math.arithmetic.fractions",
+        "math.algebra.linear-equations"
+      ],
       "mastery_targets": {
-        "fractions": 3,
-        "equations": 4
+        "math.arithmetic.fractions": 3,
+        "math.algebra.linear-equations": 4
       },
       "node_weights": {
-        "fractions": 1.0,
-        "equations": 2.0
+        "math.arithmetic.fractions": 1.0,
+        "math.algebra.linear-equations": 2.0
       },
-      "progression_path": ["fractions", "equations"]
+      "progression_path": [
+        "math.arithmetic.fractions",
+        "math.algebra.linear-equations"
+      ]
     }
   ]
 }
