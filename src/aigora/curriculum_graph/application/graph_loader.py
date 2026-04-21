@@ -44,11 +44,13 @@ class GraphLoader:
             nodes = self._map_nodes(payload)
             edges = self._map_edges(payload)
             profiles = self._map_profiles(payload)
+            version = self._map_version(payload)
 
             graph = self._assembler.assemble(
                 nodes=nodes,
                 edges=edges,
                 profiles=profiles,
+                version=version,
             )
 
             self._validator.validate(graph)
@@ -70,3 +72,12 @@ class GraphLoader:
             self._mapper.map_profile(profile_payload)
             for profile_payload in payload.get("profiles", [])
         ]
+
+    def _map_version(self, payload: dict[str, Any]) -> str | None:
+        version = payload.get("version")
+        if version is not None and not isinstance(version, str):
+            from .mapper_errors import InvalidGraphPayloadError
+            raise InvalidGraphPayloadError(
+                "Graph payload field 'version' must be a string."
+            )
+        return version

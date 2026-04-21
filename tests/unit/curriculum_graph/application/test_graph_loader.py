@@ -89,11 +89,13 @@ class FakeAssembler:
         self.received_nodes = None
         self.received_edges = None
         self.received_profiles = None
+        self.received_version = None
 
-    def assemble(self, nodes, edges, profiles):
+    def assemble(self, nodes, edges, profiles, version=None):
         self.received_nodes = nodes
         self.received_edges = edges
         self.received_profiles = profiles
+        self.received_version = version
         return self.graph
 class FakeValidator:
     def __init__(self):
