@@ -8,7 +8,7 @@
 
 <p align="center">
 
-![Architecture Status](https://img.shields.io/badge/status-architecture%20design-blue)
+![Early Development](https://img.shields.io/badge/status-early%20development-blue)
 ![Language](https://img.shields.io/badge/learning%20language-Portuguese-green)
 ![Docs](https://img.shields.io/badge/docs-doc--first-orange)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
@@ -16,11 +16,11 @@
 </p>
 
 An AI-driven mathematics learning architecture designed to guide
-students from foundational knowledge to competitive university-level performance.
+students from foundational knowledge to advanced academic performance.
 
-Structured. Adaptive. Elite-focused.
+Structured. Adaptive. Focused on mastery and progression.
 
-**Current stage:** Architecture Design
+**Current stage:** Early Development
 
 Primary learning language: **Portuguese 🇧🇷**
 Engineering documentation: **English**
