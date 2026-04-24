@@ -1,0 +1,75 @@
+{
+  "nodes": [
+    {
+      "id": "math.arithmetic.fractions",
+      "name": "Fractions",
+      "domain": "arithmetic",
+      "description": "Understand fraction representation and operations.",
+      "mastery": {
+        "levels": [
+          {
+            "level": 1,
+            "description": "Recognises fractions in simple contexts."
+          },
+          {
+            "level": 3,
+            "description": "Solves fraction problems independently."
+          }
+        ]
+      },
+      "prerequisites": [],
+      "regressions": []
+    },
+    {
+      "id": "math.algebra.linear-equations",
+      "name": "Linear Equations",
+      "domain": "algebra",
+      "description": "Solve linear equations in one variable.",
+      "mastery": {
+        "levels": [
+          {
+            "level": 2,
+            "description": "Solves equations with guidance."
+          },
+          {
+            "level": 4,
+            "description": "Solves efficiently and accurately."
+          }
+        ]
+      },
+      "prerequisites": [
+        "math.arithmetic.fractions"
+      ],
+      "regressions": []
+    }
+  ],
+  "edges": [
+    {
+      "type": "hard_prerequisite",
+      "source": "math.arithmetic.fractions",
+      "target": "math.algebra.linear-equations"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "profile.sat-math",
+      "name": "SAT Math",
+      "required_nodes": [
+        "math.arithmetic.fractions",
+        "math.algebra.linear-equations"
+      ],
+      "mastery_targets": {
+        "math.arithmetic.fractions": 3,
+        "math.algebra.linear-equations": 4
+      },
+      "node_weights": {
+        "math.arithmetic.fractions": 1.0,
+        "math.algebra.linear-equations": 2.0
+      },
+      "progression_path": [
+        "math.arithmetic.fractions",
+        "math.algebra.linear-equations"
+      ]
+    }
+  ]
+}

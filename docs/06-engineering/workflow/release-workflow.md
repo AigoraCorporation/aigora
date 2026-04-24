@@ -132,7 +132,7 @@ All releases must include structured release notes.
 
 A template is available at:
 
-- [Release Notes Template](../../.github/release-template.md)
+- [Release Notes Template](../../../.github/ISSUE_TEMPLATE/release.md)
 
 This ensures consistency and readability across releases.
 
@@ -143,10 +143,10 @@ This ensures consistency and readability across releases.
 1. Navigate to the [GitHub Releases](https://github.com/AigoraCorporation/aigora/releases) page
 2. Create a new release using a valid tag (e.g., `v0.1.0`)
 3. Copy the template from:
-   - [Release Notes Template](../../.github/release-template.md)
+   - [Release Notes Template](../../../.github/ISSUE_TEMPLATE/release.md)
 4. Fill in all relevant sections
 5. Ensure consistency with:
-   - [CHANGELOG.md](../../CHANGELOG.md)
+   - [CHANGELOG.md](../../../CHANGELOG.md)
 6. Publish the release
 
 ---
@@ -155,7 +155,7 @@ This ensures consistency and readability across releases.
 
 All changes must be recorded in:
 
-- [CHANGELOG.md](../../CHANGELOG.md)
+- [CHANGELOG.md](../../../CHANGELOG.md)
 
 The changelog is the **single source of truth** for all project changes.
 

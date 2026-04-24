@@ -188,8 +188,10 @@ Detailed aspects of the Curriculum Graph are documented in the following files:
 - [Domain Model](./model.md)
 - [Schema](./schema.md)
 - [Query Model](./queries.md)
-- [Rules & Constraints](./rules.md)
+- [Authoring](./authoring.md)
 - [Integration](./integration.md)
+- [Validation](./validation.md)
+- [Versioning](./versioning.md)
 
 These documents expand on the structure, behavior, and operational rules
 defined at a high level in this overview.

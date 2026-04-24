@@ -39,6 +39,46 @@ The Curriculum Graph is composed of the following core elements:
 
 ---
 
+## Identifier Conventions
+
+To ensure consistency between documentation, examples, and runtime validation, all identifiers in the Curriculum Graph must follow a structured format.
+
+### Node ID Format
+
+Node identifiers MUST follow the pattern:
+
+`<domain>.<subtopic>.<concept>`
+
+#### Examples (Valid)
+
+- `math.arithmetic.fractions`
+- `math.algebra.linear-equations`
+
+#### Examples (Invalid)
+
+- `fractions`
+- `math_fractions`
+- `Math.Arithmetic.Fractions`
+
+---
+
+### Profile ID Format
+
+Profile identifiers MUST follow the pattern:
+
+profile.<name>
+
+#### Examples (Valid)
+
+- `profile.sat-math`
+
+#### Examples (Invalid)
+
+- `sat-math`
+- `profile_sat_math`
+
+---
+
 ## Node Model
 
 Each node represents a single, well-scoped mathematical concept.

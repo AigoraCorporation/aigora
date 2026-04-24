@@ -1,0 +1,15 @@
+{
+  "edges": [
+    {
+      "type": "hard_prerequisite",
+      "source": "fractions",
+      "target": "equations"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "sat-math",
+      "name": "SAT Math"
+    }
+  ]
+}
