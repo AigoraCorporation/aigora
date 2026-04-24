@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.2.0] - 2026-04-24
+
+### Added
+- Curriculum Graph domain model definition
+- Neo4j schema specification for Curriculum Graph
+- Cypher query model for graph interaction
+- Integration model between core components
+- Architectural overview refinement for Curriculum Graph
+- Consolidated documentation structure for curriculum graph module
+
+### Changed
+- Transitioned project from conceptual design to structured architecture
+- Improved consistency across Curriculum Graph documentation
+- Refined architectural boundaries between core components
+- Standardized terminology and naming across documents
+
+### Fixed
+- Inconsistencies between domain model and supporting documentation
+- Broken or misaligned internal documentation references
+
+### Removed
+- Redundant or outdated documentation fragments related to early design phase
+
+---
+
 ## [v0.1.1] - 2026-03-27
 
 ### Added

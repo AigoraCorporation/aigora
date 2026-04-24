@@ -120,6 +120,7 @@ All notable changes to this project are documented in:
 
 Latest release:
 
+- v0.2.0 — Curriculum Graph (Core Runtime)
 - v0.1.1 — Architecture v1
 - v0.1.0 — Architecture Foundations
 
@@ -129,8 +130,10 @@ Release Roadmap:
 | ------- | ------------------------------------------------ | ------------ | -------------- | -------------------------------------------------------------------------- |
 | v0.1.0  | Architecture Foundations                         | 2026-03-06   | ✅ Released     | [Release](https://github.com/AigoraCorporation/aigora/releases/tag/v0.1.0) |
 | v0.1.1  | Architecture v1                                  | 2026-03-27   | ✅ Released     | [Release](https://github.com/AigoraCorporation/aigora/releases/tag/v0.1.1) |
-| v0.2.0  | Curriculum Graph (Core Runtime)                  | 2026-04-29   | 🚧 In Progress | [Plan](https://github.com/AigoraCorporation/aigora/issues/71)              |
-| v0.3.0  | Curriculum Graph Persistence & Change Management | TBD          | ⏳ Planned      | —                                                                          |
+| v0.2.0  | Curriculum Graph (Core Runtime)                  | 2026-04-24   | ✅ Released | [Release](https://github.com/AigoraCorporation/aigora/issues/71)              |
+| v0.2.1  | Curriculum Graph Persistence & Change Management | 2026-05-15          | 🚧 In Progress      | [Plan](https://github.com/AigoraCorporation/aigora/issues/124)|              
+| v0.3.0  | Orchestrator Core (Deterministic) | TBD          | ⏳ Planned      | 
+
 
 ---
 
