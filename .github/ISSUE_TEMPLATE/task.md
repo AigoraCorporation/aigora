@@ -1,6 +1,6 @@
 ---
 name: Task
-about: Create a structured project task
+about: Create a structured project task with BDD scenarios
 title: "[AREA] Short description"
 labels: task
 assignees: ""
@@ -16,14 +16,53 @@ What must be achieved?
 
 ## Scope
 
-What is included?
-What is explicitly excluded?
+### Included
+- 
+
+### Excluded
+- 
+
+## Behavior Scenarios (BDD)
+
+### Scenario 1 — Happy Path
+**Given**  
+...
+
+**When**  
+...
+
+**Then**  
+...
+
+### Scenario 2 — Edge Case
+**Given**  
+...
+
+**When**  
+...
+
+**Then**  
+...
+
+### Scenario 3 — Failure Case
+**Given**  
+...
+
+**When**  
+...
+
+**Then**  
+...
 
 ## Acceptance Criteria
 
 - [ ]
 - [ ]
 - [ ]
+
+## Notes (Optional)
+
+Additional implementation details, constraints, or considerations.
 
 ## Related Documents
 

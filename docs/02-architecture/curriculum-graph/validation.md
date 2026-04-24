@@ -44,6 +44,9 @@ All node ids must conform to the format defined in [authoring.md](authoring.md):
 Lowercase, dot-separated, hyphens within segments. No spaces, no
 uppercase characters, no underscores.
 
+The identifier format defines the canonical structure of ids; uniqueness
+is enforced separately at the graph level (see S1).
+
 Profile ids must conform to `profile.<name>`.
 
 ### S3 — Required Fields Present
@@ -199,7 +202,7 @@ incompatible with the evidence store's key format are invalid.
 ### O3 — Mastery Scale Alignment
 
 The mastery scale used in `mastery_criteria` must be the canonical
-0–5 scale defined in [curriculum-graph.md](../02-architecture/curriculum-graph.md).
+0–5 scale defined in [overview.md](./overview.md).
 Any node that implicitly assumes a different scale breaks mastery
 computation in the Student Model.
 

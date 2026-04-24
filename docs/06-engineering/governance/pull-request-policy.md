@@ -9,4 +9,4 @@ All Pull Requests must:
 
 The PR template is located at:
 
-.github/pull_request_template.md
+.github/PULL_REQUEST_TEMPALTE/pull_request_template.md

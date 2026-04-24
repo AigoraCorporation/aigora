@@ -1,0 +1,42 @@
+nodes:
+  - id: fractions
+    name: Fractions
+    domain: arithmetic
+    description: Understand fraction representation and operations
+    mastery:
+      levels:
+        - level: 1
+          description: Recognises fractions
+        - level: 3
+          description: Solves independently
+
+  - id: equations
+    name: Linear Equations
+    domain: algebra
+    description: Solve equations
+    mastery:
+      levels:
+        - level: 2
+          description: Solves with guidance
+
+edges:
+  - type: hard_prerequisite
+    source: fractions
+    target: equations
+
+profiles:
+  - id: sat-math
+    name: SAT Math
+    required_nodes:
+      - fractions
+      - equations
+    mastery_targets:
+      fractions: 3
+      equations: 4
+    node_weights:
+      fractions: 1.0
+      equations: 2.0
+    progression_path:
+      - fractions
+      - equations
+      -   ←  ERROR (yaml invalid)
