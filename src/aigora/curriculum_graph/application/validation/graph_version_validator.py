@@ -3,8 +3,7 @@ from __future__ import annotations
 import re
 
 from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
-
-from .versioning_errors import InvalidVersionFormatError, MissingVersionError
+from aigora.curriculum_graph.application.validation.versioning_errors import InvalidVersionFormatError, MissingVersionError
 
 _SEMVER_PATTERN = re.compile(r"^\d+\.\d+\.\d+$")
 

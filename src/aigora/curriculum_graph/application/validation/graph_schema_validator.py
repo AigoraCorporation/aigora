@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .schema_errors import SchemaValidationError
+from aigora.curriculum_graph.application.validation.schema_errors import SchemaValidationError
 
 _VALID_EDGE_TYPES = {"hard_prerequisite", "soft_prerequisite", "regression_target"}
 _VALID_MASTERY_LEVELS = {0, 1, 2, 3, 4, 5}
