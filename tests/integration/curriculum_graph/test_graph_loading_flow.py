@@ -14,7 +14,7 @@ from pathlib import Path
 
 import pytest
 
-from aigora.curriculum_graph.application.graph_mapper import GraphMapper
+from aigora.curriculum_graph.application.mapping.graph_mapper import GraphMapper
 from aigora.curriculum_graph.application.parsing.graph_parser import GraphParser
 from aigora.curriculum_graph.application.parsing.parser_errors import GraphStructureError
 from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph

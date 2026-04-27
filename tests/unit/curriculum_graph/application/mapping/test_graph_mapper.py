@@ -1,7 +1,7 @@
 import pytest
 
-from aigora.curriculum_graph.application.graph_mapper import GraphMapper
-from aigora.curriculum_graph.application.mapper_errors import (
+from aigora.curriculum_graph.application.mapping.graph_mapper import GraphMapper
+from aigora.curriculum_graph.application.mapping.mapper_errors import (
     InvalidEdgePayloadError,
     InvalidGraphPayloadError,
     InvalidNodePayloadError,
