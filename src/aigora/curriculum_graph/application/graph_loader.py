@@ -6,8 +6,8 @@ from typing import Any
 from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
 from aigora.curriculum_graph.application.assembling.graph_assembler import GraphAssembler
 from aigora.curriculum_graph.application.parsing.graph_parser import GraphParser
+from aigora.curriculum_graph.application.mapping.graph_mapper import GraphMapper
 
-from .graph_mapper import GraphMapper
 from .graph_validator import GraphValidator
 from .loader_errors import GraphLoaderError
 
@@ -76,7 +76,7 @@ class GraphLoader:
     def _map_version(self, payload: dict[str, Any]) -> str | None:
         version = payload.get("version")
         if version is not None and not isinstance(version, str):
-            from .mapper_errors import InvalidGraphPayloadError
+            from .mapping.mapper_errors import InvalidGraphPayloadError
             raise InvalidGraphPayloadError(
                 "Graph payload field 'version' must be a string."
             )
