@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from aigora.curriculum_graph.application.graph_loader import GraphLoader
-from aigora.curriculum_graph.application.loader_errors import GraphLoaderError
+from aigora.curriculum_graph.application.loading.graph_loader import GraphLoader
+from aigora.curriculum_graph.application.loading.loader_errors import GraphLoaderError
 from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
 
 _EXAMPLES_DIR = Path(__file__).parents[3] / "examples" / "curriculum_graph"
