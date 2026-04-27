@@ -1,7 +1,7 @@
 import pytest
 
-from aigora.curriculum_graph.application.graph_validator import GraphValidator
-from aigora.curriculum_graph.application.validation_errors import (
+from aigora.curriculum_graph.application.validation.graph_validator import GraphValidator
+from aigora.curriculum_graph.application.validation.validation_errors import (
     CyclicDependencyError,
     InvalidEdgeReferenceError,
     InvalidNodeIdFormatError,
