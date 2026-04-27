@@ -10,8 +10,7 @@ from aigora.curriculum_graph.domain.curriculum_profile import CurriculumProfile
 from aigora.curriculum_graph.domain.edge import Edge
 from aigora.curriculum_graph.domain.mastery import MasteryScale
 from aigora.curriculum_graph.domain.node import Node
-
-from .serializer_errors import UnsupportedSerializationFormatError
+from aigora.curriculum_graph.application.serialization.serializer_errors import UnsupportedSerializationFormatError
 
 SUPPORTED_FORMATS = {"json", "yaml"}
 
