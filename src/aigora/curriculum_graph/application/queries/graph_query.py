@@ -7,9 +7,7 @@ from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
 from aigora.curriculum_graph.domain.edge import Edge
 from aigora.curriculum_graph.domain.enums import EdgeType
 from aigora.curriculum_graph.domain.node import Node
-
-from .query_errors import NodeNotFoundError, PathNotFoundError
-
+from aigora.curriculum_graph.application.queries.query_errors import NodeNotFoundError, PathNotFoundError
 
 class GraphQuery:
     """Read-only query interface for in-memory CurriculumGraph traversal.

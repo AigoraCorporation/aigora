@@ -1,7 +1,7 @@
 import pytest
 
-from aigora.curriculum_graph.application.graph_version_validator import GraphVersionValidator
-from aigora.curriculum_graph.application.versioning_errors import (
+from aigora.curriculum_graph.application.validation.graph_version_validator import GraphVersionValidator
+from aigora.curriculum_graph.application.validation.versioning_errors import (
     InvalidVersionFormatError,
     MissingVersionError,
 )

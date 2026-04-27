@@ -1,7 +1,7 @@
 import pytest
 
-from aigora.curriculum_graph.application.graph_loader import GraphLoader
-from aigora.curriculum_graph.application.loader_errors import GraphLoaderError
+from aigora.curriculum_graph.application.loading.graph_loader import GraphLoader
+from aigora.curriculum_graph.application.loading.loader_errors import GraphLoaderError
 from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
 from aigora.curriculum_graph.domain.curriculum_profile import CurriculumProfile
 from aigora.curriculum_graph.domain.edge import Edge

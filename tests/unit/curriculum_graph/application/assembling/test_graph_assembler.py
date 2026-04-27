@@ -1,11 +1,11 @@
 import pytest
 
-from aigora.curriculum_graph.application.assembler_errors import (
+from aigora.curriculum_graph.application.assembling.assembler_errors import (
     DuplicateNodeError,
     DuplicateProfileError,
     UnresolvedNodeReferenceError,
 )
-from aigora.curriculum_graph.application.graph_assembler import GraphAssembler
+from aigora.curriculum_graph.application.assembling.graph_assembler import GraphAssembler
 from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
 from aigora.curriculum_graph.domain.curriculum_profile import CurriculumProfile
 from aigora.curriculum_graph.domain.edge import Edge
