@@ -3,8 +3,8 @@ import json
 import pytest
 import yaml
 
-from aigora.curriculum_graph.application.graph_serializer import GraphSerializer
-from aigora.curriculum_graph.application.serializer_errors import (
+from aigora.curriculum_graph.application.serialization.graph_serializer import GraphSerializer
+from aigora.curriculum_graph.application.serialization.serializer_errors import (
     UnsupportedSerializationFormatError,
 )
 from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
