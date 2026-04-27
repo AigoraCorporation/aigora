@@ -5,9 +5,9 @@ from typing import Any
 
 from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
 from aigora.curriculum_graph.application.assembling.graph_assembler import GraphAssembler
+from aigora.curriculum_graph.application.parsing.graph_parser import GraphParser
 
 from .graph_mapper import GraphMapper
-from .graph_parser import GraphParser
 from .graph_validator import GraphValidator
 from .loader_errors import GraphLoaderError
 
