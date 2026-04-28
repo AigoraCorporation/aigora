@@ -14,6 +14,8 @@ Rules and constraints that must be followed:
 Core principles and constraints for system design.
 - [Pull Request Policy](governance/pull-request-policy.md)
 How work is planned, implemented, and reviewed.
+- [Implementation Guardrails](governance/implementation-guardrails.md)  
+Guidelines and boundaries for implementation decisions across the system.
 
 ---
 
