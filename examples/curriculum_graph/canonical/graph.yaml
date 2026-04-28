@@ -1,3 +1,5 @@
+version: "0.2.0"
+
 nodes:
   - id: math.arithmetic.fractions
     name: Fractions
