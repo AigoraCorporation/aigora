@@ -50,6 +50,15 @@ def make_profile(profile_id: str) -> CurriculumProfile:
     )
 
 
+def make_payload() -> dict:
+    return {
+        "version": "0.2.0",
+        "nodes": [{"id": "fractions"}],
+        "edges": [{"source": "fractions", "target": "equations"}],
+        "profiles": [{"id": "profile.sat-math"}],
+    }
+
+
 class FakeParser:
     def __init__(self, payload):
         self.payload = payload
@@ -58,6 +67,14 @@ class FakeParser:
     def parse_file(self, file_path):
         self.called_with = file_path
         return self.payload
+
+
+class FakeSchemaValidator:
+    def __init__(self):
+        self.received_payload = None
+
+    def validate(self, payload):
+        self.received_payload = payload
 
 
 class FakeMapper:
@@ -96,7 +113,12 @@ class FakeAssembler:
         self.received_edges = edges
         self.received_profiles = profiles
         self.received_version = version
+
+        self.graph.version = version
+
         return self.graph
+
+
 class FakeValidator:
     def __init__(self):
         self.received_graph = None
@@ -105,56 +127,89 @@ class FakeValidator:
         self.received_graph = graph
 
 
-def test_should_load_curriculum_graph_successfully():
-    payload = {
-        "nodes": [{"id": "fractions"}],
-        "edges": [{"source": "fractions", "target": "equations"}],
-        "profiles": [{"id": "profile.sat-math"}],
-    }
+class FakeVersionValidator:
+    def __init__(self):
+        self.received_graph = None
 
+    def validate(self, graph):
+        self.received_graph = graph
+
+
+def make_loader(
+    *,
+    payload=None,
+    parser=None,
+    schema_validator=None,
+    mapper=None,
+    assembler=None,
+    validator=None,
+    version_validator=None,
+):
+    return GraphLoader(
+        parser=parser or FakeParser(payload or make_payload()),
+        schema_validator=schema_validator or FakeSchemaValidator(),
+        mapper=mapper or FakeMapper(),
+        assembler=assembler or FakeAssembler(),
+        validator=validator or FakeValidator(),
+        version_validator=version_validator or FakeVersionValidator(),
+    )
+
+
+def test_should_load_curriculum_graph_successfully():
+    payload = make_payload()
     expected_graph = CurriculumGraph()
 
     parser = FakeParser(payload)
+    schema_validator = FakeSchemaValidator()
     mapper = FakeMapper()
     assembler = FakeAssembler(expected_graph)
     validator = FakeValidator()
+    version_validator = FakeVersionValidator()
 
     loader = GraphLoader(
         parser=parser,
+        schema_validator=schema_validator,
         mapper=mapper,
         assembler=assembler,
         validator=validator,
+        version_validator=version_validator,
     )
 
     result = loader.load("graph.yaml")
 
     assert result is expected_graph
     assert parser.called_with == "graph.yaml"
+    assert schema_validator.received_payload is payload
     assert len(mapper.mapped_nodes) == 1
     assert len(mapper.mapped_edges) == 1
     assert len(mapper.mapped_profiles) == 1
     assert assembler.received_nodes == [mapper.node]
     assert assembler.received_edges == [mapper.edge]
     assert assembler.received_profiles == [mapper.profile]
+    assert assembler.received_version == "0.2.0"
     assert validator.received_graph is expected_graph
+    assert version_validator.received_graph is expected_graph
 
 
 def test_should_load_graph_with_empty_profiles_when_profiles_are_missing():
     payload = {
+        "version": "0.2.0",
         "nodes": [{"id": "fractions"}],
         "edges": [{"source": "fractions", "target": "equations"}],
     }
 
-    parser = FakeParser(payload)
     mapper = FakeMapper()
     assembler = FakeAssembler()
     validator = FakeValidator()
+    version_validator = FakeVersionValidator()
 
     loader = GraphLoader(
-        parser=parser,
+        parser=FakeParser(payload),
+        schema_validator=FakeSchemaValidator(),
         mapper=mapper,
         assembler=assembler,
         validator=validator,
+        version_validator=version_validator,
     )
 
     result = loader.load("graph.yaml")
@@ -163,7 +218,9 @@ def test_should_load_graph_with_empty_profiles_when_profiles_are_missing():
     assert len(mapper.mapped_edges) == 1
     assert len(mapper.mapped_profiles) == 0
     assert assembler.received_profiles == []
+    assert assembler.received_version == "0.2.0"
     assert validator.received_graph is result
+    assert version_validator.received_graph is result
 
 
 def test_should_raise_graph_loader_error_when_parser_fails():
@@ -171,12 +228,21 @@ def test_should_raise_graph_loader_error_when_parser_fails():
         def parse_file(self, file_path):
             raise ValueError("parser failed")
 
-    loader = GraphLoader(
-        parser=FailingParser(),
-        mapper=FakeMapper(),
-        assembler=FakeAssembler(),
-        validator=FakeValidator(),
-    )
+    loader = make_loader(parser=FailingParser())
+
+    with pytest.raises(
+        GraphLoaderError,
+        match="Failed to load CurriculumGraph from file: graph.yaml",
+    ):
+        loader.load("graph.yaml")
+
+
+def test_should_raise_graph_loader_error_when_schema_validator_fails():
+    class FailingSchemaValidator:
+        def validate(self, payload):
+            raise ValueError("schema failed")
+
+    loader = make_loader(schema_validator=FailingSchemaValidator())
 
     with pytest.raises(
         GraphLoaderError,
@@ -190,18 +256,7 @@ def test_should_raise_graph_loader_error_when_mapper_fails():
         def map_node(self, payload):
             raise ValueError("mapper failed")
 
-    payload = {
-        "nodes": [{"id": "fractions"}],
-        "edges": [],
-        "profiles": [],
-    }
-
-    loader = GraphLoader(
-        parser=FakeParser(payload),
-        mapper=FailingMapper(),
-        assembler=FakeAssembler(),
-        validator=FakeValidator(),
-    )
+    loader = make_loader(mapper=FailingMapper())
 
     with pytest.raises(
         GraphLoaderError,
@@ -212,20 +267,26 @@ def test_should_raise_graph_loader_error_when_mapper_fails():
 
 def test_should_raise_graph_loader_error_when_assembler_fails():
     class FailingAssembler:
-        def assemble(self, nodes, edges, profiles):
+        def assemble(self, nodes, edges, profiles, version=None):
             raise ValueError("assembler failed")
 
-    payload = {
-        "nodes": [{"id": "fractions"}],
-        "edges": [],
-        "profiles": [],
-    }
+    loader = make_loader(assembler=FailingAssembler())
 
-    loader = GraphLoader(
-        parser=FakeParser(payload),
-        mapper=FakeMapper(),
-        assembler=FailingAssembler(),
-        validator=FakeValidator(),
+    with pytest.raises(
+        GraphLoaderError,
+        match="Failed to load CurriculumGraph from file: graph.yaml",
+    ):
+        loader.load("graph.yaml")
+
+
+def test_should_raise_graph_loader_error_when_validator_fails():
+    class FailingValidator:
+        def validate(self, graph):
+            raise ValueError("validator failed")
+
+    loader = make_loader(
+        assembler=FakeAssembler(CurriculumGraph()),
+        validator=FailingValidator(),
     )
 
     with pytest.raises(
@@ -234,23 +295,49 @@ def test_should_raise_graph_loader_error_when_assembler_fails():
     ):
         loader.load("graph.yaml")
 
-def test_should_raise_graph_loader_error_when_validator_fails():
-    class FailingValidator:
-        def validate(self, graph):
-            raise ValueError("validator failed")
 
+def test_should_raise_graph_loader_error_when_version_validator_fails():
+    class FailingVersionValidator:
+        def validate(self, graph):
+            raise ValueError("version failed")
+
+    loader = make_loader(
+        assembler=FakeAssembler(CurriculumGraph()),
+        version_validator=FailingVersionValidator(),
+    )
+
+    with pytest.raises(
+        GraphLoaderError,
+        match="Failed to load CurriculumGraph from file: graph.yaml",
+    ):
+        loader.load("graph.yaml")
+
+
+def test_should_raise_graph_loader_error_when_version_is_missing():
     payload = {
         "nodes": [{"id": "fractions"}],
         "edges": [],
         "profiles": [],
     }
 
-    loader = GraphLoader(
-        parser=FakeParser(payload),
-        mapper=FakeMapper(),
-        assembler=FakeAssembler(CurriculumGraph()),
-        validator=FailingValidator(),
-    )
+    loader = make_loader(payload=payload)
+
+    with pytest.raises(
+        GraphLoaderError,
+        match="Failed to load CurriculumGraph from file: graph.yaml",
+    ):
+        loader.load("graph.yaml")
+
+
+def test_should_raise_graph_loader_error_when_version_is_not_string():
+    payload = {
+        "version": 1,
+        "nodes": [{"id": "fractions"}],
+        "edges": [],
+        "profiles": [],
+    }
+
+    loader = make_loader(payload=payload)
 
     with pytest.raises(
         GraphLoaderError,
