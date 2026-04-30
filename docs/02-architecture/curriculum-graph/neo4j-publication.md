@@ -39,6 +39,23 @@ Post-persistence validations
 
 ---
 
+## CSV Contract
+
+The CSV structure used for graph publication is defined in:
+
+- [`docs/05-data/canonical-csv-model.md`](../../05-data/canonical-csv-model.md)
+
+This contract defines:
+
+- all exported CSV files
+- column structure and types
+- required vs optional fields
+- referential integrity rules
+
+The `GraphCsvExporter` must strictly follow this contract.
+
+--- 
+
 ## Components and Responsibilities
 
 ### GraphLoader (application)

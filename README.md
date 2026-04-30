@@ -77,22 +77,27 @@ See the full language policy:
 
 ---
 
-# Documentation Map
+## Documentation Map
 
-The project documentation is organized as follows:
+The project documentation is organized into the following areas:
 
-| Area | Description |
-|-----|-------------|
-| Vision | Strategic direction of the project |
-| Architecture | System design and interaction model |
-| Curriculum | Mathematical curriculum structure |
-| Engineering | Workflow, governance and development processes |
+| Area | Description | Location |
+|------|------------|----------|
+| Vision | Strategic direction of the project | [`docs/00-vision`](docs/00-vision/vision.md) |
+| Requirements | System constraints and requirements | [`docs/01-requirements`](docs/01-requirements/constraints.md) |
+| Architecture | System design and interaction model | [`docs/02-architecture`](docs/02-architecture/overview.md) |
+| Curriculum | Mathematical curriculum structure | [`docs/04-curriculum`](docs/04-curriculum/README.md) |
+| Data | Data contracts and exchange formats | [`docs/05-data`](docs/05-data/README.md) |
+| Engineering | Workflow, governance and development processes | [`docs/06-engineering`](docs/06-engineering/README.md) |
 
-Key documents:
+---
+
+### Key Documents
 
 - [Project Vision](docs/00-vision/vision.md)
 - [Architecture Overview](docs/02-architecture/overview.md)
-- [Engineering](docs/06-engineering/README.md)
+- [Canonical CSV Model](docs/05-data/canonical-csv-model.md)
+- [Engineering Guide](docs/06-engineering/README.md)
 
 ---
 
