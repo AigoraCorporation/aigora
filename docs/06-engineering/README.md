@@ -26,3 +26,4 @@ How work is executed:
 - [Development Workflow](workflow/development-workflow.md)
 - [Git Flow](workflow/git-flow.md)
 - [Release Workflow](workflow/release-workflow.md)
+- [Neo4j Local Setup](workflow/neo4j-local-setup.md)

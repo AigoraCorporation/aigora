@@ -164,6 +164,14 @@ It must be centralized in the adapter or `.cypher` files.
 * Domain logic inside infrastructure
 * duplicated validations
 
+--- 
+
+## Local Environment
+
+For local Neo4j setup, see:
+
+- docs/06-engineering/workflow/neo4j-local-setup.md
+
 ---
 
 ## Conclusion
