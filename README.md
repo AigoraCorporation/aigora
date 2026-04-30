@@ -198,6 +198,7 @@ All project work follows a structured engineering workflow and governance model.
 - [Development Workflow](docs/06-engineering/workflow/development-workflow.md)
 - [Git Flow](docs/06-engineering/workflow/git-flow.md)
 - [Release Workflow](docs/06-engineering/workflow/release-workflow.md)
+- [Neo4j Local Setup](docs/06-engineering/workflow/neo4j-local-setup.md)
 
 ## Governance
 
@@ -277,3 +278,9 @@ npm install
 
 This installs the development dependencies used by the repository
 tooling and CI checks.
+
+--- 
+
+## Local Development
+
+- [Neo4j Local Setup](docs/06-engineering/workflow/neo4j-local-setup.md)
