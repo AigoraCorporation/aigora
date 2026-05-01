@@ -1,0 +1,4 @@
+profile_id,position,node_id
+profile.enem-math,0,math.arithmetic.fractions
+profile.enem-math,1,math.algebra.linear-equations
+profile.enem-math,2,math.algebra.quadratic-equations
