@@ -1,0 +1,314 @@
+# Curriculum Graph Publication — End-to-End Local Guide
+
+This guide walks a developer through the full local setup and execution of the
+Curriculum Graph publication pipeline: loading a graph file, optionally
+exporting canonical CSVs, applying the Neo4j schema, persisting the graph, and
+running post-persistence validation.
+
+---
+
+## Table of Contents
+
+1. [Prerequisites](#prerequisites)
+2. [Environment Configuration](#environment-configuration)
+3. [Neo4j Local Setup (Docker)](#neo4j-local-setup-docker)
+4. [Running the Publication Command](#running-the-publication-command)
+5. [CSV Export Behaviour](#csv-export-behaviour)
+6. [Validation Steps](#validation-steps)
+7. [Troubleshooting](#troubleshooting)
+
+---
+
+## Prerequisites
+
+| Tool | Minimum version | Purpose |
+|------|----------------|---------|
+| Python | 3.12 | Runtime |
+| Docker & Docker Compose | 24+ | Neo4j container |
+| `neo4j` Python driver | ≥ 5 | Bolt connection |
+
+Install Python dependencies from the project root:
+
+```bash
+pip install -e .
+```
+
+---
+
+## Environment Configuration
+
+The pipeline reads Neo4j connection settings from environment variables.
+A template is provided in `docker/neo4j/.env.example`.
+
+**Step 1 — Copy the template:**
+
+```bash
+cp docker/neo4j/.env.example docker/neo4j/.env
+```
+
+**Step 2 — Review and edit `docker/neo4j/.env`:**
+
+```dotenv
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=aigora-local-password
+
+NEO4J_HTTP_PORT=7474
+NEO4J_BOLT_PORT=7687
+
+NEO4J_HEAP_INITIAL=512m
+NEO4J_HEAP_MAX=1G
+NEO4J_PAGECACHE_SIZE=512m
+```
+
+> Change `NEO4J_PASSWORD` to a value you control. Never commit real credentials.
+
+**Step 3 — Export the application environment variables the client expects:**
+
+```bash
+export NEO4J_URI=bolt://localhost:7687
+export NEO4J_USERNAME=neo4j
+export NEO4J_PASSWORD=aigora-local-password
+export NEO4J_DATABASE=neo4j   # optional, defaults to "neo4j"
+```
+
+You can persist these in a shell profile or a local `.env` file (not committed)
+loaded via `source` or a tool like `direnv`.
+
+---
+
+## Neo4j Local Setup (Docker)
+
+The project ships a Docker Compose configuration in `docker/neo4j/`.
+
+**Start Neo4j:**
+
+```bash
+cd docker/neo4j
+docker compose --env-file .env up -d
+```
+
+**Verify Neo4j is running:**
+
+```bash
+docker compose ps
+```
+
+Expected output includes `aigora-neo4j-local` with `State: Up`.
+
+**Open the Browser UI (optional):**
+
+Navigate to [http://localhost:7474](http://localhost:7474) in your browser.
+Log in with the credentials from your `.env` file.
+
+**Stop Neo4j:**
+
+```bash
+docker compose down
+```
+
+**Wipe all data (full reset):**
+
+```bash
+docker compose down -v
+```
+
+> This deletes all named volumes including the Neo4j data directory. Use this
+> when you need a clean slate before re-running the pipeline.
+
+---
+
+## Running the Publication Command
+
+From the **project root**, run:
+
+```bash
+PYTHONPATH=src python3 scripts/publish_curriculum_graph.py \
+    --input examples/curriculum_graph/canonical/graph.yaml
+```
+
+The script will:
+
+1. Load and validate the graph file using `GraphLoader`
+2. Apply the Neo4j schema (constraints and indexes) via `GraphRepository`
+3. Persist the graph via `GraphRepository`
+4. Run post-persistence validation via `GraphRepository.validate()`
+
+Expected output (structured log lines):
+
+```
+2025-01-01T12:00:00 [INFO] Initialising Neo4j client
+2025-01-01T12:00:00 [INFO] Initialising repository and publication service
+2025-01-01T12:00:00 [INFO] Starting publication pipeline for: examples/curriculum_graph/canonical/graph.yaml
+2025-01-01T12:00:01 [INFO] Publication completed successfully
+```
+
+### Using a custom graph file
+
+```bash
+PYTHONPATH=src python3 scripts/publish_curriculum_graph.py \
+    --input path/to/your/graph.yaml
+```
+
+### Available arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `--input FILE` | Yes | Path to the canonical graph YAML or JSON file |
+| `--export-csv` | No | Export canonical CSVs before persisting |
+| `--csv-output-dir DIR` | When `--export-csv` is set | Directory to write CSV files to |
+
+---
+
+## CSV Export Behaviour
+
+When `--export-csv` is specified, six canonical CSV files are written to
+`--csv-output-dir` before the graph is persisted:
+
+| File | Contents |
+|------|----------|
+| `nodes.csv` | One row per concept node (id, name, domain, description) |
+| `edges.csv` | One row per relationship (type, source, target) |
+| `profiles.csv` | One row per curriculum profile (id, name) |
+| `profile_mastery_targets.csv` | Target mastery level per node per profile |
+| `profile_node_weights.csv` | Node weight per profile |
+| `profile_progression_paths.csv` | Ordered node progression per profile |
+
+**Example:**
+
+```bash
+PYTHONPATH=src python3 scripts/publish_curriculum_graph.py \
+    --input examples/curriculum_graph/canonical/graph.yaml \
+    --export-csv \
+    --csv-output-dir /tmp/graph-export
+```
+
+After the command completes, `/tmp/graph-export/` will contain all six files.
+
+The CSV files are generated by `GraphCsvExporter` and reflect the in-memory
+graph exactly. They are useful for auditing, data migrations, or loading into
+other systems.
+
+---
+
+## Validation Steps
+
+The publication pipeline includes two validation phases.
+
+### Pre-persistence validation (GraphLoader)
+
+Before any data is written to Neo4j, `GraphLoader` validates the input file:
+
+- **Schema validation** — the YAML/JSON file must conform to the canonical
+  graph schema (required fields, data types, value constraints)
+- **Graph validation** — all edge source and target IDs must reference existing
+  nodes; profile node references must exist
+- **Version validation** — the `version` field must be present and follow
+  semantic versioning
+
+If any pre-persistence check fails, the pipeline exits before touching Neo4j.
+No data is written.
+
+### Post-persistence validation (GraphRepository.validate)
+
+After persistence, the repository runs four checks against the live Neo4j
+database using Cypher queries defined in
+`src/aigora/curriculum_graph/infraestructure/neo4j/cypher/validations.cypher`:
+
+| Check | What it verifies |
+|-------|-----------------|
+| Node count | Persisted `Concept` node count ≥ expected count |
+| Edge count | Persisted `RELATED` edge count ≥ expected count |
+| Required node IDs | Every expected node ID is found in the database |
+| Profile consistency | Every expected profile ID is found in the database |
+
+A `GraphPersistenceValidationError` is raised if any check fails.
+
+---
+
+## Troubleshooting
+
+### Neo4j connection refused
+
+**Symptom:** `ServiceUnavailable: Failed to establish connection to …`
+
+**Check:**
+```bash
+docker compose -f docker/neo4j/docker-compose.yml ps
+```
+
+If the container is not running, start it:
+```bash
+cd docker/neo4j && docker compose --env-file .env up -d
+```
+
+Ensure `NEO4J_URI` points to `bolt://localhost:7687` (or the configured port).
+
+---
+
+### Authentication failure
+
+**Symptom:** `AuthError: The client is unauthorized…`
+
+**Check:** Verify that `NEO4J_USERNAME` and `NEO4J_PASSWORD` match the values
+in `docker/neo4j/.env`. The Docker Compose file sets the database password via
+`NEO4J_AUTH`.
+
+---
+
+### Graph file fails to load
+
+**Symptom:** `GraphLoaderError` or `GraphSchemaValidationError` on startup.
+
+**Check:** Validate your YAML against the canonical schema:
+```bash
+PYTHONPATH=src python3 -c "
+from aigora.curriculum_graph.application.loading.graph_loader import GraphLoader
+GraphLoader().load('path/to/graph.yaml')
+print('Graph loaded successfully')
+"
+```
+
+Refer to `examples/curriculum_graph/canonical/graph.yaml` for a valid example.
+
+---
+
+### Post-persistence validation fails
+
+**Symptom:** `GraphPersistenceValidationError: Node count mismatch …`
+
+This typically means the database was not in a clean state before publication.
+Wipe Neo4j data and retry:
+
+```bash
+cd docker/neo4j
+docker compose down -v
+docker compose --env-file .env up -d
+```
+
+Then re-run the publication command.
+
+---
+
+### Missing environment variable
+
+**Symptom:** `KeyError: 'NEO4J_URI'` or similar.
+
+**Check:** Ensure all four required environment variables are exported in your
+shell session before running the script:
+```bash
+echo $NEO4J_URI
+echo $NEO4J_USERNAME
+echo $NEO4J_PASSWORD
+```
+
+---
+
+### Module not found errors
+
+**Symptom:** `ModuleNotFoundError: No module named 'aigora'`
+
+**Check:** Run the script with `PYTHONPATH=src` as shown in the examples above,
+or install the package in editable mode:
+```bash
+pip install -e .
+```
