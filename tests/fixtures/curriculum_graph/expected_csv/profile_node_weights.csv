@@ -1,0 +1,4 @@
+profile_id,node_id,weight
+profile.enem-math,math.algebra.linear-equations,2.0
+profile.enem-math,math.algebra.quadratic-equations,3.0
+profile.enem-math,math.arithmetic.fractions,1.0

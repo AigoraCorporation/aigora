@@ -3,6 +3,11 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from aigora.curriculum_graph.application.graph_persistence_validator import (
+    GraphPersistenceValidationError,
+    GraphPersistenceValidator,
+    PersistenceValidationResult,
+)
 from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
 from aigora.curriculum_graph.domain.enums import MasteryLevel
 from aigora.curriculum_graph.infraestructure.neo4j.neo4j_client import Neo4jClient
@@ -55,13 +60,39 @@ class Neo4jGraphRepository:
     def validate(self, graph: CurriculumGraph) -> None:
         """Validate persisted state against in-memory graph.
 
-        Raises ValueError if node count, edge count, or required IDs
-        do not match the in-memory graph.
+        Loads validation Cypher from validations.cypher, queries the
+        database for counts and IDs, then delegates evaluation to
+        GraphPersistenceValidator.
+
+        Raises:
+            GraphPersistenceValidationError: If persisted state does not
+                match the in-memory graph.
         """
-        self._validate_node_count(graph)
-        self._validate_edge_count(graph)
-        self._validate_required_node_ids(graph)
-        self._validate_profile_consistency(graph)
+        queries = self._iter_statements(_load_cypher("validations.cypher"))
+        node_count_q, edge_count_q, node_ids_q, profile_ids_q = queries
+
+        node_count = self._client.run(node_count_q)[0]["node_count"]
+        edge_count = self._client.run(edge_count_q)[0]["edge_count"]
+
+        expected_node_ids = list(graph.nodes.keys())
+        found_node_rows = self._client.run(node_ids_q, {"ids": expected_node_ids})
+        found_node_ids = {row["found_id"] for row in found_node_rows}
+
+        expected_profile_ids = list(graph.profiles.keys())
+        found_profile_ids: set[str] = set()
+        if expected_profile_ids:
+            found_profile_rows = self._client.run(
+                profile_ids_q, {"ids": expected_profile_ids}
+            )
+            found_profile_ids = {row["found_id"] for row in found_profile_rows}
+
+        result = PersistenceValidationResult(
+            persisted_node_count=node_count,
+            persisted_edge_count=edge_count,
+            found_node_ids=found_node_ids,
+            found_profile_ids=found_profile_ids,
+        )
+        GraphPersistenceValidator().validate(graph, result)
 
     # ------------------------------------------------------------------
     # Persistence helpers
@@ -133,52 +164,6 @@ class Neo4jGraphRepository:
             )
 
     # ------------------------------------------------------------------
-    # Validation helpers
-    # ------------------------------------------------------------------
-
-    def _validate_node_count(self, graph: CurriculumGraph) -> None:
-        result = self._client.run("MATCH (n:Concept) RETURN count(n) AS cnt")
-        persisted = result[0]["cnt"]
-        expected = len(graph.nodes)
-        if persisted < expected:
-            raise ValueError(
-                f"Node count mismatch: expected {expected}, found {persisted}"
-            )
-
-    def _validate_edge_count(self, graph: CurriculumGraph) -> None:
-        result = self._client.run("MATCH ()-[r:RELATED]->() RETURN count(r) AS cnt")
-        persisted = result[0]["cnt"]
-        expected = len(graph.edges)
-        if persisted < expected:
-            raise ValueError(
-                f"Edge count mismatch: expected {expected}, found {persisted}"
-            )
-
-    def _validate_required_node_ids(self, graph: CurriculumGraph) -> None:
-        expected_ids = list(graph.nodes.keys())
-        result = self._client.run(
-            "UNWIND $ids AS id MATCH (n:Concept {id: id}) RETURN n.id AS found",
-            {"ids": expected_ids},
-        )
-        found_ids = {row["found"] for row in result}
-        missing = set(expected_ids) - found_ids
-        if missing:
-            raise ValueError(f"Missing persisted node IDs: {missing}")
-
-    def _validate_profile_consistency(self, graph: CurriculumGraph) -> None:
-        expected_ids = list(graph.profiles.keys())
-        if not expected_ids:
-            return
-        result = self._client.run(
-            "UNWIND $ids AS id MATCH (p:CurriculumProfile {id: id}) RETURN p.id AS found",
-            {"ids": expected_ids},
-        )
-        found_ids = {row["found"] for row in result}
-        missing = set(expected_ids) - found_ids
-        if missing:
-            raise ValueError(f"Missing persisted profile IDs: {missing}")
-
-    # ------------------------------------------------------------------
     # Utilities
     # ------------------------------------------------------------------
 
@@ -190,9 +175,19 @@ class Neo4jGraphRepository:
 
     @staticmethod
     def _iter_statements(cypher: str) -> list[str]:
-        """Split a Cypher file into individual statements (split on ';')."""
-        return [
-            s.strip()
-            for s in cypher.split(";")
-            if s.strip() and not s.strip().startswith("//")
-        ]
+        """Split a Cypher file into individual statements (split on ';').
+
+        Single-line // comments are stripped from each statement block.
+        Empty blocks and comment-only blocks are skipped.
+        """
+        statements = []
+        for piece in cypher.split(";"):
+            non_comment_lines = [
+                line
+                for line in piece.splitlines()
+                if line.strip() and not line.strip().startswith("//")
+            ]
+            statement = "\n".join(non_comment_lines).strip()
+            if statement:
+                statements.append(statement)
+        return statements

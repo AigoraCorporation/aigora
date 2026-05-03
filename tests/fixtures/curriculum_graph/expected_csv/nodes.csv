@@ -1,0 +1,4 @@
+id,name,domain,description
+math.algebra.linear-equations,Linear Equations,algebra,Solve linear equations in one variable.
+math.algebra.quadratic-equations,Quadratic Equations,algebra,Solve quadratic equations using factoring and the quadratic formula.
+math.arithmetic.fractions,Fractions,arithmetic,Understand fraction representation and arithmetic operations.

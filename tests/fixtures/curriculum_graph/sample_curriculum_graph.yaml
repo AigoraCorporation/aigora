@@ -1,0 +1,72 @@
+version: "0.2.0"
+
+nodes:
+  - id: math.algebra.linear-equations
+    name: Linear Equations
+    domain: algebra
+    description: Solve linear equations in one variable.
+    mastery:
+      levels:
+        - level: 2
+          description: Solves equations with guidance.
+        - level: 3
+          description: Solves independently and accurately.
+    prerequisites:
+      - math.arithmetic.fractions
+    regressions: []
+
+  - id: math.algebra.quadratic-equations
+    name: Quadratic Equations
+    domain: algebra
+    description: Solve quadratic equations using factoring and the quadratic formula.
+    mastery:
+      levels:
+        - level: 2
+          description: Recognises standard form and applies formula with guidance.
+        - level: 4
+          description: Solves and interprets solutions efficiently.
+    prerequisites:
+      - math.algebra.linear-equations
+    regressions: []
+
+  - id: math.arithmetic.fractions
+    name: Fractions
+    domain: arithmetic
+    description: Understand fraction representation and arithmetic operations.
+    mastery:
+      levels:
+        - level: 1
+          description: Recognises fractions in simple contexts.
+        - level: 3
+          description: Solves fraction problems independently.
+    prerequisites: []
+    regressions: []
+
+edges:
+  - type: hard_prerequisite
+    source: math.arithmetic.fractions
+    target: math.algebra.linear-equations
+
+  - type: hard_prerequisite
+    source: math.algebra.linear-equations
+    target: math.algebra.quadratic-equations
+
+profiles:
+  - id: profile.enem-math
+    name: ENEM Math
+    required_nodes:
+      - math.arithmetic.fractions
+      - math.algebra.linear-equations
+      - math.algebra.quadratic-equations
+    mastery_targets:
+      math.arithmetic.fractions: 3
+      math.algebra.linear-equations: 3
+      math.algebra.quadratic-equations: 4
+    node_weights:
+      math.arithmetic.fractions: 1.0
+      math.algebra.linear-equations: 2.0
+      math.algebra.quadratic-equations: 3.0
+    progression_path:
+      - math.arithmetic.fractions
+      - math.algebra.linear-equations
+      - math.algebra.quadratic-equations
