@@ -164,52 +164,6 @@ class Neo4jGraphRepository:
             )
 
     # ------------------------------------------------------------------
-    # Validation helpers
-    # ------------------------------------------------------------------
-
-    def _validate_node_count(self, graph: CurriculumGraph) -> None:
-        result = self._client.run("MATCH (n:Concept) RETURN count(n) AS cnt")
-        persisted = result[0]["cnt"]
-        expected = len(graph.nodes)
-        if persisted < expected:
-            raise ValueError(
-                f"Node count mismatch: expected {expected}, found {persisted}"
-            )
-
-    def _validate_edge_count(self, graph: CurriculumGraph) -> None:
-        result = self._client.run("MATCH ()-[r:RELATED]->() RETURN count(r) AS cnt")
-        persisted = result[0]["cnt"]
-        expected = len(graph.edges)
-        if persisted < expected:
-            raise ValueError(
-                f"Edge count mismatch: expected {expected}, found {persisted}"
-            )
-
-    def _validate_required_node_ids(self, graph: CurriculumGraph) -> None:
-        expected_ids = list(graph.nodes.keys())
-        result = self._client.run(
-            "UNWIND $ids AS id MATCH (n:Concept {id: id}) RETURN n.id AS found",
-            {"ids": expected_ids},
-        )
-        found_ids = {row["found"] for row in result}
-        missing = set(expected_ids) - found_ids
-        if missing:
-            raise ValueError(f"Missing persisted node IDs: {missing}")
-
-    def _validate_profile_consistency(self, graph: CurriculumGraph) -> None:
-        expected_ids = list(graph.profiles.keys())
-        if not expected_ids:
-            return
-        result = self._client.run(
-            "UNWIND $ids AS id MATCH (p:CurriculumProfile {id: id}) RETURN p.id AS found",
-            {"ids": expected_ids},
-        )
-        found_ids = {row["found"] for row in result}
-        missing = set(expected_ids) - found_ids
-        if missing:
-            raise ValueError(f"Missing persisted profile IDs: {missing}")
-
-    # ------------------------------------------------------------------
     # Utilities
     # ------------------------------------------------------------------
 
