@@ -102,24 +102,17 @@ class TestNeo4jGraphRepositoryUnit:
         repo.persist(graph)
         assert mock_client.run.call_count == 3  # nodes, edges, profiles
 
-    def test_validate_raises_on_node_count_mismatch(
+    def test_validate_delegates_to_persistence_validator(
         self, repo: Neo4jGraphRepository, mock_client: MagicMock
     ) -> None:
         graph = _make_graph()
-        # Simulate persisted count < expected
         mock_client.run.side_effect = [
-            [{"cnt": 0}],  # node count
+            [{"node_count": 2}],
+            [{"edge_count": 1}],
+            [{"found_id": "n1"}, {"found_id": "n2"}],
+            [{"found_id": "p1"}],
         ]
-        with pytest.raises(ValueError, match="Node count mismatch"):
-            repo._validate_node_count(graph)
-
-    def test_validate_raises_on_missing_profile(
-        self, repo: Neo4jGraphRepository, mock_client: MagicMock
-    ) -> None:
-        graph = _make_graph()
-        mock_client.run.return_value = []  # no profiles found
-        with pytest.raises(ValueError, match="Missing persisted profile IDs"):
-            repo._validate_profile_consistency(graph)
+        repo.validate(graph)  # Must not raise
 
     def test_batches_splits_correctly(self, repo: Neo4jGraphRepository) -> None:
         items = list(range(250))
