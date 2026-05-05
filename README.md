@@ -103,42 +103,49 @@ The project documentation is organized into the following areas:
 
 # Project Status
 
-AIGORA is currently in the **architecture and system design phase**.
+AIGORA is currently in the **Early Development**.
 
-The current focus of the project is:
+### Component Status
 
-- defining the system architecture
-- modeling the curriculum structure
-- establishing repository governance
-- preparing the foundation for future implementation
+| Component  | Release Focus | Maturity | Description |
+|----------|--------------|----------|------------|
+| Curriculum Graph | ⏳ Planned | [v0.2.1](https://github.com/AigoraCorporation/aigora/issues/124) | Defines the structured knowledge graph and dependencies |
+| Tutor Orchestrator | 🚧 In Progress | N/A | Responsible for pedagogical orchestration and decision-making |
+| Student Model | ⏳ Planned' | N/A | Models student knowledge, progress, and learning state |
 
-Implementation of system components will begin after the architectural
-design stabilizes.
+### Current Release
+
+**vX.X.X — XXX**
+
+Focus areas:
+- XXXXXXXX
+- XXXXXXXX
 
 ---
 
-# Releases & Changelog
+# Releases & Roadmap
 
-All notable changes to this project are documented in:
+All notable changes are documented in:
 
 - [CHANGELOG.md](./CHANGELOG.md)
 
 Latest release:
 
-- v0.2.0 — Curriculum Graph (Core Runtime)
-- v0.1.1 — Architecture v1
-- v0.1.0 — Architecture Foundations
+| Version | Name | Status |
+|--------|------|--------|
+| v0.2.0 | Curriculum Graph (Core Runtime) | ✅ Released |
+| v0.1.1 | Architecture v1 | ✅ Released |
+| v0.1.0 | Architecture Foundations | ✅ Released |
 
 
 Release Roadmap:
-| Version | Name                                             | Planned Date | Status         | Details                                                                    |
-| ------- | ------------------------------------------------ | ------------ | -------------- | -------------------------------------------------------------------------- |
-| v0.1.0  | Architecture Foundations                         | 2026-03-06   | ✅ Released     | [Release](https://github.com/AigoraCorporation/aigora/releases/tag/v0.1.0) |
-| v0.1.1  | Architecture v1                                  | 2026-03-27   | ✅ Released     | [Release](https://github.com/AigoraCorporation/aigora/releases/tag/v0.1.1) |
-| v0.2.0  | Curriculum Graph (Core Runtime)                  | 2026-04-24   | ✅ Released | [Release](https://github.com/AigoraCorporation/aigora/issues/71)              |
-| v0.2.1  | Curriculum Graph Persistence & Change Management | 2026-05-15          | 🚧 In Progress      | [Plan](https://github.com/AigoraCorporation/aigora/issues/124)|              
-| v0.3.0  | Orchestrator Core (Deterministic) | TBD          | ⏳ Planned      | 
 
+| Version | Name | Status | Planned Date | Details |
+|--------|------|--------|---------|---------|
+| v0.2.1 | Curriculum Graph Persistence & Change Management | 🚧 In Progress | 2026-05-15 | [Plan](https://github.com/AigoraCorporation/aigora/issues/124) |
+| v0.3.0 | Orchestrator Core (Deterministic) | ⏳ Planned | TBD |  — |
+
+See full roadmap: [Release Roadmap](docs/06-engineering/governance/release-roadmap.md)
 
 ---
 
@@ -211,7 +218,7 @@ This includes:
 - Pull request rules and validation criteria
 - Development workflow and branching strategy
 
-- [See full documentation: Engineering](docs/06-engineering/README.md)
+[See full documentation: Engineering](docs/06-engineering/README.md)
 
 Every change must:
 
