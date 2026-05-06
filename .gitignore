@@ -80,4 +80,5 @@ out/
 # ------------------------------
 # IDEs
 # ------------------------------
-.idea/src/UNKNOWN.egg-info
+.idea/
+src/UNKNOWN.egg-info
