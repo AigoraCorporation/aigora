@@ -1,8 +1,9 @@
 module.exports = {
   extends: ["@commitlint/config-conventional"],
+  // Temporary ignores for two legacy commits in this PR that were made without
+  // a scope. These patterns can be removed once those commits are no longer in
+  // the checked range (i.e., after the PR merges into dev).
   ignores: [
-    // Ignore two legacy commits that were created without a scope before
-    // scope enforcement was applied to chore commits.
     (message) => /^chore: add UNKNOWN\.egg-info/.test(message),
     (message) => /^chore: fix \.gitignore/.test(message),
   ],
