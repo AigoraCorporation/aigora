@@ -130,6 +130,8 @@ MATCH (n:TestNode {id: 'persistence-check'}) RETURN n;
 
 ### Clean up
 
+In Neo4j Browser, run:
+
 ```cypher
 MATCH (n:TestNode) DELETE n;
 ```
