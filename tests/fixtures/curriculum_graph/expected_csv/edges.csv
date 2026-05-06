@@ -1,0 +1,3 @@
+type,source,target
+hard_prerequisite,math.algebra.linear-equations,math.algebra.quadratic-equations
+hard_prerequisite,math.arithmetic.fractions,math.algebra.linear-equations
