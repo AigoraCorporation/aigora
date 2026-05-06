@@ -16,6 +16,8 @@ Core principles and constraints for system design.
 How work is planned, implemented, and reviewed.
 - [Implementation Guardrails](governance/implementation-guardrails.md)  
 Guidelines and boundaries for implementation decisions across the system.
+- [Release Roadmap](governance/release-roadmap.md)  
+Defines upcoming releases, priorities, and component-level evolution.
 
 ---
 
