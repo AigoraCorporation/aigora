@@ -6,6 +6,7 @@ module.exports = {
     "subject-case": [2, "never", ["sentence-case", "start-case", "pascal-case"]],
     "subject-full-stop": [2, "never", "."],
     "scope-empty": [2, "never"],
-    "type-empty": [2, "never"]
+    "type-empty": [2, "never"],
+    "body-max-line-length": [1, "always", 500]
   }
 };
