@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+import json
 
 from aigora.curriculum_graph.application.graph_persistence_validator import (
     GraphPersistenceValidationError,
@@ -10,7 +11,7 @@ from aigora.curriculum_graph.application.graph_persistence_validator import (
 )
 from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
 from aigora.curriculum_graph.domain.enums import MasteryLevel
-from aigora.curriculum_graph.infraestructure.neo4j.neo4j_client import Neo4jClient
+from aigora.curriculum_graph.infrastructure.neo4j.neo4j_client import Neo4jClient
 
 _CYPHER_DIR = Path(__file__).parent / "cypher"
 
@@ -131,7 +132,8 @@ class Neo4jGraphRepository:
                 UNWIND $rows AS row
                 MATCH (src:Concept {id: row.source})
                 MATCH (tgt:Concept {id: row.target})
-                MERGE (src)-[r:RELATED {type: row.type}]->(tgt)
+                MERGE (src)-[r:PREREQUISITE_OF]->(tgt)
+                SET r.type = row.type
                 """,
                 {"rows": batch},
             )
@@ -142,10 +144,10 @@ class Neo4jGraphRepository:
                 "id": profile.id,
                 "name": profile.name,
                 "required_nodes": list(profile.required_nodes),
-                "mastery_targets": {
-                    k: v.value for k, v in profile.mastery_targets.items()
-                },
-                "node_weights": dict(profile.node_weights),
+                "mastery_targets_json": json.dumps(
+                    {k: v.value for k, v in profile.mastery_targets.items()}
+                ),
+                "node_weights_json": json.dumps(dict(profile.node_weights)),
                 "progression_path": list(profile.progression_path),
             }
             for profile in graph.profiles.values()
@@ -157,7 +159,8 @@ class Neo4jGraphRepository:
                 MERGE (p:CurriculumProfile {id: row.id})
                 SET p.name = row.name,
                     p.required_nodes = row.required_nodes,
-                    p.node_weights = row.node_weights,
+                    p.mastery_targets_json = row.mastery_targets_json,
+                    p.node_weights_json = row.node_weights_json,
                     p.progression_path = row.progression_path
                 """,
                 {"rows": batch},
