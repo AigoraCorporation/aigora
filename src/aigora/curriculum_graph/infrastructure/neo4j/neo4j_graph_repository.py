@@ -10,7 +10,7 @@ from aigora.curriculum_graph.application.graph_persistence_validator import (
     PersistenceValidationResult,
 )
 from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
-from aigora.curriculum_graph.domain.enums import MasteryLevel
+
 from aigora.curriculum_graph.infrastructure.neo4j.neo4j_client import Neo4jClient
 
 _CYPHER_DIR = Path(__file__).parent / "cypher"
@@ -72,10 +72,11 @@ class Neo4jGraphRepository:
         queries = self._iter_statements(_load_cypher("validations.cypher"))
         node_count_q, edge_count_q, node_ids_q, profile_ids_q = queries
 
-        node_count = self._client.run(node_count_q)[0]["node_count"]
-        edge_count = self._client.run(edge_count_q)[0]["edge_count"]
-
         expected_node_ids = list(graph.nodes.keys())
+
+        node_count = self._client.run(node_count_q)[0]["node_count"]
+        edge_count = self._client.run(edge_count_q, {"ids": expected_node_ids})[0]["edge_count"]
+
         found_node_rows = self._client.run(node_ids_q, {"ids": expected_node_ids})
         found_node_ids = {row["found_id"] for row in found_node_rows}
 

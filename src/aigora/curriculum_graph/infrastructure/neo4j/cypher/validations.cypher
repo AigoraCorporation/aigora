@@ -2,9 +2,12 @@
 // Returns: node_count AS INTEGER
 MATCH (n:Concept) RETURN count(n) AS node_count;
 
-// Count all persisted RELATED relationships.
+// Count persisted PREREQUISITE_OF relationships between the given node IDs.
+// Parameter: $ids — list of expected node IDs
 // Returns: edge_count AS INTEGER
-MATCH ()-[r:RELATED]->() RETURN count(r) AS edge_count;
+MATCH (src:Concept)-[r:PREREQUISITE_OF]->(tgt:Concept)
+WHERE src.id IN $ids AND tgt.id IN $ids
+RETURN count(r) AS edge_count;
 
 // Check which node IDs from the provided list are persisted.
 // Parameter: $ids — list of expected node IDs
