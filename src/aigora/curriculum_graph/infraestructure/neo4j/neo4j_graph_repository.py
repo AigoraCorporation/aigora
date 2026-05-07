@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-import json
 
 from aigora.curriculum_graph.application.validation.graph_persistence_validator import (
     GraphPersistenceValidationError,
@@ -10,7 +9,7 @@ from aigora.curriculum_graph.application.validation.graph_persistence_validator 
     PersistenceValidationResult,
 )
 from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
-
+from aigora.curriculum_graph.domain.enums import MasteryLevel
 from aigora.curriculum_graph.infrastructure.neo4j.neo4j_client import Neo4jClient
 
 _CYPHER_DIR = Path(__file__).parent / "cypher"
@@ -72,11 +71,10 @@ class Neo4jGraphRepository:
         queries = self._iter_statements(_load_cypher("validations.cypher"))
         node_count_q, edge_count_q, node_ids_q, profile_ids_q = queries
 
-        expected_node_ids = list(graph.nodes.keys())
-
         node_count = self._client.run(node_count_q)[0]["node_count"]
-        edge_count = self._client.run(edge_count_q, {"ids": expected_node_ids})[0]["edge_count"]
+        edge_count = self._client.run(edge_count_q)[0]["edge_count"]
 
+        expected_node_ids = list(graph.nodes.keys())
         found_node_rows = self._client.run(node_ids_q, {"ids": expected_node_ids})
         found_node_ids = {row["found_id"] for row in found_node_rows}
 
@@ -133,8 +131,7 @@ class Neo4jGraphRepository:
                 UNWIND $rows AS row
                 MATCH (src:Concept {id: row.source})
                 MATCH (tgt:Concept {id: row.target})
-                MERGE (src)-[r:PREREQUISITE_OF]->(tgt)
-                SET r.type = row.type
+                MERGE (src)-[r:RELATED {type: row.type}]->(tgt)
                 """,
                 {"rows": batch},
             )
@@ -145,10 +142,10 @@ class Neo4jGraphRepository:
                 "id": profile.id,
                 "name": profile.name,
                 "required_nodes": list(profile.required_nodes),
-                "mastery_targets_json": json.dumps(
-                    {k: v.value for k, v in profile.mastery_targets.items()}
-                ),
-                "node_weights_json": json.dumps(dict(profile.node_weights)),
+                "mastery_targets": {
+                    k: v.value for k, v in profile.mastery_targets.items()
+                },
+                "node_weights": dict(profile.node_weights),
                 "progression_path": list(profile.progression_path),
             }
             for profile in graph.profiles.values()
@@ -160,8 +157,7 @@ class Neo4jGraphRepository:
                 MERGE (p:CurriculumProfile {id: row.id})
                 SET p.name = row.name,
                     p.required_nodes = row.required_nodes,
-                    p.mastery_targets_json = row.mastery_targets_json,
-                    p.node_weights_json = row.node_weights_json,
+                    p.node_weights = row.node_weights,
                     p.progression_path = row.progression_path
                 """,
                 {"rows": batch},
