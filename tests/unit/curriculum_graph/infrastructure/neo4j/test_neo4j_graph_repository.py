@@ -14,7 +14,7 @@ from aigora.curriculum_graph.domain.edge import Edge
 from aigora.curriculum_graph.domain.enums import EdgeType, MasteryLevel
 from aigora.curriculum_graph.domain.mastery import MasteryCriterion, MasteryScale
 from aigora.curriculum_graph.domain.node import Node
-from aigora.curriculum_graph.infraestructure.neo4j.neo4j_graph_repository import (
+from aigora.curriculum_graph.infrastructure.neo4j.neo4j_graph_repository import (
     Neo4jGraphRepository,
 )
 
