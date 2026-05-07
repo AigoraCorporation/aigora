@@ -212,7 +212,7 @@ No data is written.
 
 After persistence, the repository runs four checks against the live Neo4j
 database using Cypher queries defined in
-`src/aigora/curriculum_graph/infraestructure/neo4j/cypher/validations.cypher`:
+`src/aigora/curriculum_graph/infrastructure/neo4j/cypher/validations.cypher`:
 
 | Check | What it verifies |
 |-------|-----------------|
