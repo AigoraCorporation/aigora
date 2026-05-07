@@ -4,7 +4,7 @@ Uses a mock Neo4jClient to avoid requiring a live database.
 """
 from __future__ import annotations
 
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock
 
 import pytest
 
