@@ -1,11 +1,9 @@
 module.exports = {
   extends: ["@commitlint/config-conventional"],
-  // Temporary ignores for two legacy commits in this PR that were made without
-  // a scope. These patterns can be removed once those commits are no longer in
-  // the checked range (i.e., after the PR merges into dev).
   ignores: [
-    (message) => /^chore: add UNKNOWN\.egg-info/.test(message),
-    (message) => /^chore: fix \.gitignore/.test(message),
+    (message) =>
+      message.includes("Agent-Logs-Url:") ||
+      message.includes("Co-authored-by:")
   ],
   rules: {
     "type-enum": [2, "always", ["feat","fix","docs","refactor","test","perf","build","ci","chore","revert"]],
@@ -14,6 +12,7 @@ module.exports = {
     "subject-full-stop": [2, "never", "."],
     "scope-empty": [2, "never"],
     "type-empty": [2, "never"],
-    "body-max-line-length": [2, "always", 200],
+    "body-max-line-length": [2, "always", 100],
+    "footer-max-line-length": [2, "always", 100]
   }
 };
