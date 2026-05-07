@@ -3,8 +3,8 @@
 
 Usage
 -----
-    python scripts/publish_curriculum_graph.py --input data/graph/canonical/graph.yaml
-    python scripts/publish_curriculum_graph.py --input data/graph/canonical/graph.yaml \\
+    python scripts/publish_curriculum_graph.py --input path/to/graph.yaml
+    python scripts/publish_curriculum_graph.py --input path/to/graph.yaml \\
         --export-csv --csv-output-dir path/to/csv/
 
 Environment variables required (see docker/neo4j/.env.example):
@@ -71,8 +71,8 @@ def main() -> None:
         GraphPublicationService,
     )
     from aigora.curriculum_graph.application.loading.graph_loader import GraphLoader
-    from aigora.curriculum_graph.infrastructure.neo4j.neo4j_client import Neo4jClient
-    from aigora.curriculum_graph.infrastructure.neo4j.neo4j_graph_repository import (
+    from aigora.curriculum_graph.infraestructure.neo4j.neo4j_client import Neo4jClient
+    from aigora.curriculum_graph.infraestructure.neo4j.neo4j_graph_repository import (
         Neo4jGraphRepository,
     )
 
