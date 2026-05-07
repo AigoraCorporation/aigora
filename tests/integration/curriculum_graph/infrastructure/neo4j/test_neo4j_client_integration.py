@@ -5,7 +5,7 @@ Configure via environment variables or a .env file:
     NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE
 
 Run only when Neo4j is available:
-    pytest -m integration tests/integration/curriculum_graph/infrastructure/neo4j/
+    NEO4J_INTEGRATION_TESTS=1 pytest -m integration tests/integration/curriculum_graph/infrastructure/neo4j/
 """
 from __future__ import annotations
 
@@ -18,8 +18,14 @@ from aigora.curriculum_graph.infrastructure.neo4j.neo4j_client import (
     Neo4jClientError,
 )
 
+_NEO4J_INTEGRATION = bool(os.environ.get("NEO4J_INTEGRATION_TESTS"))
+
 
 @pytest.mark.integration
+@pytest.mark.skipif(
+    not _NEO4J_INTEGRATION,
+    reason="Set NEO4J_INTEGRATION_TESTS=1 to run Neo4j integration tests",
+)
 class TestNeo4jClientIntegration:
     """Integration tests against a live local Neo4j instance."""
 
