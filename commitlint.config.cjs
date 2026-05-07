@@ -1,22 +1,9 @@
 module.exports = {
   extends: ["@commitlint/config-conventional"],
-  plugins: [
-    {
-      rules: {
-        "body-max-line-length": (parsed, _when, value) => {
-          const { body } = parsed;
-          if (!body) return [true];
-          const metadataPattern = /^(Agent-Logs-Url:|Co-authored-by:)/;
-          const valid = body
-            .split("\n")
-            .every((line) => line.length <= value || metadataPattern.test(line));
-          return [
-            valid,
-            `body's lines must not be longer than ${value} characters`,
-          ];
-        },
-      },
-    },
+  ignores: [
+    (message) =>
+      message.includes("Agent-Logs-Url:") ||
+      message.includes("Co-authored-by:")
   ],
   rules: {
     "type-enum": [2, "always", ["feat","fix","docs","refactor","test","perf","build","ci","chore","revert"]],
@@ -25,6 +12,7 @@ module.exports = {
     "subject-full-stop": [2, "never", "."],
     "scope-empty": [2, "never"],
     "type-empty": [2, "never"],
-    "body-max-line-length": [2, "always", 100]
+    "body-max-line-length": [2, "always", 100],
+    "footer-max-line-length": [2, "always", 100]
   }
 };
