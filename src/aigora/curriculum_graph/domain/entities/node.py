@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from .mastery import MasteryScale
+from aigora.curriculum_graph.domain.value_objects.mastery import MasteryScale
 
 
 @dataclass(slots=True)

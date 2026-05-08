@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 from .curriculum_profile import CurriculumProfile
 from .edge import Edge
-from .enums import EdgeType
+from aigora.curriculum_graph.domain.enums.enums import EdgeType
 from .node import Node
 
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from .enums import MasteryLevel
+from aigora.curriculum_graph.domain.enums.enums import MasteryLevel
 
 
 @dataclass(frozen=True, slots=True)

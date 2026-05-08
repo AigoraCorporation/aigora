@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-
-from .enums import EdgeType
+from aigora.curriculum_graph.domain.enums.enums import EdgeType
 
 
 @dataclass(frozen=True, slots=True)
