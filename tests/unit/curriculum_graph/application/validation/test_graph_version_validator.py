@@ -5,7 +5,7 @@ from aigora.curriculum_graph.application.validation.versioning_errors import (
     InvalidVersionFormatError,
     MissingVersionError,
 )
-from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
+from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────

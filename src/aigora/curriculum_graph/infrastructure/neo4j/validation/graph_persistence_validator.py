@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
+from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
 
 
 class GraphPersistenceValidationError(Exception):

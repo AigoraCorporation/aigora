@@ -1,17 +1,17 @@
 import pytest
 
-from aigora.curriculum_graph.application.assembling.assembler_errors import (
+from aigora.curriculum_graph.infrastructure.files.assembling.assembler_errors import (
     DuplicateNodeError,
     DuplicateProfileError,
     UnresolvedNodeReferenceError,
 )
-from aigora.curriculum_graph.application.assembling.graph_assembler import GraphAssembler
-from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
-from aigora.curriculum_graph.domain.curriculum_profile import CurriculumProfile
-from aigora.curriculum_graph.domain.edge import Edge
-from aigora.curriculum_graph.domain.enums import EdgeType, MasteryLevel
-from aigora.curriculum_graph.domain.mastery import MasteryCriterion, MasteryScale
-from aigora.curriculum_graph.domain.node import Node
+from aigora.curriculum_graph.infrastructure.files.assembling.graph_assembler import GraphAssembler
+from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
+from aigora.curriculum_graph.domain.entities.curriculum_profile import CurriculumProfile
+from aigora.curriculum_graph.domain.entities.edge import Edge
+from aigora.curriculum_graph.domain.enums.enums import EdgeType, MasteryLevel
+from aigora.curriculum_graph.domain.value_objects.mastery import MasteryCriterion, MasteryScale
+from aigora.curriculum_graph.domain.entities.node import Node
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────

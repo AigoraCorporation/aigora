@@ -3,15 +3,15 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from aigora.curriculum_graph.application.assembling.graph_assembler import GraphAssembler
+from aigora.curriculum_graph.infrastructure.files.assembling.graph_assembler import GraphAssembler
 from aigora.curriculum_graph.application.loading.loader_errors import GraphLoaderError
 from aigora.curriculum_graph.application.mapping.graph_mapper import GraphMapper
 from aigora.curriculum_graph.application.mapping.mapper_errors import InvalidGraphPayloadError
 from aigora.curriculum_graph.application.parsing.graph_parser import GraphParser
-from aigora.curriculum_graph.application.validation.graph_schema_validator import GraphSchemaValidator
+from aigora.curriculum_graph.infrastructure.files.validation.graph_schema_validator import GraphSchemaValidator
 from aigora.curriculum_graph.application.validation.graph_validator import GraphValidator
 from aigora.curriculum_graph.application.validation.graph_version_validator import GraphVersionValidator
-from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
+from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
 
 
 class GraphLoader:

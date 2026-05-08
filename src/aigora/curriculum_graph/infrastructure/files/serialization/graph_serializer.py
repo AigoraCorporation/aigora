@@ -5,12 +5,12 @@ from typing import Any
 
 import yaml
 
-from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
-from aigora.curriculum_graph.domain.curriculum_profile import CurriculumProfile
-from aigora.curriculum_graph.domain.edge import Edge
-from aigora.curriculum_graph.domain.mastery import MasteryScale
-from aigora.curriculum_graph.domain.node import Node
-from aigora.curriculum_graph.application.serialization.serializer_errors import UnsupportedSerializationFormatError
+from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
+from aigora.curriculum_graph.domain.entities.curriculum_profile import CurriculumProfile
+from aigora.curriculum_graph.domain.entities.edge import Edge
+from aigora.curriculum_graph.domain.value_objects.mastery import MasteryScale
+from aigora.curriculum_graph.domain.entities.node import Node
+from aigora.curriculum_graph.infrastructure.files.serialization.serializer_errors import UnsupportedSerializationFormatError
 
 SUPPORTED_FORMATS = {"json", "yaml"}
 

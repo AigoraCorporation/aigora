@@ -6,7 +6,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
+from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
 
 
 class GraphCsvExporterError(Exception):
