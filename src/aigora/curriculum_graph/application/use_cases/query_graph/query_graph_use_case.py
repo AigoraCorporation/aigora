@@ -3,11 +3,11 @@ from __future__ import annotations
 from collections import deque
 from collections.abc import Iterable
 
-from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
-from aigora.curriculum_graph.domain.edge import Edge
-from aigora.curriculum_graph.domain.enums import EdgeType
-from aigora.curriculum_graph.domain.node import Node
-from aigora.curriculum_graph.application.queries.query_errors import NodeNotFoundError, PathNotFoundError
+from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
+from aigora.curriculum_graph.domain.entities.edge import Edge
+from aigora.curriculum_graph.domain.enums.enums import EdgeType
+from aigora.curriculum_graph.domain.entities.node import Node
+from aigora.curriculum_graph.application.use_cases.query_graph.query_errors import NodeNotFoundError, PathNotFoundError
 
 class GraphQuery:
     """Read-only query interface for in-memory CurriculumGraph traversal.

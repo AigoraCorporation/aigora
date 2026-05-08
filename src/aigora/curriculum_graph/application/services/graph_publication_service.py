@@ -2,16 +2,16 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from aigora.curriculum_graph.application.graph_csv_exporter import GraphCsvExporter
-from aigora.curriculum_graph.application.loading.graph_loader import GraphLoader
-from aigora.curriculum_graph.application.ports.graph_repository import GraphRepository
+from aigora.curriculum_graph.infrastructure.files.csv.graph_csv_exporter import GraphCsvExporter
+from aigora.curriculum_graph.application.use_cases.load_graph.load_graph_use_case import LoadGraphUseCase
+from aigora.curriculum_graph.domain.repositories.graph_repository import GraphRepository
 
 
 class GraphPublicationService:
     """Orchestrates the full Curriculum Graph publication pipeline.
 
     Pipeline (in order):
-    1. Load the graph from a file using GraphLoader
+    1. Load the graph from a file using LoadGraphUseCase
     2. Optionally export canonical CSVs using GraphCsvExporter
     3. Apply the database schema using GraphRepository.apply_schema()
     4. Persist the graph using GraphRepository.persist()
@@ -20,7 +20,7 @@ class GraphPublicationService:
 
     def __init__(
         self,
-        loader: GraphLoader,
+        loader: LoadGraphUseCase,
         repository: GraphRepository,
         exporter: GraphCsvExporter | None = None,
     ) -> None:
@@ -44,7 +44,7 @@ class GraphPublicationService:
                 output directory is implied by context.
 
         Raises:
-            GraphLoaderError: If the graph file cannot be loaded or is invalid.
+            LoadGraphUseCaseError: If the graph file cannot be loaded or is invalid.
             GraphCsvExporterError: If CSV export fails.
             GraphPersistenceValidationError: If post-persistence validation fails.
         """
