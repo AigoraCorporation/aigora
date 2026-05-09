@@ -1,5 +1,5 @@
-from aigora.curriculum_graph.domain.edge import Edge
-from aigora.curriculum_graph.domain.enums import EdgeType
+from aigora.curriculum_graph.domain.entities.edge import Edge
+from aigora.curriculum_graph.domain.enums.enums import EdgeType
 
 import pytest
 

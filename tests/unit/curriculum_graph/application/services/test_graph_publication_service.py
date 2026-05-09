@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, call
 
 import pytest
 
-from aigora.curriculum_graph.application.graph_publication_service import (
+from aigora.curriculum_graph.application.services.graph_publication_service import (
     GraphPublicationService,
 )
 

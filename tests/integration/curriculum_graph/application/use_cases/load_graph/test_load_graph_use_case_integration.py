@@ -4,12 +4,12 @@ from pathlib import Path
 
 import pytest
 
-from aigora.curriculum_graph.application.loading.graph_loader import GraphLoader
-from aigora.curriculum_graph.application.loading.loader_errors import GraphLoaderError
-from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
-from aigora.curriculum_graph.domain.enums import EdgeType, MasteryLevel
+from aigora.curriculum_graph.application.use_cases.load_graph.load_graph_use_case import GraphLoader
+from aigora.curriculum_graph.application.use_cases.load_graph.load_graph_errors import GraphLoaderError
+from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
+from aigora.curriculum_graph.domain.enums.enums import EdgeType, MasteryLevel
 
-_EXAMPLES_DIR = Path(__file__).parents[3] / "examples" / "curriculum_graph"
+_EXAMPLES_DIR = Path.cwd() / "examples" / "curriculum_graph"
 
 FRACTIONS_ID = "math.arithmetic.fractions"
 EQUATIONS_ID = "math.algebra.linear-equations"

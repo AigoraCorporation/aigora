@@ -17,13 +17,13 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from aigora.curriculum_graph.application.graph_csv_exporter import GraphCsvExporter
-from aigora.curriculum_graph.application.graph_publication_service import (
+from aigora.curriculum_graph.infrastructure.files.csv.graph_csv_exporter import GraphCsvExporter
+from aigora.curriculum_graph.application.services.graph_publication_service import (
     GraphPublicationService,
 )
-from aigora.curriculum_graph.application.loading.graph_loader import GraphLoader
+from aigora.curriculum_graph.application.use_cases.load_graph.load_graph_use_case import GraphLoader
 
-_EXAMPLES_DIR = Path(__file__).parents[3] / "examples" / "curriculum_graph"
+_EXAMPLES_DIR = Path.cwd() / "examples" / "curriculum_graph"
 _CANONICAL_YAML = _EXAMPLES_DIR / "canonical" / "graph.yaml"
 
 

@@ -1,7 +1,7 @@
 import pytest
 
-from aigora.curriculum_graph.application.queries.graph_query import GraphQuery
-from aigora.curriculum_graph.application.queries.query_errors import (
+from aigora.curriculum_graph.application.use_cases.query_graph.query_graph_use_case import GraphQuery
+from aigora.curriculum_graph.application.use_cases.query_graph.query_errors import (
     NodeNotFoundError,
     PathNotFoundError,
 )

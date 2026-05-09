@@ -1,7 +1,7 @@
 import pytest
 
-from aigora.curriculum_graph.application.validation.graph_schema_validator import GraphSchemaValidator
-from aigora.curriculum_graph.application.validation.schema_errors import SchemaValidationError
+from aigora.curriculum_graph.infrastructure.files.validation.graph_schema_validator import GraphSchemaValidator
+from aigora.curriculum_graph.infrastructure.files.validation.schema_errors import SchemaValidationError
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────

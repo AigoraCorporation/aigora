@@ -4,12 +4,12 @@ import os
 from pathlib import Path
 import json
 
-from aigora.curriculum_graph.application.validation.graph_persistence_validator import (
+from aigora.curriculum_graph.infrastructure.neo4j.validation.graph_persistence_validator import (
     GraphPersistenceValidationError,
     GraphPersistenceValidator,
     PersistenceValidationResult,
 )
-from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
+from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
 
 from aigora.curriculum_graph.infrastructure.neo4j.neo4j_client import Neo4jClient
 

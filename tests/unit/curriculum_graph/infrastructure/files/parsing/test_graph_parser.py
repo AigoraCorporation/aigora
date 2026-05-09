@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from aigora.curriculum_graph.application.parsing.graph_parser import GraphParser
-from aigora.curriculum_graph.application.parsing.parser_errors import (
+from aigora.curriculum_graph.infrastructure.files.parsing.graph_parser import GraphParser
+from aigora.curriculum_graph.infrastructure.files.parsing.parser_errors import (
     GraphFileParseError,
     GraphFileReadError,
     GraphStructureError,

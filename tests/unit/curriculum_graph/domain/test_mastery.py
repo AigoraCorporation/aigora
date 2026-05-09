@@ -1,7 +1,7 @@
 import pytest
 
-from aigora.curriculum_graph.domain.enums import MasteryLevel
-from aigora.curriculum_graph.domain.mastery import MasteryCriterion, MasteryScale
+from aigora.curriculum_graph.domain.enums.enums import MasteryLevel
+from aigora.curriculum_graph.domain.value_objects.mastery import MasteryCriterion, MasteryScale
 
 
 def test_should_return_mastery_criterion_by_level():

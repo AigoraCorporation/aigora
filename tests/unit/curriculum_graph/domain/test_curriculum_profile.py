@@ -1,7 +1,7 @@
 import pytest
 
-from aigora.curriculum_graph.domain.curriculum_profile import CurriculumProfile
-from aigora.curriculum_graph.domain.enums import MasteryLevel
+from aigora.curriculum_graph.domain.entities.curriculum_profile import CurriculumProfile
+from aigora.curriculum_graph.domain.enums.enums import MasteryLevel
 
 
 def test_should_create_curriculum_profile_successfully():

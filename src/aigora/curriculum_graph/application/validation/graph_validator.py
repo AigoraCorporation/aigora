@@ -3,11 +3,11 @@ from __future__ import annotations
 import re
 from collections import defaultdict
 
-from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
-from aigora.curriculum_graph.domain.curriculum_profile import CurriculumProfile
-from aigora.curriculum_graph.domain.edge import Edge
-from aigora.curriculum_graph.domain.enums import EdgeType, MasteryLevel
-from aigora.curriculum_graph.domain.node import Node
+from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
+from aigora.curriculum_graph.domain.entities.curriculum_profile import CurriculumProfile
+from aigora.curriculum_graph.domain.entities.edge import Edge
+from aigora.curriculum_graph.domain.enums.enums import EdgeType, MasteryLevel
+from aigora.curriculum_graph.domain.entities.node import Node
 
 from .validation_errors import (
     CyclicDependencyError,

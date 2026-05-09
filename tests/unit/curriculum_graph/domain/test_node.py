@@ -1,8 +1,8 @@
 import pytest
 
-from aigora.curriculum_graph.domain.enums import MasteryLevel
-from aigora.curriculum_graph.domain.mastery import MasteryCriterion, MasteryScale
-from aigora.curriculum_graph.domain.node import Node
+from aigora.curriculum_graph.domain.enums.enums import MasteryLevel
+from aigora.curriculum_graph.domain.value_objects.mastery import MasteryCriterion, MasteryScale
+from aigora.curriculum_graph.domain.entities.node import Node
 
 
 def make_mastery_scale() -> MasteryScale:

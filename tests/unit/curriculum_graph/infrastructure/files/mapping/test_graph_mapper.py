@@ -1,14 +1,14 @@
 import pytest
 
-from aigora.curriculum_graph.application.mapping.graph_mapper import GraphMapper
-from aigora.curriculum_graph.application.mapping.mapper_errors import (
+from aigora.curriculum_graph.infrastructure.files.mapping.graph_mapper import GraphMapper
+from aigora.curriculum_graph.infrastructure.files.mapping.mapper_errors import (
     InvalidEdgePayloadError,
     InvalidGraphPayloadError,
     InvalidNodePayloadError,
     InvalidProfilePayloadError,
 )
-from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
-from aigora.curriculum_graph.domain.enums import EdgeType, MasteryLevel
+from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
+from aigora.curriculum_graph.domain.enums.enums import EdgeType, MasteryLevel
 
 
 def make_valid_payload():
