@@ -2,15 +2,29 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
-from aigora.curriculum_graph.infrastructure.files.csv.graph_csv_exporter import GraphCsvExporter
+from .export_graph_command import ExportGraphCommand
+from .export_graph_result import ExportGraphResult
+from .curriculum_graph_exporter_registry import CurriculumGraphExporterRegistry
 
 
 class ExportGraphUseCase:
-    """Application use case responsible for exporting a Curriculum Graph."""
+    """Application use case responsible for exporting a CurriculumGraph."""
 
-    def __init__(self, csv_exporter: GraphCsvExporter | None = None) -> None:
-        self._csv_exporter = csv_exporter or GraphCsvExporter()
+    def __init__(self, exporter_registry: CurriculumGraphExporterRegistry) -> None:
+        self._exporter_registry = exporter_registry
 
-    def export_csv(self, graph: CurriculumGraph, output_dir: str | Path) -> None:
-        self._csv_exporter.export(graph, output_dir)
+    def execute(self, command: ExportGraphCommand) -> ExportGraphResult:
+        output_format = command.normalized_output_format()
+        output_dir = Path(command.output_dir)
+        exporter = self._exporter_registry.get(output_format)
+
+        exported_files = exporter.export(command.graph, output_dir)
+
+        return ExportGraphResult(
+            output_dir=output_dir,
+            output_format=output_format,
+            exported_files=exported_files,
+            nodes_exported=len(command.graph.nodes),
+            edges_exported=len(command.graph.edges),
+            profiles_exported=len(command.graph.profiles),
+        )
