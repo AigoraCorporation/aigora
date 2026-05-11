@@ -1,0 +1,3 @@
+from aigora.curriculum_graph.infrastructure.files.pipelines.curriculum_graph_loading_pipeline_factory import build_file_curriculum_graph_loading_pipeline
+
+__all__ = ["build_file_curriculum_graph_loading_pipeline"]
