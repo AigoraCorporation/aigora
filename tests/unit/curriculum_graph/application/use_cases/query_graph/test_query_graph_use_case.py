@@ -1,15 +1,21 @@
 import pytest
 
-from aigora.curriculum_graph.application.use_cases.query_graph.query_graph_use_case import GraphQuery
-from aigora.curriculum_graph.application.use_cases.query_graph.query_errors import (
+from aigora.curriculum_graph.application.errors.query_graph_errors import (
     NodeNotFoundError,
     PathNotFoundError,
 )
+from aigora.curriculum_graph.application.use_cases.query_graph.query_graph_command import (
+    QueryGraphOperation,
+    QueryGraphCommand,
+)
+from aigora.curriculum_graph.application.use_cases.query_graph.query_graph_use_case import (
+    QueryGraphUseCase,
+)
 from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
 from aigora.curriculum_graph.domain.entities.edge import Edge
+from aigora.curriculum_graph.domain.entities.node import Node
 from aigora.curriculum_graph.domain.enums.enums import EdgeType, MasteryLevel
 from aigora.curriculum_graph.domain.value_objects.mastery import MasteryCriterion, MasteryScale
-from aigora.curriculum_graph.domain.entities.node import Node
 
 
 def make_mastery_scale() -> MasteryScale:
@@ -49,17 +55,14 @@ def make_edge(
 def graph() -> CurriculumGraph:
     graph = CurriculumGraph()
 
-    fractions = make_node("math.arithmetic.fractions")
-    equations = make_node("math.algebra.linear-equations")
-    quadratics = make_node("math.algebra.quadratic-equations")
-    polynomials = make_node("math.algebra.polynomial-operations")
-    geometry = make_node("math.geometry.triangles")
-
-    graph.add_node(fractions)
-    graph.add_node(equations)
-    graph.add_node(quadratics)
-    graph.add_node(polynomials)
-    graph.add_node(geometry)
+    for node_id in (
+        "math.arithmetic.fractions",
+        "math.algebra.linear-equations",
+        "math.algebra.quadratic-equations",
+        "math.algebra.polynomial-operations",
+        "math.geometry.triangles",
+    ):
+        graph.add_node(make_node(node_id))
 
     graph.add_edge(
         make_edge(
@@ -86,18 +89,46 @@ def graph() -> CurriculumGraph:
     return graph
 
 
-def test_should_return_direct_hard_prerequisites(graph: CurriculumGraph):
-    query = GraphQuery(graph)
+def execute_query(graph: CurriculumGraph, **kwargs):
+    return QueryGraphUseCase().execute(QueryGraphCommand(graph=graph, **kwargs)).nodes
 
-    result = query.get_prerequisites("math.algebra.linear-equations", include_soft=False)
+
+def test_should_return_node_by_id(graph: CurriculumGraph):
+    result = execute_query(
+        graph,
+        operation=QueryGraphOperation.GET_NODE,
+        node_id="math.arithmetic.fractions",
+    )
+
+    assert [node.id for node in result] == ["math.arithmetic.fractions"]
+
+
+def test_should_raise_error_when_node_is_missing(graph: CurriculumGraph):
+    with pytest.raises(NodeNotFoundError, match="Node not found in CurriculumGraph"):
+        execute_query(
+            graph,
+            operation=QueryGraphOperation.GET_NODE,
+            node_id="math.unknown.missing-node",
+        )
+
+
+def test_should_return_direct_hard_prerequisites(graph: CurriculumGraph):
+    result = execute_query(
+        graph,
+        operation=QueryGraphOperation.GET_PREREQUISITES,
+        node_id="math.algebra.linear-equations",
+        include_soft=False,
+    )
 
     assert [node.id for node in result] == ["math.arithmetic.fractions"]
 
 
 def test_should_return_direct_prerequisites_including_soft(graph: CurriculumGraph):
-    query = GraphQuery(graph)
-
-    result = query.get_prerequisites("math.algebra.quadratic-equations")
+    result = execute_query(
+        graph,
+        operation=QueryGraphOperation.GET_PREREQUISITES,
+        node_id="math.algebra.quadratic-equations",
+    )
 
     assert [node.id for node in result] == [
         "math.algebra.linear-equations",
@@ -106,49 +137,59 @@ def test_should_return_direct_prerequisites_including_soft(graph: CurriculumGrap
 
 
 def test_should_return_empty_prerequisites_when_node_has_none(graph: CurriculumGraph):
-    query = GraphQuery(graph)
-
-    result = query.get_prerequisites("math.arithmetic.fractions")
+    result = execute_query(
+        graph,
+        operation=QueryGraphOperation.GET_PREREQUISITES,
+        node_id="math.arithmetic.fractions",
+    )
 
     assert result == []
 
 
 def test_should_return_direct_dependents(graph: CurriculumGraph):
-    query = GraphQuery(graph)
-
-    result = query.get_dependents("math.algebra.linear-equations")
+    result = execute_query(
+        graph,
+        operation=QueryGraphOperation.GET_DEPENDENTS,
+        node_id="math.algebra.linear-equations",
+    )
 
     assert [node.id for node in result] == ["math.algebra.quadratic-equations"]
 
 
 def test_should_return_empty_dependents_when_node_has_none(graph: CurriculumGraph):
-    query = GraphQuery(graph)
-
-    result = query.get_dependents("math.geometry.triangles")
+    result = execute_query(
+        graph,
+        operation=QueryGraphOperation.GET_DEPENDENTS,
+        node_id="math.geometry.triangles",
+    )
 
     assert result == []
 
 
 def test_should_raise_error_when_prerequisites_node_is_missing(graph: CurriculumGraph):
-    query = GraphQuery(graph)
-
     with pytest.raises(NodeNotFoundError, match="Node not found in CurriculumGraph"):
-        query.get_prerequisites("math.unknown.missing-node")
+        execute_query(
+            graph,
+            operation=QueryGraphOperation.GET_PREREQUISITES,
+            node_id="math.unknown.missing-node",
+        )
 
 
 def test_should_raise_error_when_dependents_node_is_missing(graph: CurriculumGraph):
-    query = GraphQuery(graph)
-
     with pytest.raises(NodeNotFoundError, match="Node not found in CurriculumGraph"):
-        query.get_dependents("math.unknown.missing-node")
+        execute_query(
+            graph,
+            operation=QueryGraphOperation.GET_DEPENDENTS,
+            node_id="math.unknown.missing-node",
+        )
 
 
 def test_should_return_learning_path_between_connected_nodes(graph: CurriculumGraph):
-    query = GraphQuery(graph)
-
-    result = query.get_learning_path(
-        "math.arithmetic.fractions",
-        "math.algebra.quadratic-equations",
+    result = execute_query(
+        graph,
+        operation=QueryGraphOperation.GET_LEARNING_PATH,
+        start_node_id="math.arithmetic.fractions",
+        target_node_id="math.algebra.quadratic-equations",
         include_soft=False,
     )
 
@@ -160,41 +201,77 @@ def test_should_return_learning_path_between_connected_nodes(graph: CurriculumGr
 
 
 def test_should_return_single_node_path_when_start_equals_target(graph: CurriculumGraph):
-    query = GraphQuery(graph)
-
-    result = query.get_learning_path(
-        "math.arithmetic.fractions",
-        "math.arithmetic.fractions",
+    result = execute_query(
+        graph,
+        operation=QueryGraphOperation.GET_LEARNING_PATH,
+        start_node_id="math.arithmetic.fractions",
+        target_node_id="math.arithmetic.fractions",
     )
 
     assert [node.id for node in result] == ["math.arithmetic.fractions"]
 
 
 def test_should_raise_error_when_learning_path_start_node_is_missing(graph: CurriculumGraph):
-    query = GraphQuery(graph)
-
     with pytest.raises(NodeNotFoundError, match="Node not found in CurriculumGraph"):
-        query.get_learning_path(
-            "math.unknown.start",
-            "math.algebra.quadratic-equations",
+        execute_query(
+            graph,
+            operation=QueryGraphOperation.GET_LEARNING_PATH,
+            start_node_id="math.unknown.start",
+            target_node_id="math.algebra.quadratic-equations",
         )
 
 
 def test_should_raise_error_when_learning_path_target_node_is_missing(graph: CurriculumGraph):
-    query = GraphQuery(graph)
-
     with pytest.raises(NodeNotFoundError, match="Node not found in CurriculumGraph"):
-        query.get_learning_path(
-            "math.arithmetic.fractions",
-            "math.unknown.target",
+        execute_query(
+            graph,
+            operation=QueryGraphOperation.GET_LEARNING_PATH,
+            start_node_id="math.arithmetic.fractions",
+            target_node_id="math.unknown.target",
         )
 
 
 def test_should_raise_error_when_no_learning_path_exists(graph: CurriculumGraph):
-    query = GraphQuery(graph)
-
     with pytest.raises(PathNotFoundError, match="No learning path found"):
-        query.get_learning_path(
-            "math.geometry.triangles",
-            "math.algebra.quadratic-equations",
+        execute_query(
+            graph,
+            operation=QueryGraphOperation.GET_LEARNING_PATH,
+            start_node_id="math.geometry.triangles",
+            target_node_id="math.algebra.quadratic-equations",
         )
+
+
+def test_should_require_node_id_for_get_node(graph: CurriculumGraph):
+    with pytest.raises(ValueError, match="node_id is required for GET_NODE"):
+        QueryGraphUseCase().execute(
+            QueryGraphCommand(graph=graph, operation=QueryGraphOperation.GET_NODE)
+        )
+
+
+def test_should_require_node_id_for_get_prerequisites(graph: CurriculumGraph):
+    with pytest.raises(ValueError, match="node_id is required for GET_PREREQUISITES"):
+        QueryGraphUseCase().execute(
+            QueryGraphCommand(graph=graph, operation=QueryGraphOperation.GET_PREREQUISITES)
+        )
+
+
+def test_should_require_node_id_for_get_dependents(graph: CurriculumGraph):
+    with pytest.raises(ValueError, match="node_id is required for GET_DEPENDENTS"):
+        QueryGraphUseCase().execute(
+            QueryGraphCommand(graph=graph, operation=QueryGraphOperation.GET_DEPENDENTS)
+        )
+
+
+def test_should_require_start_and_target_for_learning_path(graph: CurriculumGraph):
+    with pytest.raises(ValueError, match="start_node_id and target_node_id"):
+        QueryGraphUseCase().execute(
+            QueryGraphCommand(graph=graph, operation=QueryGraphOperation.GET_LEARNING_PATH)
+        )
+
+
+def test_should_reject_unsupported_operation(graph: CurriculumGraph):
+    command = QueryGraphCommand(graph=graph, operation=QueryGraphOperation.GET_NODE)
+    object.__setattr__(command, "operation", "invalid-operation")
+
+    with pytest.raises(ValueError, match="Unsupported graph query operation"):
+        QueryGraphUseCase().execute(command)
