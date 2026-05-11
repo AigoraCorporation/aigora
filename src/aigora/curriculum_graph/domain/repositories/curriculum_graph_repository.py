@@ -5,7 +5,7 @@ from typing import Protocol
 from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
 
 
-class GraphRepository(Protocol):
+class CurriculumGraphRepository(Protocol):
     """Port defining the persistence contract for CurriculumGraph.
 
     Implementations must reside in the infrastructure layer.

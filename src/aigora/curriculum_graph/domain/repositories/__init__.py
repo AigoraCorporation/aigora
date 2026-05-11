@@ -1,3 +1,3 @@
-from aigora.curriculum_graph.domain.repositories.graph_repository import GraphRepository
+from aigora.curriculum_graph.domain.repositories.curriculum_graph_repository import CurriculumGraphRepository
 
-__all__ = ["GraphRepository"]
+__all__ = ["CurriculumGraphRepository"]
