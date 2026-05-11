@@ -10,12 +10,12 @@ from aigora.curriculum_graph.domain.entities.curriculum_profile import Curriculu
 from aigora.curriculum_graph.domain.entities.edge import Edge
 from aigora.curriculum_graph.domain.value_objects.mastery import MasteryScale
 from aigora.curriculum_graph.domain.entities.node import Node
-from aigora.curriculum_graph.infrastructure.files.serialization.serializer_errors import UnsupportedSerializationFormatError
+from aigora.curriculum_graph.infrastructure.files.errors.serializer_errors import UnsupportedSerializationFormatError
 
 SUPPORTED_FORMATS = {"json", "yaml"}
 
 
-class GraphSerializer:
+class CurriculumGraphSerializer:
     """Serializes a CurriculumGraph into portable representations.
 
     Responsibilities:
@@ -27,13 +27,18 @@ class GraphSerializer:
     """
 
     def to_dict(self, graph: CurriculumGraph) -> dict[str, Any]:
-        return {
+        payload: dict[str, Any] = {
             "nodes": [self._serialize_node(node) for node in graph.nodes.values()],
             "edges": [self._serialize_edge(edge) for edge in graph.edges],
             "profiles": [
                 self._serialize_profile(profile) for profile in graph.profiles.values()
             ],
         }
+
+        if graph.version is not None:
+            payload["version"] = str(graph.version)
+
+        return payload
 
     def to_json(self, graph: CurriculumGraph) -> str:
         return json.dumps(self.to_dict(graph), indent=2)
@@ -55,14 +60,14 @@ class GraphSerializer:
 
     def _serialize_node(self, node: Node) -> dict[str, Any]:
         return {
-            "id": node.id,
+            "id": str(node.id),
             "name": node.name,
             "domain": node.domain,
             "description": node.description,
             "mastery": self._serialize_mastery(node.mastery_criteria),
             "error_taxonomy": list(node.error_taxonomy),
-            "prerequisites": list(node.prerequisite_ids),
-            "regressions": list(node.regression_ids),
+            "prerequisites": [str(node_id) for node_id in node.prerequisite_ids],
+            "regressions": [str(node_id) for node_id in node.regression_ids],
         }
 
     def _serialize_mastery(self, scale: MasteryScale) -> dict[str, Any]:
@@ -76,20 +81,20 @@ class GraphSerializer:
     def _serialize_edge(self, edge: Edge) -> dict[str, Any]:
         return {
             "type": edge.type.value,
-            "source": edge.source,
-            "target": edge.target,
+            "source": str(edge.source),
+            "target": str(edge.target),
         }
 
     def _serialize_profile(self, profile: CurriculumProfile) -> dict[str, Any]:
         return {
-            "id": profile.id,
+            "id": str(profile.id),
             "name": profile.name,
-            "required_nodes": sorted(profile.required_nodes),
+            "required_nodes": sorted(str(node_id) for node_id in profile.required_nodes),
             "mastery_targets": {
-                node_id: level.value
+                str(node_id): level.value
                 for node_id, level in profile.mastery_targets.items()
             },
-            "node_weights": dict(profile.node_weights),
-            "progression_path": list(profile.progression_path),
+            "node_weights": {str(node_id): weight for node_id, weight in profile.node_weights.items()},
+            "progression_path": [str(node_id) for node_id in profile.progression_path],
             "exam_skill_overlay": list(profile.exam_skill_overlay),
         }

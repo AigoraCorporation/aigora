@@ -5,9 +5,11 @@ from pathlib import Path
 
 import pytest
 
-from aigora.curriculum_graph.infrastructure.files.csv.graph_csv_exporter import (
-    GraphCsvExporter,
-    GraphCsvExporterError,
+from aigora.curriculum_graph.infrastructure.files.csv.curriculum_graph_csv_exporter import (
+    CurriculumGraphCsvExporter,
+)
+from aigora.curriculum_graph.infrastructure.files.errors import (
+    CurriculumGraphCsvExporterError,
 )
 from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
 from aigora.curriculum_graph.domain.entities.curriculum_profile import CurriculumProfile
@@ -91,7 +93,7 @@ def read_csv(file_path: Path) -> list[dict[str, str]]:
 def test_should_export_all_canonical_csv_files(tmp_path: Path):
     graph = make_graph()
 
-    result = GraphCsvExporter().export(graph, tmp_path)
+    result = CurriculumGraphCsvExporter().export(graph, tmp_path)
 
     expected_files = {
         "nodes.csv",
@@ -111,7 +113,7 @@ def test_should_export_all_canonical_csv_files(tmp_path: Path):
 def test_should_export_nodes_csv(tmp_path: Path):
     graph = make_graph()
 
-    GraphCsvExporter().export(graph, tmp_path)
+    CurriculumGraphCsvExporter().export(graph, tmp_path)
 
     rows = read_csv(tmp_path / "nodes.csv")
 
@@ -134,7 +136,7 @@ def test_should_export_nodes_csv(tmp_path: Path):
 def test_should_export_edges_csv(tmp_path: Path):
     graph = make_graph()
 
-    GraphCsvExporter().export(graph, tmp_path)
+    CurriculumGraphCsvExporter().export(graph, tmp_path)
 
     rows = read_csv(tmp_path / "edges.csv")
 
@@ -150,7 +152,7 @@ def test_should_export_edges_csv(tmp_path: Path):
 def test_should_export_profiles_csv(tmp_path: Path):
     graph = make_graph()
 
-    GraphCsvExporter().export(graph, tmp_path)
+    CurriculumGraphCsvExporter().export(graph, tmp_path)
 
     rows = read_csv(tmp_path / "profiles.csv")
 
@@ -165,7 +167,7 @@ def test_should_export_profiles_csv(tmp_path: Path):
 def test_should_export_profile_mastery_targets_csv(tmp_path: Path):
     graph = make_graph()
 
-    GraphCsvExporter().export(graph, tmp_path)
+    CurriculumGraphCsvExporter().export(graph, tmp_path)
 
     rows = read_csv(tmp_path / "profile_mastery_targets.csv")
 
@@ -186,7 +188,7 @@ def test_should_export_profile_mastery_targets_csv(tmp_path: Path):
 def test_should_export_profile_node_weights_csv(tmp_path: Path):
     graph = make_graph()
 
-    GraphCsvExporter().export(graph, tmp_path)
+    CurriculumGraphCsvExporter().export(graph, tmp_path)
 
     rows = read_csv(tmp_path / "profile_node_weights.csv")
 
@@ -207,7 +209,7 @@ def test_should_export_profile_node_weights_csv(tmp_path: Path):
 def test_should_export_profile_progression_paths_csv(tmp_path: Path):
     graph = make_graph()
 
-    GraphCsvExporter().export(graph, tmp_path)
+    CurriculumGraphCsvExporter().export(graph, tmp_path)
 
     rows = read_csv(tmp_path / "profile_progression_paths.csv")
 
@@ -227,7 +229,7 @@ def test_should_export_profile_progression_paths_csv(tmp_path: Path):
 
 def test_should_export_deterministic_output_across_runs(tmp_path: Path):
     graph = make_graph()
-    exporter = GraphCsvExporter()
+    exporter = CurriculumGraphCsvExporter()
 
     exporter.export(graph, tmp_path)
     first_snapshot = {
@@ -250,7 +252,7 @@ def test_should_fail_when_output_path_is_file(tmp_path: Path):
     output_file.write_text("not a directory", encoding="utf-8")
 
     with pytest.raises(
-        GraphCsvExporterError,
+        CurriculumGraphCsvExporterError,
         match="Failed to export CurriculumGraph CSV files",
     ):
-        GraphCsvExporter().export(graph, output_file)
+        CurriculumGraphCsvExporter().export(graph, output_file)

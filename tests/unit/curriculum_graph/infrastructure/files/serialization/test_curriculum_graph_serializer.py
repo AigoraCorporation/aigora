@@ -3,8 +3,8 @@ import json
 import pytest
 import yaml
 
-from aigora.curriculum_graph.infrastructure.files.serialization.graph_serializer import GraphSerializer
-from aigora.curriculum_graph.infrastructure.files.serialization.serializer_errors import (
+from aigora.curriculum_graph.infrastructure.files.serialization.curriculum_graph_serializer import CurriculumGraphSerializer
+from aigora.curriculum_graph.infrastructure.files.errors.serializer_errors import (
     UnsupportedSerializationFormatError,
 )
 from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
@@ -75,7 +75,7 @@ def make_full_graph() -> CurriculumGraph:
 
 
 def test_should_serialize_graph_to_dict():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = make_full_graph()
 
     result = serializer.to_dict(graph)
@@ -89,7 +89,7 @@ def test_should_serialize_graph_to_dict():
 
 
 def test_should_include_all_node_fields_in_dict():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = CurriculumGraph()
     graph.add_node(make_node("math.arithmetic.fractions"))
 
@@ -106,7 +106,7 @@ def test_should_include_all_node_fields_in_dict():
 
 
 def test_should_include_mastery_levels_in_node_serialization():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = CurriculumGraph()
     graph.add_node(make_node("math.arithmetic.fractions"))
 
@@ -121,7 +121,7 @@ def test_should_include_mastery_levels_in_node_serialization():
 
 
 def test_should_include_all_edge_fields_in_dict():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = CurriculumGraph()
     graph.add_edge(make_edge("math.arithmetic.fractions", "math.algebra.linear-equations"))
 
@@ -134,7 +134,7 @@ def test_should_include_all_edge_fields_in_dict():
 
 
 def test_should_include_all_profile_fields_in_dict():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = CurriculumGraph()
     graph.add_profile(
         make_profile("profile.sat-math", ["math.arithmetic.fractions"])
@@ -152,7 +152,7 @@ def test_should_include_all_profile_fields_in_dict():
 
 
 def test_should_serialize_graph_to_valid_json():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = make_full_graph()
 
     result = serializer.to_json(graph)
@@ -164,7 +164,7 @@ def test_should_serialize_graph_to_valid_json():
 
 
 def test_should_serialize_graph_to_valid_yaml():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = make_full_graph()
 
     result = serializer.to_yaml(graph)
@@ -176,7 +176,7 @@ def test_should_serialize_graph_to_valid_yaml():
 
 
 def test_should_serialize_via_format_dispatch_json():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = make_full_graph()
 
     result = serializer.serialize(graph, "json")
@@ -186,7 +186,7 @@ def test_should_serialize_via_format_dispatch_json():
 
 
 def test_should_serialize_via_format_dispatch_yaml():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = make_full_graph()
 
     result = serializer.serialize(graph, "yaml")
@@ -199,7 +199,7 @@ def test_should_serialize_via_format_dispatch_yaml():
 
 
 def test_should_serialize_graph_with_empty_edges():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = CurriculumGraph()
     graph.add_node(make_node("math.arithmetic.fractions"))
 
@@ -209,7 +209,7 @@ def test_should_serialize_graph_with_empty_edges():
 
 
 def test_should_serialize_graph_with_empty_profiles():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = CurriculumGraph()
     graph.add_node(make_node("math.arithmetic.fractions"))
 
@@ -219,7 +219,7 @@ def test_should_serialize_graph_with_empty_profiles():
 
 
 def test_should_serialize_empty_graph():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = CurriculumGraph()
 
     result = serializer.to_dict(graph)
@@ -230,7 +230,7 @@ def test_should_serialize_empty_graph():
 
 
 def test_should_produce_valid_json_for_empty_graph():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = CurriculumGraph()
 
     result = serializer.to_json(graph)
@@ -240,7 +240,7 @@ def test_should_produce_valid_json_for_empty_graph():
 
 
 def test_should_produce_valid_yaml_for_empty_graph():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = CurriculumGraph()
 
     result = serializer.to_yaml(graph)
@@ -255,7 +255,7 @@ def test_should_produce_valid_yaml_for_empty_graph():
 
 
 def test_should_raise_error_for_unsupported_format():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = CurriculumGraph()
 
     with pytest.raises(UnsupportedSerializationFormatError, match="Unsupported serialization format"):
@@ -263,7 +263,7 @@ def test_should_raise_error_for_unsupported_format():
 
 
 def test_should_raise_error_for_empty_format_string():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = CurriculumGraph()
 
     with pytest.raises(UnsupportedSerializationFormatError):
@@ -271,7 +271,7 @@ def test_should_raise_error_for_empty_format_string():
 
 
 def test_should_raise_error_for_unknown_format():
-    serializer = GraphSerializer()
+    serializer = CurriculumGraphSerializer()
     graph = CurriculumGraph()
 
     with pytest.raises(UnsupportedSerializationFormatError):

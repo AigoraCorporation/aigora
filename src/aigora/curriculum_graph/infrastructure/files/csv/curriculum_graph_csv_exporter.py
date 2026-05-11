@@ -7,13 +7,12 @@ from pathlib import Path
 from typing import Any
 
 from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
+from aigora.curriculum_graph.infrastructure.files.errors import (
+    CurriculumGraphCsvExporterError,
+)
 
 
-class GraphCsvExporterError(Exception):
-    """Raised when CurriculumGraph CSV export fails."""
-
-
-class GraphCsvExporter:
+class CurriculumGraphCsvExporter:
     """Exports an already loaded CurriculumGraph into canonical CSV files."""
 
     REQUIRED_FILES = (
@@ -60,7 +59,7 @@ class GraphCsvExporter:
                 return exported_paths
 
         except Exception as exc:
-            raise GraphCsvExporterError(
+            raise CurriculumGraphCsvExporterError(
                 f"Failed to export CurriculumGraph CSV files to: {output_path}"
             ) from exc
 
@@ -81,7 +80,7 @@ class GraphCsvExporter:
             for node in sorted(graph.nodes.values(), key=lambda item: item.id)
         ]
 
-        self._write_csv(
+        self._write_tabular_file(
             file_path,
             fieldnames=["id", "name", "domain", "description"],
             rows=rows,
@@ -104,7 +103,7 @@ class GraphCsvExporter:
             )
         ]
 
-        self._write_csv(
+        self._write_tabular_file(
             file_path,
             fieldnames=["type", "source", "target"],
             rows=rows,
@@ -119,7 +118,7 @@ class GraphCsvExporter:
             for profile in sorted(graph.profiles.values(), key=lambda item: item.id)
         ]
 
-        self._write_csv(
+        self._write_tabular_file(
             file_path,
             fieldnames=["id", "name"],
             rows=rows,
@@ -144,7 +143,7 @@ class GraphCsvExporter:
                     }
                 )
 
-        self._write_csv(
+        self._write_tabular_file(
             file_path,
             fieldnames=["profile_id", "node_id", "mastery_level"],
             rows=rows,
@@ -167,7 +166,7 @@ class GraphCsvExporter:
                     }
                 )
 
-        self._write_csv(
+        self._write_tabular_file(
             file_path,
             fieldnames=["profile_id", "node_id", "weight"],
             rows=rows,
@@ -190,13 +189,13 @@ class GraphCsvExporter:
                     }
                 )
 
-        self._write_csv(
+        self._write_tabular_file(
             file_path,
             fieldnames=["profile_id", "position", "node_id"],
             rows=rows,
         )
 
-    def _write_csv(
+    def _write_tabular_file(
         self,
         file_path: Path,
         fieldnames: list[str],
