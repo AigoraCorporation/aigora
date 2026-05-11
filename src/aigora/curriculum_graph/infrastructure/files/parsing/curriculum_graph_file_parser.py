@@ -6,7 +6,7 @@ from typing import Any
 
 import yaml
 
-from .parser_errors import (
+from aigora.curriculum_graph.infrastructure.files.errors.parser_errors import (
     GraphFileParseError,
     GraphFileReadError,
     GraphStructureError,
@@ -14,7 +14,7 @@ from .parser_errors import (
 )
 
 
-class GraphParser:
+class CurriculumGraphFileParser:
     SUPPORTED_EXTENSIONS = {".yaml", ".yml", ".json"}
 
     def parse_file(self, file_path: str | Path) -> dict[str, Any]:

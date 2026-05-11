@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import Any
 
-from aigora.curriculum_graph.infrastructure.files.validation.schema_errors import SchemaValidationError
+from aigora.curriculum_graph.infrastructure.files.errors.schema_errors import SchemaValidationError
 
 _VALID_EDGE_TYPES = {"hard_prerequisite", "soft_prerequisite", "regression_target"}
 _VALID_MASTERY_LEVELS = {0, 1, 2, 3, 4, 5}
 
 
-class GraphSchemaValidator:
+class CurriculumGraphSchemaValidator:
     """Validates a parsed Curriculum Graph payload against the expected schema.
 
     This validator operates on raw Python dictionaries produced by the parser,

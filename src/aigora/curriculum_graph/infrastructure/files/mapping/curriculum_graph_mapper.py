@@ -9,7 +9,7 @@ from aigora.curriculum_graph.domain.enums.enums import EdgeType, MasteryLevel
 from aigora.curriculum_graph.domain.value_objects.mastery import MasteryCriterion, MasteryScale
 from aigora.curriculum_graph.domain.entities.node import Node
 
-from .mapper_errors import (
+from aigora.curriculum_graph.infrastructure.files.errors.mapper_errors import (
     InvalidEdgePayloadError,
     InvalidGraphPayloadError,
     InvalidNodePayloadError,
@@ -17,7 +17,7 @@ from .mapper_errors import (
 )
 
 
-class GraphMapper:
+class CurriculumGraphMapper:
     def map_graph(self, payload: dict[str, Any]) -> CurriculumGraph:
         if not isinstance(payload, dict):
             raise InvalidGraphPayloadError("Graph payload must be a dictionary.")

@@ -5,14 +5,14 @@ from aigora.curriculum_graph.domain.entities.curriculum_profile import Curriculu
 from aigora.curriculum_graph.domain.entities.edge import Edge
 from aigora.curriculum_graph.domain.entities.node import Node
 
-from .assembler_errors import (
+from aigora.curriculum_graph.infrastructure.files.errors.assembler_errors import (
     DuplicateNodeError,
     DuplicateProfileError,
     UnresolvedNodeReferenceError,
 )
 
 
-class GraphAssembler:
+class CurriculumGraphAssembler:
     """Consolidates mapped domain objects into a final in-memory CurriculumGraph.
 
     Responsibilities:

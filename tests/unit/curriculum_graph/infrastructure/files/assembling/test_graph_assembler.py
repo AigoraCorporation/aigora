@@ -1,11 +1,11 @@
 import pytest
 
-from aigora.curriculum_graph.infrastructure.files.assembling.assembler_errors import (
+from aigora.curriculum_graph.infrastructure.files.errors.assembler_errors import (
     DuplicateNodeError,
     DuplicateProfileError,
     UnresolvedNodeReferenceError,
 )
-from aigora.curriculum_graph.infrastructure.files.assembling.graph_assembler import GraphAssembler
+from aigora.curriculum_graph.infrastructure.files.assembling.curriculum_graph_assembler import CurriculumGraphAssembler
 from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
 from aigora.curriculum_graph.domain.entities.curriculum_profile import CurriculumProfile
 from aigora.curriculum_graph.domain.entities.edge import Edge
@@ -55,14 +55,14 @@ def make_profile(
 
 
 def test_should_return_curriculum_graph_instance():
-    assembler = GraphAssembler()
+    assembler = CurriculumGraphAssembler()
     graph = assembler.assemble(nodes=[], edges=[], profiles=[])
 
     assert isinstance(graph, CurriculumGraph)
 
 
 def test_should_assemble_nodes_into_graph():
-    assembler = GraphAssembler()
+    assembler = CurriculumGraphAssembler()
     nodes = [make_node("fractions"), make_node("equations")]
 
     graph = assembler.assemble(nodes=nodes, edges=[], profiles=[])
@@ -73,7 +73,7 @@ def test_should_assemble_nodes_into_graph():
 
 
 def test_should_assemble_edges_into_graph():
-    assembler = GraphAssembler()
+    assembler = CurriculumGraphAssembler()
     nodes = [make_node("fractions"), make_node("equations")]
     edges = [make_edge("fractions", "equations")]
 
@@ -85,7 +85,7 @@ def test_should_assemble_edges_into_graph():
 
 
 def test_should_assemble_profiles_into_graph():
-    assembler = GraphAssembler()
+    assembler = CurriculumGraphAssembler()
     nodes = [make_node("fractions")]
     profiles = [make_profile("sat-math", required_nodes=["fractions"])]
 
@@ -95,7 +95,7 @@ def test_should_assemble_profiles_into_graph():
 
 
 def test_should_assemble_graph_with_nodes_edges_and_profiles():
-    assembler = GraphAssembler()
+    assembler = CurriculumGraphAssembler()
     nodes = [make_node("fractions"), make_node("equations")]
     edges = [make_edge("fractions", "equations")]
     profiles = [
@@ -114,7 +114,7 @@ def test_should_assemble_graph_with_nodes_edges_and_profiles():
 
 
 def test_should_produce_deterministic_graph_for_equivalent_inputs():
-    assembler = GraphAssembler()
+    assembler = CurriculumGraphAssembler()
     nodes = [make_node("fractions"), make_node("equations")]
     edges = [make_edge("fractions", "equations")]
     profiles = [make_profile("sat-math", required_nodes=["fractions"])]
@@ -131,7 +131,7 @@ def test_should_produce_deterministic_graph_for_equivalent_inputs():
 
 
 def test_should_raise_error_for_duplicate_node_ids():
-    assembler = GraphAssembler()
+    assembler = CurriculumGraphAssembler()
     nodes = [make_node("fractions"), make_node("fractions")]
 
     with pytest.raises(DuplicateNodeError, match="fractions"):
@@ -142,7 +142,7 @@ def test_should_raise_error_for_duplicate_node_ids():
 
 
 def test_should_raise_error_for_duplicate_profile_ids():
-    assembler = GraphAssembler()
+    assembler = CurriculumGraphAssembler()
     nodes = [make_node("fractions")]
     profiles = [
         make_profile("sat-math", required_nodes=["fractions"]),
@@ -157,7 +157,7 @@ def test_should_raise_error_for_duplicate_profile_ids():
 
 
 def test_should_raise_error_when_edge_source_is_not_a_known_node():
-    assembler = GraphAssembler()
+    assembler = CurriculumGraphAssembler()
     nodes = [make_node("equations")]
     edges = [make_edge("fractions", "equations")]
 
@@ -166,7 +166,7 @@ def test_should_raise_error_when_edge_source_is_not_a_known_node():
 
 
 def test_should_raise_error_when_edge_target_is_not_a_known_node():
-    assembler = GraphAssembler()
+    assembler = CurriculumGraphAssembler()
     nodes = [make_node("fractions")]
     edges = [make_edge("fractions", "equations")]
 
@@ -178,7 +178,7 @@ def test_should_raise_error_when_edge_target_is_not_a_known_node():
 
 
 def test_should_raise_error_when_profile_required_node_is_unknown():
-    assembler = GraphAssembler()
+    assembler = CurriculumGraphAssembler()
     nodes = [make_node("fractions")]
     profiles = [make_profile("sat-math", required_nodes=["unknown-node"])]
 
@@ -187,7 +187,7 @@ def test_should_raise_error_when_profile_required_node_is_unknown():
 
 
 def test_should_raise_error_when_profile_progression_path_node_is_unknown():
-    assembler = GraphAssembler()
+    assembler = CurriculumGraphAssembler()
     nodes = [make_node("fractions")]
     profiles = [make_profile("sat-math", progression_path=["unknown-node"])]
 

@@ -1,7 +1,7 @@
 import pytest
 
-from aigora.curriculum_graph.infrastructure.files.validation.graph_schema_validator import GraphSchemaValidator
-from aigora.curriculum_graph.infrastructure.files.validation.schema_errors import SchemaValidationError
+from aigora.curriculum_graph.infrastructure.files.validation.curriculum_graph_schema_validator import CurriculumGraphSchemaValidator
+from aigora.curriculum_graph.infrastructure.files.errors.schema_errors import SchemaValidationError
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -49,33 +49,33 @@ def make_valid_payload():
 
 
 def test_should_accept_valid_payload():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     validator.validate(make_valid_payload())
 
 
 def test_should_accept_payload_without_profiles():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["profiles"]
     validator.validate(payload)
 
 
 def test_should_accept_payload_with_empty_profiles():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["profiles"] = []
     validator.validate(payload)
 
 
 def test_should_accept_payload_with_empty_edges():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["edges"] = []
     validator.validate(payload)
 
 
 def test_should_accept_node_without_optional_list_fields():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     node = payload["nodes"][0]
     del node["prerequisites"]
@@ -84,14 +84,14 @@ def test_should_accept_node_without_optional_list_fields():
 
 
 def test_should_accept_profile_without_optional_fields():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["profiles"] = [{"id": "profile.minimal", "name": "Minimal Profile"}]
     validator.validate(payload)
 
 
 def test_should_accept_all_valid_edge_types():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     for edge_type in ("hard_prerequisite", "soft_prerequisite", "regression_target"):
         payload = make_valid_payload()
         payload["edges"][0]["type"] = edge_type
@@ -99,7 +99,7 @@ def test_should_accept_all_valid_edge_types():
 
 
 def test_should_accept_all_valid_mastery_levels():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     for level in (0, 1, 2, 3, 4, 5):
         payload = make_valid_payload()
         payload["nodes"][0]["mastery"]["levels"][0]["level"] = level
@@ -110,13 +110,13 @@ def test_should_accept_all_valid_mastery_levels():
 
 
 def test_should_raise_error_when_payload_is_not_dict():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     with pytest.raises(SchemaValidationError, match="must be a dictionary"):
         validator.validate([])
 
 
 def test_should_raise_error_when_nodes_missing():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["nodes"]
     with pytest.raises(SchemaValidationError, match="'nodes'"):
@@ -124,7 +124,7 @@ def test_should_raise_error_when_nodes_missing():
 
 
 def test_should_raise_error_when_edges_missing():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["edges"]
     with pytest.raises(SchemaValidationError, match="'edges'"):
@@ -132,7 +132,7 @@ def test_should_raise_error_when_edges_missing():
 
 
 def test_should_raise_error_when_nodes_is_not_list():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["nodes"] = "not-a-list"
     with pytest.raises(SchemaValidationError, match="'nodes' must be a list"):
@@ -140,7 +140,7 @@ def test_should_raise_error_when_nodes_is_not_list():
 
 
 def test_should_raise_error_when_edges_is_not_list():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["edges"] = {"key": "value"}
     with pytest.raises(SchemaValidationError, match="'edges' must be a list"):
@@ -148,7 +148,7 @@ def test_should_raise_error_when_edges_is_not_list():
 
 
 def test_should_raise_error_when_profiles_is_not_list():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["profiles"] = "not-a-list"
     with pytest.raises(SchemaValidationError, match="'profiles' must be a list"):
@@ -159,7 +159,7 @@ def test_should_raise_error_when_profiles_is_not_list():
 
 
 def test_should_raise_error_when_node_is_not_dict():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["nodes"] = ["not-a-dict"]
     with pytest.raises(SchemaValidationError, match="Node at index 0 must be a dictionary"):
@@ -167,7 +167,7 @@ def test_should_raise_error_when_node_is_not_dict():
 
 
 def test_should_raise_error_when_node_missing_id():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["nodes"][0]["id"]
     with pytest.raises(SchemaValidationError, match="'id'"):
@@ -175,7 +175,7 @@ def test_should_raise_error_when_node_missing_id():
 
 
 def test_should_raise_error_when_node_missing_name():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["nodes"][0]["name"]
     with pytest.raises(SchemaValidationError, match="'name'"):
@@ -183,7 +183,7 @@ def test_should_raise_error_when_node_missing_name():
 
 
 def test_should_raise_error_when_node_missing_domain():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["nodes"][0]["domain"]
     with pytest.raises(SchemaValidationError, match="'domain'"):
@@ -191,7 +191,7 @@ def test_should_raise_error_when_node_missing_domain():
 
 
 def test_should_raise_error_when_node_missing_description():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["nodes"][0]["description"]
     with pytest.raises(SchemaValidationError, match="'description'"):
@@ -199,7 +199,7 @@ def test_should_raise_error_when_node_missing_description():
 
 
 def test_should_raise_error_when_node_missing_mastery():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["nodes"][0]["mastery"]
     with pytest.raises(SchemaValidationError, match="'mastery'"):
@@ -207,7 +207,7 @@ def test_should_raise_error_when_node_missing_mastery():
 
 
 def test_should_raise_error_when_node_id_is_not_string():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["nodes"][0]["id"] = 42
     with pytest.raises(SchemaValidationError, match="'id' must be a string"):
@@ -215,7 +215,7 @@ def test_should_raise_error_when_node_id_is_not_string():
 
 
 def test_should_raise_error_when_node_mastery_levels_missing():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["nodes"][0]["mastery"]["levels"]
     with pytest.raises(SchemaValidationError, match="'levels'"):
@@ -223,7 +223,7 @@ def test_should_raise_error_when_node_mastery_levels_missing():
 
 
 def test_should_raise_error_when_mastery_level_missing_level_field():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["nodes"][0]["mastery"]["levels"][0]["level"]
     with pytest.raises(SchemaValidationError, match="'level'"):
@@ -231,7 +231,7 @@ def test_should_raise_error_when_mastery_level_missing_level_field():
 
 
 def test_should_raise_error_when_mastery_level_is_invalid():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["nodes"][0]["mastery"]["levels"][0]["level"] = 99
     with pytest.raises(SchemaValidationError, match="invalid value: 99"):
@@ -239,7 +239,7 @@ def test_should_raise_error_when_mastery_level_is_invalid():
 
 
 def test_should_raise_error_when_mastery_level_is_not_int():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["nodes"][0]["mastery"]["levels"][0]["level"] = "high"
     with pytest.raises(SchemaValidationError, match="must be an integer"):
@@ -247,7 +247,7 @@ def test_should_raise_error_when_mastery_level_is_not_int():
 
 
 def test_should_raise_error_when_node_prerequisites_is_not_list():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["nodes"][0]["prerequisites"] = "fractions"
     with pytest.raises(SchemaValidationError, match="'prerequisites' must be a list"):
@@ -258,7 +258,7 @@ def test_should_raise_error_when_node_prerequisites_is_not_list():
 
 
 def test_should_raise_error_when_edge_is_not_dict():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["edges"] = ["not-a-dict"]
     with pytest.raises(SchemaValidationError, match="Edge at index 0 must be a dictionary"):
@@ -266,7 +266,7 @@ def test_should_raise_error_when_edge_is_not_dict():
 
 
 def test_should_raise_error_when_edge_missing_type():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["edges"][0]["type"]
     with pytest.raises(SchemaValidationError, match="'type'"):
@@ -274,7 +274,7 @@ def test_should_raise_error_when_edge_missing_type():
 
 
 def test_should_raise_error_when_edge_missing_source():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["edges"][0]["source"]
     with pytest.raises(SchemaValidationError, match="'source'"):
@@ -282,7 +282,7 @@ def test_should_raise_error_when_edge_missing_source():
 
 
 def test_should_raise_error_when_edge_missing_target():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["edges"][0]["target"]
     with pytest.raises(SchemaValidationError, match="'target'"):
@@ -290,7 +290,7 @@ def test_should_raise_error_when_edge_missing_target():
 
 
 def test_should_raise_error_when_edge_type_is_invalid():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["edges"][0]["type"] = "unknown_type"
     with pytest.raises(SchemaValidationError, match="invalid value"):
@@ -298,7 +298,7 @@ def test_should_raise_error_when_edge_type_is_invalid():
 
 
 def test_should_raise_error_when_edge_source_is_not_string():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["edges"][0]["source"] = 123
     with pytest.raises(SchemaValidationError, match="'source' must be a string"):
@@ -309,7 +309,7 @@ def test_should_raise_error_when_edge_source_is_not_string():
 
 
 def test_should_raise_error_when_profile_is_not_dict():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["profiles"] = ["not-a-dict"]
     with pytest.raises(SchemaValidationError, match="Profile at index 0 must be a dictionary"):
@@ -317,7 +317,7 @@ def test_should_raise_error_when_profile_is_not_dict():
 
 
 def test_should_raise_error_when_profile_missing_id():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["profiles"][0]["id"]
     with pytest.raises(SchemaValidationError, match="'id'"):
@@ -325,7 +325,7 @@ def test_should_raise_error_when_profile_missing_id():
 
 
 def test_should_raise_error_when_profile_missing_name():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     del payload["profiles"][0]["name"]
     with pytest.raises(SchemaValidationError, match="'name'"):
@@ -333,7 +333,7 @@ def test_should_raise_error_when_profile_missing_name():
 
 
 def test_should_raise_error_when_profile_required_nodes_is_not_list():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["profiles"][0]["required_nodes"] = "not-a-list"
     with pytest.raises(SchemaValidationError, match="'required_nodes' must be a list"):
@@ -341,7 +341,7 @@ def test_should_raise_error_when_profile_required_nodes_is_not_list():
 
 
 def test_should_raise_error_when_profile_mastery_targets_has_invalid_level():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["profiles"][0]["mastery_targets"] = {"math.arithmetic.fractions": 99}
     with pytest.raises(SchemaValidationError, match="invalid level"):
@@ -349,7 +349,7 @@ def test_should_raise_error_when_profile_mastery_targets_has_invalid_level():
 
 
 def test_should_raise_error_when_profile_mastery_targets_is_not_dict():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["profiles"][0]["mastery_targets"] = [1, 2, 3]
     with pytest.raises(SchemaValidationError, match="'mastery_targets' must be a dictionary"):
@@ -357,7 +357,7 @@ def test_should_raise_error_when_profile_mastery_targets_is_not_dict():
 
 
 def test_should_raise_error_when_profile_node_weights_is_not_dict():
-    validator = GraphSchemaValidator()
+    validator = CurriculumGraphSchemaValidator()
     payload = make_valid_payload()
     payload["profiles"][0]["node_weights"] = "heavy"
     with pytest.raises(SchemaValidationError, match="'node_weights' must be a dictionary"):
