@@ -120,3 +120,13 @@ def test_should_raise_error_when_regression_ids_contain_duplicates():
             mastery_criteria=make_mastery_scale(),
             regression_ids=["integers", "integers"],
         )
+
+def test_should_reject_blank_node_id():
+    with pytest.raises(ValueError, match="Node id must be non-empty"):
+        Node(
+            id=" ",
+            name="Blank",
+            domain="math",
+            description="Invalid blank id.",
+            mastery_criteria=make_mastery_scale(),
+        )

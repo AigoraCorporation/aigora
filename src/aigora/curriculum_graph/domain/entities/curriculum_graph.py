@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from .curriculum_profile import CurriculumProfile
 from .edge import Edge
 from aigora.curriculum_graph.domain.enums.enums import EdgeType
+from aigora.curriculum_graph.domain.value_objects.graph_version import GraphVersion
 from .node import Node
 
 
@@ -13,7 +14,11 @@ class CurriculumGraph:
     nodes: dict[str, Node] = field(default_factory=dict)
     edges: list[Edge] = field(default_factory=list)
     profiles: dict[str, CurriculumProfile] = field(default_factory=dict)
-    version: str | None = field(default=None)
+    version: GraphVersion | str | None = field(default=None)
+
+    def __post_init__(self) -> None:
+        if self.version is not None:
+            self.version = GraphVersion(self.version)
 
     def add_node(self, node: Node) -> None:
         if node.id in self.nodes:
