@@ -4,8 +4,10 @@ from pathlib import Path
 
 import pytest
 
-from aigora.curriculum_graph.application.use_cases.load_graph.load_graph_use_case import GraphLoader
-from aigora.curriculum_graph.application.use_cases.load_graph.load_graph_errors import GraphLoaderError
+from aigora.curriculum_graph.application.use_cases.load_graph.load_graph_command import LoadGraphCommand
+from aigora.curriculum_graph.application.use_cases.load_graph.load_graph_use_case import LoadGraphUseCase
+from aigora.curriculum_graph.infrastructure.files.pipelines.curriculum_graph_loading_pipeline_factory import build_file_curriculum_graph_loading_pipeline
+from aigora.curriculum_graph.application.errors.load_graph_errors import LoadGraphError
 from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
 from aigora.curriculum_graph.domain.enums.enums import EdgeType, MasteryLevel
 
@@ -17,18 +19,18 @@ SAT_MATH_PROFILE_ID = "profile.sat-math"
 
 
 @pytest.fixture(scope="module")
-def loader() -> GraphLoader:
-    return GraphLoader()
+def loader() -> LoadGraphUseCase:
+    return LoadGraphUseCase(pipeline=build_file_curriculum_graph_loading_pipeline())
 
 
 @pytest.fixture(scope="module")
-def canonical_yaml_graph(loader: GraphLoader) -> CurriculumGraph:
-    return loader.load(_EXAMPLES_DIR / "canonical" / "graph.yaml")
+def canonical_yaml_graph(loader: LoadGraphUseCase) -> CurriculumGraph:
+    return loader.execute(LoadGraphCommand(file_path=_EXAMPLES_DIR / "canonical" / "graph.yaml")).graph
 
 
 @pytest.fixture(scope="module")
-def canonical_json_graph(loader: GraphLoader) -> CurriculumGraph:
-    return loader.load(_EXAMPLES_DIR / "canonical" / "graph.json")
+def canonical_json_graph(loader: LoadGraphUseCase) -> CurriculumGraph:
+    return loader.execute(LoadGraphCommand(file_path=_EXAMPLES_DIR / "canonical" / "graph.json")).graph
 
 
 # ── Happy path ────────────────────────────────────────────────────────────────
@@ -187,18 +189,18 @@ def test_should_fail_loading_when_file_extension_is_not_supported(tmp_path: Path
     file_path = tmp_path / "graph.txt"
     file_path.write_text("invalid content", encoding="utf-8")
 
-    with pytest.raises(GraphLoaderError, match="Failed to load CurriculumGraph"):
-        GraphLoader().load(file_path)
+    with pytest.raises(LoadGraphError, match="Failed to load CurriculumGraph"):
+        LoadGraphUseCase(pipeline=build_file_curriculum_graph_loading_pipeline()).execute(LoadGraphCommand(file_path=file_path))
 
 
 def test_should_fail_loading_when_yaml_is_malformed():
-    with pytest.raises(GraphLoaderError, match="Failed to load CurriculumGraph"):
-        GraphLoader().load(_EXAMPLES_DIR / "invalid" / "malformed.yaml")
+    with pytest.raises(LoadGraphError, match="Failed to load CurriculumGraph"):
+        LoadGraphUseCase(pipeline=build_file_curriculum_graph_loading_pipeline()).execute(LoadGraphCommand(file_path=_EXAMPLES_DIR / "invalid" / "malformed.yaml"))
 
 
 def test_should_fail_loading_when_required_nodes_key_is_missing():
-    with pytest.raises(GraphLoaderError, match="Failed to load CurriculumGraph"):
-        GraphLoader().load(_EXAMPLES_DIR / "invalid" / "missing_nodes.json")
+    with pytest.raises(LoadGraphError, match="Failed to load CurriculumGraph"):
+        LoadGraphUseCase(pipeline=build_file_curriculum_graph_loading_pipeline()).execute(LoadGraphCommand(file_path=_EXAMPLES_DIR / "invalid" / "missing_nodes.json"))
 
 
 # ── Version validation failures ───────────────────────────────────────────────
@@ -215,8 +217,8 @@ profiles: []
         encoding="utf-8",
     )
 
-    with pytest.raises(GraphLoaderError, match="Failed to load CurriculumGraph"):
-        GraphLoader().load(file_path)
+    with pytest.raises(LoadGraphError, match="Failed to load CurriculumGraph"):
+        LoadGraphUseCase(pipeline=build_file_curriculum_graph_loading_pipeline()).execute(LoadGraphCommand(file_path=file_path))
 
 
 def test_should_fail_loading_when_version_is_not_string(tmp_path: Path):
@@ -231,8 +233,8 @@ profiles: []
         encoding="utf-8",
     )
 
-    with pytest.raises(GraphLoaderError, match="Failed to load CurriculumGraph"):
-        GraphLoader().load(file_path)
+    with pytest.raises(LoadGraphError, match="Failed to load CurriculumGraph"):
+        LoadGraphUseCase(pipeline=build_file_curriculum_graph_loading_pipeline()).execute(LoadGraphCommand(file_path=file_path))
 
 
 def test_should_fail_loading_when_version_format_is_invalid(tmp_path: Path):
@@ -247,8 +249,8 @@ profiles: []
         encoding="utf-8",
     )
 
-    with pytest.raises(GraphLoaderError, match="Failed to load CurriculumGraph"):
-        GraphLoader().load(file_path)
+    with pytest.raises(LoadGraphError, match="Failed to load CurriculumGraph"):
+        LoadGraphUseCase(pipeline=build_file_curriculum_graph_loading_pipeline()).execute(LoadGraphCommand(file_path=file_path))
 
 
 # ── Domain validation failures ────────────────────────────────────────────────
@@ -311,8 +313,8 @@ profiles:
         encoding="utf-8",
     )
 
-    with pytest.raises(GraphLoaderError, match="Failed to load CurriculumGraph"):
-        GraphLoader().load(file_path)
+    with pytest.raises(LoadGraphError, match="Failed to load CurriculumGraph"):
+        LoadGraphUseCase(pipeline=build_file_curriculum_graph_loading_pipeline()).execute(LoadGraphCommand(file_path=file_path))
 
 
 def test_should_fail_loading_when_edge_references_unknown_node(tmp_path: Path):
@@ -341,8 +343,8 @@ profiles: []
         encoding="utf-8",
     )
 
-    with pytest.raises(GraphLoaderError, match="Failed to load CurriculumGraph"):
-        GraphLoader().load(file_path)
+    with pytest.raises(LoadGraphError, match="Failed to load CurriculumGraph"):
+        LoadGraphUseCase(pipeline=build_file_curriculum_graph_loading_pipeline()).execute(LoadGraphCommand(file_path=file_path))
 
 
 def test_should_fail_loading_when_profile_references_unknown_node(tmp_path: Path):
@@ -379,8 +381,8 @@ profiles:
         encoding="utf-8",
     )
 
-    with pytest.raises(GraphLoaderError, match="Failed to load CurriculumGraph"):
-        GraphLoader().load(file_path)
+    with pytest.raises(LoadGraphError, match="Failed to load CurriculumGraph"):
+        LoadGraphUseCase(pipeline=build_file_curriculum_graph_loading_pipeline()).execute(LoadGraphCommand(file_path=file_path))
 
 
 def test_should_fail_loading_when_profile_uses_unexposed_as_target(tmp_path: Path):
@@ -416,8 +418,8 @@ profiles:
         encoding="utf-8",
     )
 
-    with pytest.raises(GraphLoaderError, match="Failed to load CurriculumGraph"):
-        GraphLoader().load(file_path)
+    with pytest.raises(LoadGraphError, match="Failed to load CurriculumGraph"):
+        LoadGraphUseCase(pipeline=build_file_curriculum_graph_loading_pipeline()).execute(LoadGraphCommand(file_path=file_path))
 
 
 def test_should_fail_loading_when_profile_weight_is_zero(tmp_path: Path):
@@ -453,8 +455,8 @@ profiles:
         encoding="utf-8",
     )
 
-    with pytest.raises(GraphLoaderError, match="Failed to load CurriculumGraph"):
-        GraphLoader().load(file_path)
+    with pytest.raises(LoadGraphError, match="Failed to load CurriculumGraph"):
+        LoadGraphUseCase(pipeline=build_file_curriculum_graph_loading_pipeline()).execute(LoadGraphCommand(file_path=file_path))
 
 
 def test_should_fail_loading_when_progression_path_violates_prerequisite_order(
@@ -508,5 +510,5 @@ profiles:
         encoding="utf-8",
     )
 
-    with pytest.raises(GraphLoaderError, match="Failed to load CurriculumGraph"):
-        GraphLoader().load(file_path)
+    with pytest.raises(LoadGraphError, match="Failed to load CurriculumGraph"):
+        LoadGraphUseCase(pipeline=build_file_curriculum_graph_loading_pipeline()).execute(LoadGraphCommand(file_path=file_path))

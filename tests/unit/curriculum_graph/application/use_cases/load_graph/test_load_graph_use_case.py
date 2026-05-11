@@ -1,7 +1,16 @@
+from pathlib import Path
 import pytest
 
-from aigora.curriculum_graph.application.use_cases.load_graph.load_graph_use_case import GraphLoader
-from aigora.curriculum_graph.application.use_cases.load_graph.load_graph_errors import GraphLoaderError
+from aigora.curriculum_graph.application.use_cases.load_graph.load_graph_command import LoadGraphCommand
+from aigora.curriculum_graph.application.use_cases.load_graph.load_graph_use_case import LoadGraphUseCase
+from aigora.curriculum_graph.application.use_cases.load_graph.pipeline.graph_loading_pipeline import GraphLoadingPipeline
+from aigora.curriculum_graph.application.use_cases.load_graph.pipeline.steps.assemble_graph_step import AssembleGraphStep
+from aigora.curriculum_graph.application.use_cases.load_graph.pipeline.steps.map_graph_step import MapGraphStep
+from aigora.curriculum_graph.application.use_cases.load_graph.pipeline.steps.parse_graph_step import ParseGraphStep
+from aigora.curriculum_graph.application.use_cases.load_graph.pipeline.steps.validate_graph_step import ValidateGraphStep
+from aigora.curriculum_graph.application.use_cases.load_graph.pipeline.steps.validate_schema_step import ValidateSchemaStep
+from aigora.curriculum_graph.application.use_cases.load_graph.pipeline.steps.validate_version_step import ValidateVersionStep
+from aigora.curriculum_graph.application.errors.load_graph_errors import LoadGraphError
 from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
 from aigora.curriculum_graph.domain.entities.curriculum_profile import CurriculumProfile
 from aigora.curriculum_graph.domain.entities.edge import Edge
@@ -145,14 +154,17 @@ def make_loader(
     validator=None,
     version_validator=None,
 ):
-    return GraphLoader(
-        parser=parser or FakeParser(payload or make_payload()),
-        schema_validator=schema_validator or FakeSchemaValidator(),
-        mapper=mapper or FakeMapper(),
-        assembler=assembler or FakeAssembler(),
-        validator=validator or FakeValidator(),
-        version_validator=version_validator or FakeVersionValidator(),
+    pipeline = GraphLoadingPipeline(
+        steps=(
+            ParseGraphStep(parser or FakeParser(payload or make_payload())),
+            ValidateSchemaStep(schema_validator or FakeSchemaValidator()),
+            MapGraphStep(mapper or FakeMapper()),
+            AssembleGraphStep(assembler or FakeAssembler()),
+            ValidateGraphStep(validator or FakeValidator()),
+            ValidateVersionStep(version_validator or FakeVersionValidator()),
+        )
     )
+    return LoadGraphUseCase(pipeline=pipeline)
 
 
 def test_should_load_curriculum_graph_successfully():
@@ -166,7 +178,7 @@ def test_should_load_curriculum_graph_successfully():
     validator = FakeValidator()
     version_validator = FakeVersionValidator()
 
-    loader = GraphLoader(
+    loader = make_loader(
         parser=parser,
         schema_validator=schema_validator,
         mapper=mapper,
@@ -175,10 +187,10 @@ def test_should_load_curriculum_graph_successfully():
         version_validator=version_validator,
     )
 
-    result = loader.load("graph.yaml")
+    result = loader.execute(LoadGraphCommand(file_path="graph.yaml")).graph
 
     assert result is expected_graph
-    assert parser.called_with == "graph.yaml"
+    assert parser.called_with == Path("graph.yaml")
     assert schema_validator.received_payload is payload
     assert len(mapper.mapped_nodes) == 1
     assert len(mapper.mapped_edges) == 1
@@ -203,16 +215,15 @@ def test_should_load_graph_with_empty_profiles_when_profiles_are_missing():
     validator = FakeValidator()
     version_validator = FakeVersionValidator()
 
-    loader = GraphLoader(
-        parser=FakeParser(payload),
-        schema_validator=FakeSchemaValidator(),
+    loader = make_loader(
+        payload=payload,
         mapper=mapper,
         assembler=assembler,
         validator=validator,
         version_validator=version_validator,
     )
 
-    result = loader.load("graph.yaml")
+    result = loader.execute(LoadGraphCommand(file_path="graph.yaml")).graph
 
     assert len(mapper.mapped_nodes) == 1
     assert len(mapper.mapped_edges) == 1
@@ -231,10 +242,10 @@ def test_should_raise_graph_loader_error_when_parser_fails():
     loader = make_loader(parser=FailingParser())
 
     with pytest.raises(
-        GraphLoaderError,
+        LoadGraphError,
         match="Failed to load CurriculumGraph from file: graph.yaml",
     ):
-        loader.load("graph.yaml")
+        loader.execute(LoadGraphCommand(file_path="graph.yaml")).graph
 
 
 def test_should_raise_graph_loader_error_when_schema_validator_fails():
@@ -245,10 +256,10 @@ def test_should_raise_graph_loader_error_when_schema_validator_fails():
     loader = make_loader(schema_validator=FailingSchemaValidator())
 
     with pytest.raises(
-        GraphLoaderError,
+        LoadGraphError,
         match="Failed to load CurriculumGraph from file: graph.yaml",
     ):
-        loader.load("graph.yaml")
+        loader.execute(LoadGraphCommand(file_path="graph.yaml")).graph
 
 
 def test_should_raise_graph_loader_error_when_mapper_fails():
@@ -259,10 +270,10 @@ def test_should_raise_graph_loader_error_when_mapper_fails():
     loader = make_loader(mapper=FailingMapper())
 
     with pytest.raises(
-        GraphLoaderError,
+        LoadGraphError,
         match="Failed to load CurriculumGraph from file: graph.yaml",
     ):
-        loader.load("graph.yaml")
+        loader.execute(LoadGraphCommand(file_path="graph.yaml")).graph
 
 
 def test_should_raise_graph_loader_error_when_assembler_fails():
@@ -273,10 +284,10 @@ def test_should_raise_graph_loader_error_when_assembler_fails():
     loader = make_loader(assembler=FailingAssembler())
 
     with pytest.raises(
-        GraphLoaderError,
+        LoadGraphError,
         match="Failed to load CurriculumGraph from file: graph.yaml",
     ):
-        loader.load("graph.yaml")
+        loader.execute(LoadGraphCommand(file_path="graph.yaml")).graph
 
 
 def test_should_raise_graph_loader_error_when_validator_fails():
@@ -290,10 +301,10 @@ def test_should_raise_graph_loader_error_when_validator_fails():
     )
 
     with pytest.raises(
-        GraphLoaderError,
+        LoadGraphError,
         match="Failed to load CurriculumGraph from file: graph.yaml",
     ):
-        loader.load("graph.yaml")
+        loader.execute(LoadGraphCommand(file_path="graph.yaml")).graph
 
 
 def test_should_raise_graph_loader_error_when_version_validator_fails():
@@ -307,10 +318,10 @@ def test_should_raise_graph_loader_error_when_version_validator_fails():
     )
 
     with pytest.raises(
-        GraphLoaderError,
+        LoadGraphError,
         match="Failed to load CurriculumGraph from file: graph.yaml",
     ):
-        loader.load("graph.yaml")
+        loader.execute(LoadGraphCommand(file_path="graph.yaml")).graph
 
 
 def test_should_raise_graph_loader_error_when_version_is_missing():
@@ -323,10 +334,10 @@ def test_should_raise_graph_loader_error_when_version_is_missing():
     loader = make_loader(payload=payload)
 
     with pytest.raises(
-        GraphLoaderError,
+        LoadGraphError,
         match="Failed to load CurriculumGraph from file: graph.yaml",
     ):
-        loader.load("graph.yaml")
+        loader.execute(LoadGraphCommand(file_path="graph.yaml")).graph
 
 
 def test_should_raise_graph_loader_error_when_version_is_not_string():
@@ -340,7 +351,7 @@ def test_should_raise_graph_loader_error_when_version_is_not_string():
     loader = make_loader(payload=payload)
 
     with pytest.raises(
-        GraphLoaderError,
+        LoadGraphError,
         match="Failed to load CurriculumGraph from file: graph.yaml",
     ):
-        loader.load("graph.yaml")
+        loader.execute(LoadGraphCommand(file_path="graph.yaml")).graph
