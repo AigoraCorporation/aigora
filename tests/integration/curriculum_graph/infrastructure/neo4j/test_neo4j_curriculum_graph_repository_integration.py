@@ -1,4 +1,4 @@
-"""Integration tests for Neo4jGraphRepository against a live Neo4j instance.
+"""Integration tests for Neo4jCurriculumGraphRepository against a live Neo4j instance.
 
 Requires a running local Neo4j instance.
 Configure via environment variables:
@@ -20,8 +20,8 @@ from aigora.curriculum_graph.domain.enums.enums import EdgeType, MasteryLevel
 from aigora.curriculum_graph.domain.value_objects.mastery import MasteryCriterion, MasteryScale
 from aigora.curriculum_graph.domain.entities.node import Node
 from aigora.curriculum_graph.infrastructure.neo4j.neo4j_client import Neo4jClient
-from aigora.curriculum_graph.infrastructure.neo4j.neo4j_graph_repository import (
-    Neo4jGraphRepository,
+from aigora.curriculum_graph.infrastructure.neo4j.neo4j_curriculum_graph_repository import (
+    Neo4jCurriculumGraphRepository,
 )
 
 _NEO4J_INTEGRATION = bool(os.environ.get("NEO4J_INTEGRATION_TESTS"))
@@ -71,7 +71,7 @@ def _make_graph() -> CurriculumGraph:
     not _NEO4J_INTEGRATION,
     reason="Set NEO4J_INTEGRATION_TESTS=1 to run Neo4j integration tests",
 )
-class TestNeo4jGraphRepositoryIntegration:
+class TestNeo4jCurriculumGraphRepositoryIntegration:
     @pytest.fixture
     def client(self) -> Neo4jClient:
         return Neo4jClient(
@@ -82,8 +82,8 @@ class TestNeo4jGraphRepositoryIntegration:
         )
 
     @pytest.fixture
-    def repo(self, client: Neo4jClient) -> Neo4jGraphRepository:
-        return Neo4jGraphRepository(client=client)
+    def repo(self, client: Neo4jClient) -> Neo4jCurriculumGraphRepository:
+        return Neo4jCurriculumGraphRepository(client=client)
 
     @pytest.fixture(autouse=True)
     def cleanup(self, client: Neo4jClient):
@@ -92,14 +92,14 @@ class TestNeo4jGraphRepositoryIntegration:
             client.run("MATCH (n:Concept) WHERE n.id STARTS WITH 'integ-' DETACH DELETE n")
             client.run("MATCH (p:CurriculumProfile) WHERE p.id STARTS WITH 'integ-' DELETE p")
 
-    def test_persist_and_validate(self, repo: Neo4jGraphRepository, client: Neo4jClient) -> None:
+    def test_persist_and_validate(self, repo: Neo4jCurriculumGraphRepository, client: Neo4jClient) -> None:
         graph = _make_graph()
         with client:
             repo.apply_schema()
             repo.persist(graph)
             repo.validate(graph)
 
-    def test_persist_is_idempotent(self, repo: Neo4jGraphRepository, client: Neo4jClient) -> None:
+    def test_persist_is_idempotent(self, repo: Neo4jCurriculumGraphRepository, client: Neo4jClient) -> None:
         graph = _make_graph()
         with client:
             repo.persist(graph)

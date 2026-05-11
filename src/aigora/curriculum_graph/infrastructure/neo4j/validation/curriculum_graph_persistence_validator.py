@@ -3,10 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
-
-
-class GraphPersistenceValidationError(Exception):
-    """Raised when post-persistence validation detects a mismatch."""
+from aigora.curriculum_graph.infrastructure.neo4j.errors import (
+    GraphPersistenceValidationError,
+)
 
 
 @dataclass
@@ -19,7 +18,7 @@ class PersistenceValidationResult:
     found_profile_ids: set[str] = field(default_factory=set)
 
 
-class GraphPersistenceValidator:
+class CurriculumGraphPersistenceValidator:
     """Application-level orchestrator for post-persistence validation.
 
     Compares raw counts and IDs returned by the infrastructure layer

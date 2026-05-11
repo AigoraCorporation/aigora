@@ -1,11 +1,13 @@
-"""Unit tests for GraphPersistenceValidator."""
+"""Unit tests for CurriculumGraphPersistenceValidator."""
 from __future__ import annotations
 
 import pytest
 
-from aigora.curriculum_graph.infrastructure.neo4j.validation.graph_persistence_validator import (
+from aigora.curriculum_graph.infrastructure.neo4j.errors import (
     GraphPersistenceValidationError,
-    GraphPersistenceValidator,
+)
+from aigora.curriculum_graph.infrastructure.neo4j.validation.curriculum_graph_persistence_validator import (
+    CurriculumGraphPersistenceValidator,
     PersistenceValidationResult,
 )
 from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
@@ -50,19 +52,19 @@ def _ok_result() -> PersistenceValidationResult:
     )
 
 
-class TestGraphPersistenceValidator:
+class TestCurriculumGraphPersistenceValidator:
     @pytest.fixture
-    def validator(self) -> GraphPersistenceValidator:
-        return GraphPersistenceValidator()
+    def validator(self) -> CurriculumGraphPersistenceValidator:
+        return CurriculumGraphPersistenceValidator()
 
     def test_happy_path_does_not_raise(
-        self, validator: GraphPersistenceValidator
+        self, validator: CurriculumGraphPersistenceValidator
     ) -> None:
         graph = _make_graph()
         validator.validate(graph, _ok_result())  # must not raise
 
     def test_node_count_mismatch_raises(
-        self, validator: GraphPersistenceValidator
+        self, validator: CurriculumGraphPersistenceValidator
     ) -> None:
         graph = _make_graph()
         result = _ok_result()
@@ -71,7 +73,7 @@ class TestGraphPersistenceValidator:
             validator.validate(graph, result)
 
     def test_edge_count_mismatch_raises(
-        self, validator: GraphPersistenceValidator
+        self, validator: CurriculumGraphPersistenceValidator
     ) -> None:
         graph = _make_graph()
         result = _ok_result()
@@ -80,7 +82,7 @@ class TestGraphPersistenceValidator:
             validator.validate(graph, result)
 
     def test_missing_node_ids_raises(
-        self, validator: GraphPersistenceValidator
+        self, validator: CurriculumGraphPersistenceValidator
     ) -> None:
         graph = _make_graph()
         result = _ok_result()
@@ -89,7 +91,7 @@ class TestGraphPersistenceValidator:
             validator.validate(graph, result)
 
     def test_missing_profile_ids_raises(
-        self, validator: GraphPersistenceValidator
+        self, validator: CurriculumGraphPersistenceValidator
     ) -> None:
         graph = _make_graph()
         result = _ok_result()
@@ -98,7 +100,7 @@ class TestGraphPersistenceValidator:
             validator.validate(graph, result)
 
     def test_no_profiles_skips_profile_check(
-        self, validator: GraphPersistenceValidator
+        self, validator: CurriculumGraphPersistenceValidator
     ) -> None:
         graph = CurriculumGraph()
         graph.add_node(_make_node("n1"))
@@ -111,7 +113,7 @@ class TestGraphPersistenceValidator:
         validator.validate(graph, result)  # must not raise — no profiles expected
 
     def test_greater_persisted_count_is_accepted(
-        self, validator: GraphPersistenceValidator
+        self, validator: CurriculumGraphPersistenceValidator
     ) -> None:
         graph = _make_graph()
         result = _ok_result()

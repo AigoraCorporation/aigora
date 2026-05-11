@@ -1,4 +1,4 @@
-"""Unit tests for Neo4jGraphRepository.
+"""Unit tests for Neo4jCurriculumGraphRepository.
 
 Uses a mock Neo4jClient to avoid requiring a live database.
 """
@@ -14,8 +14,8 @@ from aigora.curriculum_graph.domain.entities.edge import Edge
 from aigora.curriculum_graph.domain.enums.enums import EdgeType, MasteryLevel
 from aigora.curriculum_graph.domain.value_objects.mastery import MasteryCriterion, MasteryScale
 from aigora.curriculum_graph.domain.entities.node import Node
-from aigora.curriculum_graph.infrastructure.neo4j.neo4j_graph_repository import (
-    Neo4jGraphRepository,
+from aigora.curriculum_graph.infrastructure.neo4j.neo4j_curriculum_graph_repository import (
+    Neo4jCurriculumGraphRepository,
 )
 
 
@@ -51,7 +51,7 @@ def _make_graph() -> CurriculumGraph:
     return graph
 
 
-class TestNeo4jGraphRepositoryUnit:
+class TestNeo4jCurriculumGraphRepositoryUnit:
     @pytest.fixture
     def mock_client(self) -> MagicMock:
         client = MagicMock()
@@ -59,11 +59,11 @@ class TestNeo4jGraphRepositoryUnit:
         return client
 
     @pytest.fixture
-    def repo(self, mock_client: MagicMock) -> Neo4jGraphRepository:
-        return Neo4jGraphRepository(client=mock_client, batch_size=100)
+    def repo(self, mock_client: MagicMock) -> Neo4jCurriculumGraphRepository:
+        return Neo4jCurriculumGraphRepository(client=mock_client, batch_size=100)
 
     def test_persist_calls_run_for_nodes(
-        self, repo: Neo4jGraphRepository, mock_client: MagicMock
+        self, repo: Neo4jCurriculumGraphRepository, mock_client: MagicMock
     ) -> None:
         graph = _make_graph()
         repo._persist_nodes(graph)
@@ -74,7 +74,7 @@ class TestNeo4jGraphRepositoryUnit:
         assert any(r["id"] == "n2" for r in rows)
 
     def test_persist_calls_run_for_edges(
-        self, repo: Neo4jGraphRepository, mock_client: MagicMock
+        self, repo: Neo4jCurriculumGraphRepository, mock_client: MagicMock
     ) -> None:
         graph = _make_graph()
         repo._persist_edges(graph)
@@ -86,7 +86,7 @@ class TestNeo4jGraphRepositoryUnit:
         assert rows[0]["type"] == EdgeType.HARD_PREREQUISITE.value
 
     def test_persist_calls_run_for_profiles(
-        self, repo: Neo4jGraphRepository, mock_client: MagicMock
+        self, repo: Neo4jCurriculumGraphRepository, mock_client: MagicMock
     ) -> None:
         graph = _make_graph()
         repo._persist_profiles(graph)
@@ -96,14 +96,14 @@ class TestNeo4jGraphRepositoryUnit:
         assert rows[0]["id"] == "p1"
 
     def test_persist_full_pipeline(
-        self, repo: Neo4jGraphRepository, mock_client: MagicMock
+        self, repo: Neo4jCurriculumGraphRepository, mock_client: MagicMock
     ) -> None:
         graph = _make_graph()
         repo.persist(graph)
         assert mock_client.run.call_count == 3  # nodes, edges, profiles
 
     def test_validate_delegates_to_persistence_validator(
-        self, repo: Neo4jGraphRepository, mock_client: MagicMock
+        self, repo: Neo4jCurriculumGraphRepository, mock_client: MagicMock
     ) -> None:
         graph = _make_graph()
         mock_client.run.side_effect = [
@@ -114,12 +114,12 @@ class TestNeo4jGraphRepositoryUnit:
         ]
         repo.validate(graph)  # Must not raise
 
-    def test_batches_splits_correctly(self, repo: Neo4jGraphRepository) -> None:
+    def test_batches_splits_correctly(self, repo: Neo4jCurriculumGraphRepository) -> None:
         items = list(range(250))
         batches = repo._batches(items)
         assert len(batches) == 3  # 100, 100, 50
 
     def test_batches_empty_list_returns_one_empty_batch(
-        self, repo: Neo4jGraphRepository
+        self, repo: Neo4jCurriculumGraphRepository
     ) -> None:
         assert repo._batches([]) == [[]]

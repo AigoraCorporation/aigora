@@ -1,29 +1,30 @@
 from __future__ import annotations
 
-import os
 from pathlib import Path
 import json
 
-from aigora.curriculum_graph.infrastructure.neo4j.validation.graph_persistence_validator import (
+from aigora.curriculum_graph.infrastructure.neo4j.validation.curriculum_graph_persistence_validator import (
     GraphPersistenceValidationError,
-    GraphPersistenceValidator,
+    CurriculumGraphPersistenceValidator,
     PersistenceValidationResult,
 )
 from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
 
 from aigora.curriculum_graph.infrastructure.neo4j.neo4j_client import Neo4jClient
+from aigora.shared.config.settings import Neo4jSettings
 
 _CYPHER_DIR = Path(__file__).parent / "cypher"
 
-_DEFAULT_BATCH_SIZE = int(os.environ.get("NEO4J_DEFAULT_BATCH_SIZE", "500"))
+def _default_batch_size() -> int:
+    return Neo4jSettings.from_env().default_batch_size
 
 
 def _load_cypher(filename: str) -> str:
     return (_CYPHER_DIR / filename).read_text(encoding="utf-8")
 
 
-class Neo4jGraphRepository:
-    """Neo4j implementation of the GraphRepository port.
+class Neo4jCurriculumGraphRepository:
+    """Neo4j implementation of the CurriculumGraphRepository port.
 
     Persists CurriculumGraph data using batched UNWIND/MERGE operations.
     All write operations are idempotent — safe to run multiple times with
@@ -33,13 +34,13 @@ class Neo4jGraphRepository:
     def __init__(
         self,
         client: Neo4jClient,
-        batch_size: int = _DEFAULT_BATCH_SIZE,
+        batch_size: int | None = None,
     ) -> None:
         self._client = client
-        self._batch_size = batch_size
+        self._batch_size = batch_size if batch_size is not None else _default_batch_size()
 
     # ------------------------------------------------------------------
-    # GraphRepository port implementation
+    # CurriculumGraphRepository port implementation
     # ------------------------------------------------------------------
 
     def apply_schema(self) -> None:
@@ -63,7 +64,7 @@ class Neo4jGraphRepository:
 
         Loads validation Cypher from validations.cypher, queries the
         database for counts and IDs, then delegates evaluation to
-        GraphPersistenceValidator.
+        CurriculumGraphPersistenceValidator.
 
         Raises:
             GraphPersistenceValidationError: If persisted state does not
@@ -94,7 +95,7 @@ class Neo4jGraphRepository:
             found_node_ids=found_node_ids,
             found_profile_ids=found_profile_ids,
         )
-        GraphPersistenceValidator().validate(graph, result)
+        CurriculumGraphPersistenceValidator().validate(graph, result)
 
     # ------------------------------------------------------------------
     # Persistence helpers
