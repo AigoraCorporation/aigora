@@ -9,7 +9,7 @@ from aigora.curriculum_graph.domain.entities.edge import Edge
 from aigora.curriculum_graph.domain.enums.enums import EdgeType, MasteryLevel
 from aigora.curriculum_graph.domain.entities.node import Node
 
-from .validation_errors import (
+from aigora.curriculum_graph.domain.exceptions.graph_validation_errors import (
     CyclicDependencyError,
     InvalidEdgeReferenceError,
     InvalidNodeIdFormatError,
@@ -25,7 +25,7 @@ _NODE_ID_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*\.[a-z0-9]+(?:-[a-z0-9]
 _PROFILE_ID_PATTERN = re.compile(r"^profile\.[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
-class GraphValidator:
+class CurriculumGraphValidator:
     """Validates structural integrity of a CurriculumGraph.
 
     This validator focuses on the automatable structural checks documented

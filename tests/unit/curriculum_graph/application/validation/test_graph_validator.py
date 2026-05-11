@@ -1,7 +1,7 @@
 import pytest
 
-from aigora.curriculum_graph.application.validation.graph_validator import GraphValidator
-from aigora.curriculum_graph.application.validation.validation_errors import (
+from aigora.curriculum_graph.application.validation.curriculum_graph_validator import CurriculumGraphValidator
+from aigora.curriculum_graph.domain.exceptions.graph_validation_errors import (
     CyclicDependencyError,
     InvalidEdgeReferenceError,
     InvalidNodeIdFormatError,
@@ -76,7 +76,7 @@ def make_profile(
 
 
 def test_should_validate_valid_graph_successfully():
-    validator = GraphValidator()
+    validator = CurriculumGraphValidator()
     graph = CurriculumGraph()
 
     fractions = make_node(
@@ -123,7 +123,7 @@ def test_should_validate_valid_graph_successfully():
 
 
 def test_should_raise_error_for_invalid_node_id_format():
-    validator = GraphValidator()
+    validator = CurriculumGraphValidator()
     graph = CurriculumGraph()
 
     invalid_node = Node(
@@ -143,7 +143,7 @@ def test_should_raise_error_for_invalid_node_id_format():
 
 
 def test_should_raise_error_for_invalid_profile_id_format():
-    validator = GraphValidator()
+    validator = CurriculumGraphValidator()
     graph = CurriculumGraph()
 
     graph.add_node(
@@ -168,7 +168,7 @@ def test_should_raise_error_for_invalid_profile_id_format():
 
 
 def test_should_raise_error_for_edge_with_unknown_source():
-    validator = GraphValidator()
+    validator = CurriculumGraphValidator()
     graph = CurriculumGraph()
 
     graph.add_node(
@@ -192,7 +192,7 @@ def test_should_raise_error_for_edge_with_unknown_source():
 
 
 def test_should_raise_error_for_edge_with_unknown_target():
-    validator = GraphValidator()
+    validator = CurriculumGraphValidator()
     graph = CurriculumGraph()
 
     graph.add_node(
@@ -216,7 +216,7 @@ def test_should_raise_error_for_edge_with_unknown_target():
 
 
 def test_should_raise_error_for_cyclic_prerequisite_dependency():
-    validator = GraphValidator()
+    validator = CurriculumGraphValidator()
     graph = CurriculumGraph()
 
     graph.add_node(
@@ -252,7 +252,7 @@ def test_should_raise_error_for_cyclic_prerequisite_dependency():
         validator.validate(graph)
 
 def test_should_raise_error_for_profile_referencing_unknown_node():
-    validator = GraphValidator()
+    validator = CurriculumGraphValidator()
     graph = CurriculumGraph()
 
     graph.add_node(
@@ -278,7 +278,7 @@ def test_should_raise_error_for_profile_referencing_unknown_node():
 
 
 def test_should_raise_error_for_profile_mastery_target_with_unexposed_level():
-    validator = GraphValidator()
+    validator = CurriculumGraphValidator()
     graph = CurriculumGraph()
 
     graph.add_node(
@@ -304,7 +304,7 @@ def test_should_raise_error_for_profile_mastery_target_with_unexposed_level():
 
 
 def test_should_raise_error_for_profile_mastery_target_not_supported_by_node():
-    validator = GraphValidator()
+    validator = CurriculumGraphValidator()
     graph = CurriculumGraph()
 
     graph.add_node(
@@ -329,7 +329,7 @@ def test_should_raise_error_for_profile_mastery_target_not_supported_by_node():
 
 
 def test_should_raise_error_for_profile_weight_equal_to_zero():
-    validator = GraphValidator()
+    validator = CurriculumGraphValidator()
     graph = CurriculumGraph()
 
     graph.add_node(
@@ -353,7 +353,7 @@ def test_should_raise_error_for_profile_weight_equal_to_zero():
         validator.validate(graph)
 
 def test_should_raise_error_for_profile_progression_path_with_unknown_node():
-    validator = GraphValidator()
+    validator = CurriculumGraphValidator()
     graph = CurriculumGraph()
 
     graph.add_node(
@@ -379,7 +379,7 @@ def test_should_raise_error_for_profile_progression_path_with_unknown_node():
 
 
 def test_should_raise_error_for_progression_path_violating_prerequisite_order():
-    validator = GraphValidator()
+    validator = CurriculumGraphValidator()
     graph = CurriculumGraph()
 
     graph.add_node(
@@ -419,7 +419,7 @@ def test_should_raise_error_for_progression_path_violating_prerequisite_order():
 
 
 def test_should_allow_soft_prerequisite_without_progression_order_enforcement():
-    validator = GraphValidator()
+    validator = CurriculumGraphValidator()
     graph = CurriculumGraph()
 
     graph.add_node(

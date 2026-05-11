@@ -3,12 +3,12 @@ from __future__ import annotations
 import re
 
 from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
-from aigora.curriculum_graph.application.validation.versioning_errors import InvalidVersionFormatError, MissingVersionError
+from aigora.curriculum_graph.domain.exceptions.graph_version_errors import InvalidVersionFormatError, MissingVersionError
 
 _SEMVER_PATTERN = re.compile(r"^\d+\.\d+\.\d+$")
 
 
-class GraphVersionValidator:
+class CurriculumGraphVersionValidator:
     """Validates version metadata on a CurriculumGraph.
 
     This validator enforces that version information is present and conforms
