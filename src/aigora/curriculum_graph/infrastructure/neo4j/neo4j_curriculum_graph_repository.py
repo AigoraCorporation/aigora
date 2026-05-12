@@ -4,7 +4,6 @@ from pathlib import Path
 import json
 
 from aigora.curriculum_graph.infrastructure.neo4j.validation.curriculum_graph_persistence_validator import (
-    GraphPersistenceValidationError,
     CurriculumGraphPersistenceValidator,
     PersistenceValidationResult,
 )

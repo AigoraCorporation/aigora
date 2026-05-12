@@ -8,7 +8,6 @@ from aigora.curriculum_graph.infrastructure.files.errors.mapper_errors import (
     InvalidProfilePayloadError,
 )
 from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
-from aigora.curriculum_graph.domain.enums.enums import EdgeType, MasteryLevel
 
 
 def make_valid_payload():

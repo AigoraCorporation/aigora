@@ -5,7 +5,6 @@ from aigora.curriculum_graph.domain.exceptions.graph_validation_errors import (
     CyclicDependencyError,
     InvalidEdgeReferenceError,
     InvalidNodeIdFormatError,
-    InvalidNodeMasteryDefinitionError,
     InvalidProfileIdFormatError,
     InvalidProfileMasteryTargetError,
     InvalidProfileProgressionPathError,
