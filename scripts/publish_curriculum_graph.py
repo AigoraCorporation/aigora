@@ -71,8 +71,8 @@ def main() -> None:
         GraphPublicationService,
     )
     from aigora.curriculum_graph.application.loading.graph_loader import GraphLoader
-    from aigora.curriculum_graph.infraestructure.neo4j.neo4j_client import Neo4jClient
-    from aigora.curriculum_graph.infraestructure.neo4j.neo4j_graph_repository import (
+    from aigora.curriculum_graph.infrastructure.neo4j.neo4j_client import Neo4jClient
+    from aigora.curriculum_graph.infrastructure.neo4j.neo4j_graph_repository import (
         Neo4jGraphRepository,
     )
 

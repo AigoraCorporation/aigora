@@ -1,15 +1,22 @@
 from __future__ import annotations
 
-import os
 from collections.abc import Iterator
 from contextlib import contextmanager
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
-from neo4j import GraphDatabase, Session
+from aigora.shared.config.settings import Neo4jSettings
+from aigora.curriculum_graph.infrastructure.neo4j.errors import Neo4jClientError
 
+if TYPE_CHECKING:
+    from neo4j import Session
+else:
+    Session = Any
 
-class Neo4jClientError(Exception):
-    """Raised when a Neo4j infrastructure operation fails."""
+try:
+    from neo4j import GraphDatabase
+except ModuleNotFoundError:  # pragma: no cover - exercised only when dependency is absent
+    GraphDatabase = None
+
 
 
 class Neo4jClient:
@@ -33,10 +40,20 @@ class Neo4jClient:
         password: str | None = None,
         database: str | None = None,
     ) -> None:
-        self._uri = uri or os.environ["NEO4J_URI"]
-        self._username = username or os.environ["NEO4J_USERNAME"]
-        self._password = password or os.environ["NEO4J_PASSWORD"]
-        self._database = database or os.environ.get("NEO4J_DATABASE", "neo4j")
+        settings = None
+        if uri is None or username is None or password is None:
+            settings = Neo4jSettings.from_env()
+
+        self._uri = uri or settings.uri
+        self._username = username or settings.username
+        self._password = password or settings.password
+        self._database = database or settings.database
+        if GraphDatabase is None:
+            raise Neo4jClientError(
+                "The 'neo4j' package is required to create Neo4jClient. "
+                "Install project dependencies before using the Neo4j infrastructure adapter."
+            )
+
         self._driver = GraphDatabase.driver(
             self._uri, auth=(self._username, self._password)
         )

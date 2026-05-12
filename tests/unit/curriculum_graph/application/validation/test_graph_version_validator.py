@@ -1,11 +1,11 @@
 import pytest
 
-from aigora.curriculum_graph.application.validation.graph_version_validator import GraphVersionValidator
-from aigora.curriculum_graph.application.validation.versioning_errors import (
+from aigora.curriculum_graph.application.validation.curriculum_graph_version_validator import CurriculumGraphVersionValidator
+from aigora.curriculum_graph.domain.exceptions.graph_version_errors import (
     InvalidVersionFormatError,
     MissingVersionError,
 )
-from aigora.curriculum_graph.domain.curriculum_graph import CurriculumGraph
+from aigora.curriculum_graph.domain.entities.curriculum_graph import CurriculumGraph
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -19,19 +19,19 @@ def make_graph(version: str | None = None) -> CurriculumGraph:
 
 
 def test_should_accept_valid_semver():
-    validator = GraphVersionValidator()
+    validator = CurriculumGraphVersionValidator()
     graph = make_graph("1.0.0")
     validator.validate(graph)
 
 
 def test_should_accept_multi_digit_version_numbers():
-    validator = GraphVersionValidator()
+    validator = CurriculumGraphVersionValidator()
     graph = make_graph("10.20.30")
     validator.validate(graph)
 
 
 def test_should_accept_zero_patch_version():
-    validator = GraphVersionValidator()
+    validator = CurriculumGraphVersionValidator()
     graph = make_graph("2.3.0")
     validator.validate(graph)
 
@@ -56,7 +56,7 @@ def test_should_preserve_version_through_graph_construction():
 
 def test_initial_version_preserved_correctly():
     graph = make_graph("1.0.0")
-    validator = GraphVersionValidator()
+    validator = CurriculumGraphVersionValidator()
     validator.validate(graph)
     assert graph.version == "1.0.0"
 
@@ -65,49 +65,49 @@ def test_initial_version_preserved_correctly():
 
 
 def test_should_raise_error_when_version_is_none():
-    validator = GraphVersionValidator()
+    validator = CurriculumGraphVersionValidator()
     graph = make_graph(None)
     with pytest.raises(MissingVersionError, match="missing required version"):
         validator.validate(graph)
 
 
 def test_should_raise_error_when_version_is_missing_patch():
-    validator = GraphVersionValidator()
+    validator = CurriculumGraphVersionValidator()
     graph = make_graph("1.0")
     with pytest.raises(InvalidVersionFormatError):
         validator.validate(graph)
 
 
 def test_should_raise_error_when_version_has_extra_segment():
-    validator = GraphVersionValidator()
+    validator = CurriculumGraphVersionValidator()
     graph = make_graph("1.0.0.0")
     with pytest.raises(InvalidVersionFormatError):
         validator.validate(graph)
 
 
 def test_should_raise_error_when_version_has_letters():
-    validator = GraphVersionValidator()
+    validator = CurriculumGraphVersionValidator()
     graph = make_graph("v1.0.0")
     with pytest.raises(InvalidVersionFormatError):
         validator.validate(graph)
 
 
 def test_should_raise_error_when_version_is_empty_string():
-    validator = GraphVersionValidator()
+    validator = CurriculumGraphVersionValidator()
     graph = make_graph("")
     with pytest.raises(InvalidVersionFormatError):
         validator.validate(graph)
 
 
 def test_should_raise_error_when_version_has_prerelease_suffix():
-    validator = GraphVersionValidator()
+    validator = CurriculumGraphVersionValidator()
     graph = make_graph("1.0.0-alpha")
     with pytest.raises(InvalidVersionFormatError):
         validator.validate(graph)
 
 
 def test_should_raise_error_when_version_is_only_dots():
-    validator = GraphVersionValidator()
+    validator = CurriculumGraphVersionValidator()
     graph = make_graph("...")
     with pytest.raises(InvalidVersionFormatError):
         validator.validate(graph)

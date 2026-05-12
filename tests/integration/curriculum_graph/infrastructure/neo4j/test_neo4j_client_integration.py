@@ -15,6 +15,8 @@ import pytest
 
 from aigora.curriculum_graph.infrastructure.neo4j.neo4j_client import (
     Neo4jClient,
+)
+from aigora.curriculum_graph.infrastructure.neo4j.errors import (
     Neo4jClientError,
 )
 
