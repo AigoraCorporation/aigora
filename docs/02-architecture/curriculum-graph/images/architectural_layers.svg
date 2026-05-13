@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="718" height="526" viewBox="0 0 718 526" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowDark" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#334155"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#16a34a"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#ea580c"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#7c3aed"/>
+    </marker>
+    <style>
+      .title { font: 700 30px Arial, sans-serif; fill: #10214d; }
+      .subtitle { font: 14px Arial, sans-serif; fill: #374151; }
+      .box-title { font: 700 14px Arial, sans-serif; }
+      .box-text { font: 12px Arial, sans-serif; fill: #1f2937; }
+      .small { font: 12px Arial, sans-serif; fill: #334155; }
+      .label { font: 12px Arial, sans-serif; font-weight: 700; }
+      .note { font: 12px Arial, sans-serif; fill: #1e293b; }
+    </style>
+  </defs>
+
+  <rect width="718" height="526" fill="#ffffff"/>
+
+  <text x="20" y="36" class="title">Architectural Layers</text>
+  <text x="20" y="65" class="subtitle">The Curriculum Graph is organized around the following layers:</text>
+
+  <!-- API / External Adapters -->
+  <rect x="107" y="87" width="247" height="73" rx="5" fill="#f4fff7" stroke="#22c55e" stroke-width="1.2"/>
+  <rect x="122" y="102" width="43" height="43" rx="7" fill="#dcfce7"/>
+  <circle cx="144" cy="124" r="17" fill="none" stroke="#15803d" stroke-width="3"/>
+  <path d="M127 124 H161 M144 107 C134 117 134 131 144 141 M144 107 C154 117 154 131 144 141" fill="none" stroke="#15803d" stroke-width="2.2"/>
+  <text x="180" y="113" class="box-title" fill="#15803d">API / External Adapters</text>
+  <text x="180" y="132" class="box-text">HTTP APIs, CLI, Workers,</text>
+  <text x="180" y="149" class="box-text">Schedulers, Integrations</text>
+
+  <!-- Infrastructure -->
+  <rect x="429" y="87" width="241" height="77" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.2"/>
+  <rect x="444" y="102" width="43" height="43" rx="7" fill="#ffedd5"/>
+  <rect x="457" y="110" width="22" height="7" rx="1.5" fill="none" stroke="#ea580c" stroke-width="3"/>
+  <rect x="457" y="122" width="22" height="7" rx="1.5" fill="none" stroke="#ea580c" stroke-width="3"/>
+  <rect x="457" y="134" width="22" height="7" rx="1.5" fill="none" stroke="#ea580c" stroke-width="3"/>
+  <circle cx="462" cy="113.5" r="1.4" fill="#ea580c"/>
+  <circle cx="462" cy="125.5" r="1.4" fill="#ea580c"/>
+  <circle cx="462" cy="137.5" r="1.4" fill="#ea580c"/>
+  <text x="509" y="115" class="box-title" fill="#c2410c">Infrastructure Layer</text>
+  <text x="509" y="134" class="box-text">Technical implementations</text>
+  <text x="509" y="151" class="box-text">and external integrations</text>
+
+  <!-- Application -->
+  <rect x="109" y="203" width="233" height="77" rx="5" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.2"/>
+  <rect x="123" y="217" width="43" height="43" rx="7" fill="#dbeafe"/>
+  <path d="M143 225 h10 v12 h12 v10 h-12 v12 h-10 v-12 h-12 v-10 h12 z" fill="none" stroke="#2563eb" stroke-width="3.4" stroke-linejoin="round"/>
+  <text x="185" y="232" class="box-title" fill="#1d4ed8">Application Layer</text>
+  <text x="185" y="250" class="box-text">Use cases, orchestration,</text>
+  <text x="185" y="267" class="box-text">ports, commands, results</text>
+
+  <!-- Domain -->
+  <rect x="110" y="322" width="235" height="77" rx="5" fill="#faf5ff" stroke="#8b5cf6" stroke-width="1.2"/>
+  <rect x="124" y="337" width="43" height="43" rx="7" fill="#ede9fe"/>
+  <path d="M146 343 L163 353 V373 L146 383 L129 373 V353 Z" fill="none" stroke="#6d28d9" stroke-width="3.2"/>
+  <path d="M129 353 L146 363 L163 353 M146 363 V383" fill="none" stroke="#6d28d9" stroke-width="2"/>
+  <text x="185" y="350" class="box-title" fill="#6d28d9">Domain Layer</text>
+  <text x="185" y="369" class="box-text">Core model, business rules,</text>
+  <text x="185" y="386" class="box-text">value objects, domain services</text>
+
+  <!-- Shared -->
+  <rect x="465" y="324" width="203" height="76" rx="5" fill="#ecfeff" stroke="#0f766e" stroke-width="1.2"/>
+  <rect x="479" y="339" width="43" height="43" rx="7" fill="#ccfbf1"/>
+  <circle cx="501" cy="354" r="7.5" fill="none" stroke="#0891b2" stroke-width="3"/>
+  <circle cx="489" cy="363" r="5.2" fill="none" stroke="#0891b2" stroke-width="2.3"/>
+  <circle cx="513" cy="363" r="5.2" fill="none" stroke="#0891b2" stroke-width="2.3"/>
+  <path d="M486 379 C490 370 512 370 516 379 M479 379 C482 373 491 373 494 377 M508 377 C512 373 520 373 523 379" fill="none" stroke="#0891b2" stroke-width="2.3"/>
+  <text x="537" y="351" class="box-title" fill="#0f766e">Shared Layer</text>
+  <text x="537" y="370" class="box-text">Cross-cutting utilities and</text>
+  <text x="537" y="387" class="box-text">generic components</text>
+
+  <!-- Arrows -->
+  <line x1="230.5" y1="160" x2="230.5" y2="203" stroke="#16a34a" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <line x1="429" y1="164" x2="342" y2="205" stroke="#ea580c" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <line x1="230.5" y1="280" x2="230.5" y2="322" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <path d="M342 248 C390 257 425 286 482 324" fill="none" stroke="#2563eb" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#arrowBlue)"/>
+  <rect x="400" y="265" width="39" height="23" rx="5" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="408" y="281" class="label" fill="#2563eb">uses</text>
+
+  <path d="M542 164 C583 220 584 270 555 324" fill="none" stroke="#ea580c" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#arrowOrange)"/>
+  <rect x="561" y="226" width="38" height="22" rx="5" fill="#fff7ed" stroke="#fed7aa"/>
+  <text x="568" y="242" class="label" fill="#ea580c">uses</text>
+
+  <path d="M345 362 C385 362 424 362 465 362" fill="none" stroke="#7c3aed" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#arrowPurple)"/>
+  <rect x="386" y="350" width="39" height="23" rx="5" fill="#faf5ff" stroke="#ddd6fe"/>
+  <text x="394" y="366" class="label" fill="#7c3aed">uses</text>
+
+  <!-- Legend -->
+  <rect x="72" y="421" width="630" height="44" rx="6" fill="#ffffff" stroke="#d9dee7"/>
+  <line x1="89" y1="443" x2="124" y2="443" stroke="#334155" stroke-width="2.2" marker-end="url(#arrowDark)"/>
+  <text x="132" y="448" class="small">Solid arrows: dependency direction</text>
+
+  <line x1="335" y1="443" x2="367" y2="443" stroke="#334155" stroke-width="2" stroke-dasharray="8 8" marker-end="url(#arrowDark)"/>
+  <text x="377" y="448" class="small">Dashed arrows: uses / imports (non-directional dependency)</text>
+
+  <!-- Note -->
+  <rect x="72" y="476" width="630" height="43" rx="6" fill="#eff6ff" stroke="#bfdbfe"/>
+  <circle cx="99" cy="497" r="10" fill="#3b82f6"/>
+  <text x="96" y="502" font-family="Arial" font-size="16" font-weight="700" fill="white">i</text>
+  <text x="119" y="502" class="note">
+    <tspan font-weight="700">Note:</tspan> Arrows represent dependency direction, not execution order.
+  </text>
+</svg>
