@@ -9,25 +9,80 @@ markers = [
 [tool.importlinter]
 root_packages = ["aigora.curriculum_graph"]
 
-[[tool.importlinter.contracts]]
-name = "Domain isolation"
-type = "forbidden"
-source_modules = ["aigora.curriculum_graph.domain"]
-forbidden_modules = [
-    "aigora.curriculum_graph.application",
-    "aigora.curriculum_graph.infrastructure",
-    "fastapi",
-    "requests",
-    "neo4j",
-]
+# ============================================================
+# DOMAIN ISOLATION
+# ============================================================
 
 [[tool.importlinter.contracts]]
-name = "Application must not depend on infrastructure"
+name = "Domain must remain isolated from outer layers"
 type = "forbidden"
-source_modules = ["aigora.curriculum_graph.application"]
+source_modules = ["aigora.curriculum_graph.domain"]
+
+forbidden_modules = [
+    # Internal architectural layers
+    "aigora.curriculum_graph.application",
+    "aigora.curriculum_graph.infrastructure",
+    "aigora.curriculum_graph.presentation",
+
+    # Web / Transport Protocols
+    "fastapi",
+    "starlette",
+    "requests",
+    "httpx",
+
+    # gRPC / RPC
+    "grpc",
+
+    # Persistence / ORM
+    "sqlalchemy",
+    "neo4j",
+    "pymongo",
+
+    # Messaging / async infra
+    "kafka",
+    "redis",
+    "celery",
+
+    # Cloud SDKs
+    "boto3",
+]
+
+# ============================================================
+# PRESENTATION ISOLATION
+# ============================================================
+
+[[tool.importlinter.contracts]]
+name = "Presentation must not bypass application layer"
+type = "forbidden"
+source_modules = ["aigora.curriculum_graph.presentation"]
+
+forbidden_modules = [
+    "aigora.curriculum_graph.domain",
+]
+
+# ============================================================
+# OPTIONAL: Prevent infra leaking into presentation
+# ============================================================
+
+[[tool.importlinter.contracts]]
+name = "Presentation must not directly depend on infrastructure"
+type = "forbidden"
+source_modules = ["aigora.curriculum_graph.presentation"]
+
 forbidden_modules = [
     "aigora.curriculum_graph.infrastructure",
-    "fastapi",
-    "neo4j",
+]
+
+# ============================================================
+# OPTIONAL: Prevent application from depending on presentation
+# ============================================================
+
+[[tool.importlinter.contracts]]
+name = "Application must not depend on presentation"
+type = "forbidden"
+source_modules = ["aigora.curriculum_graph.application"]
+
+forbidden_modules = [
+    "aigora.curriculum_graph.presentation",
 ]
 
