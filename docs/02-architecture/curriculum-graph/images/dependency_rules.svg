@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="760" height="760" viewBox="0 0 760 760" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#16a34a"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#ea580c"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#7c3aed"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#dc2626"/>
+    </marker>
+
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+
+    <style>
+      .title { font: 700 30px Arial, sans-serif; fill: #10214d; }
+      .subtitle { font: 14px Arial, sans-serif; fill: #374151; }
+      .box-title { font: 700 15px Arial, sans-serif; }
+      .box-text { font: 12px Arial, sans-serif; fill: #334155; }
+      .small { font: 12px Arial, sans-serif; fill: #334155; }
+      .note { font: 12px Arial, sans-serif; fill: #1e293b; }
+      .x { font: 700 18px Arial, sans-serif; fill: #dc2626; }
+      .label { font: 700 12px Arial, sans-serif; }
+      .allowed { fill: none; stroke-width: 2.2; }
+      .blocked { fill: none; stroke-width: 2; stroke-dasharray: 5 5; }
+    </style>
+  </defs>
+
+  <rect width="760" height="760" fill="#ffffff"/>
+
+  <text x="36" y="48" class="title">Dependency Rules</text>
+  <text x="36" y="76" class="subtitle">Allowed dependencies are solid arrows. Forbidden dependencies are dashed arrows marked with X.</text>
+
+  <!-- API -->
+  <rect x="289" y="106" width="182" height="78" rx="8" fill="#f4fff7" stroke="#22c55e" stroke-width="1.4" filter="url(#softShadow)"/>
+  <rect x="309" y="124" width="42" height="42" rx="7" fill="#dcfce7"/>
+  <circle cx="330" cy="145" r="15" fill="none" stroke="#15803d" stroke-width="3"/>
+  <path d="M315 145 H345 M330 130 C321 139 321 151 330 160 M330 130 C339 139 339 151 330 160" fill="none" stroke="#15803d" stroke-width="2"/>
+  <text x="366" y="150" class="box-title" fill="#15803d">API</text>
+  <text x="366" y="168" class="box-text">External adapters</text>
+
+  <!-- Application -->
+  <rect x="238" y="258" width="284" height="86" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.4" filter="url(#softShadow)"/>
+  <rect x="259" y="279" width="42" height="42" rx="7" fill="#dbeafe"/>
+  <path d="M279 287 h10 v12 h12 v10 h-12 v12 h-10 v-12 h-12 v-10 h12 z" fill="none" stroke="#2563eb" stroke-width="3.2" stroke-linejoin="round"/>
+  <text x="318" y="299" class="box-title" fill="#1d4ed8">Application</text>
+  <text x="318" y="318" class="box-text">Use cases and orchestration</text>
+
+  <!-- Domain -->
+  <rect x="70" y="446" width="225" height="86" rx="8" fill="#faf5ff" stroke="#8b5cf6" stroke-width="1.4" filter="url(#softShadow)"/>
+  <rect x="91" y="467" width="42" height="42" rx="7" fill="#ede9fe"/>
+  <path d="M112 473 L128 482 V501 L112 511 L96 501 V482 Z" fill="none" stroke="#6d28d9" stroke-width="3"/>
+  <path d="M96 482 L112 492 L128 482 M112 492 V511" fill="none" stroke="#6d28d9" stroke-width="2"/>
+  <text x="148" y="486" class="box-title" fill="#6d28d9">Domain</text>
+  <text x="148" y="505" class="box-text">Model and business rules</text>
+
+  <!-- Infrastructure -->
+  <rect x="430" y="590" width="270" height="90" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.4" filter="url(#softShadow)"/>
+  <rect x="451" y="612" width="42" height="42" rx="7" fill="#ffedd5"/>
+  <rect x="462" y="620" width="21" height="7" rx="1.5" fill="none" stroke="#ea580c" stroke-width="2.8"/>
+  <rect x="462" y="632" width="21" height="7" rx="1.5" fill="none" stroke="#ea580c" stroke-width="2.8"/>
+  <rect x="462" y="644" width="21" height="7" rx="1.5" fill="none" stroke="#ea580c" stroke-width="2.8"/>
+  <text x="510" y="633" class="box-title" fill="#c2410c">Infrastructure</text>
+  <text x="510" y="652" class="box-text">Technical implementations</text>
+
+  <!-- Allowed dependency arrows -->
+  <line x1="380" y1="184" x2="380" y2="258" class="allowed" stroke="#2563eb" marker-end="url(#arrowBlue)"/>
+  <path d="M330 344 C280 386 235 410 204 446" class="allowed" stroke="#7c3aed" marker-end="url(#arrowPurple)"/>
+  <path d="M520 590 C478 510 444 425 430 344" class="allowed" stroke="#ea580c" marker-end="url(#arrowOrange)"/>
+  <path d="M493 590 C420 555 345 530 295 507" class="allowed" stroke="#ea580c" marker-end="url(#arrowOrange)"/>
+
+  <!-- Forbidden dependency arrows -->
+  <path d="M210 446 C235 396 275 360 340 344" class="blocked" stroke="#dc2626" marker-end="url(#arrowRed)"/>
+  <text x="238" y="401" class="x">X</text>
+
+  <path d="M205 532 C245 586 320 625 430 637" class="blocked" stroke="#dc2626" marker-end="url(#arrowRed)"/>
+  <text x="256" y="584" class="x">X</text>
+
+  <path d="M380 344 C388 430 402 512 470 590" class="blocked" stroke="#dc2626" marker-end="url(#arrowRed)"/>
+  <text x="404" y="470" class="x">X</text>
+
+  <!-- labels -->
+  <rect x="398" y="216" width="83" height="25" rx="6" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="411" y="233" class="label" fill="#2563eb">allowed</text>
+
+  <rect x="541" y="486" width="83" height="25" rx="6" fill="#fff7ed" stroke="#fed7aa"/>
+  <text x="554" y="503" class="label" fill="#ea580c">allowed</text>
+
+  <rect x="103" y="378" width="92" height="25" rx="6" fill="#fef2f2" stroke="#fecaca"/>
+  <text x="116" y="395" class="label" fill="#dc2626">forbidden</text>
+
+  <!-- legend -->
+  <rect x="56" y="704" width="648" height="42" rx="7" fill="#ffffff" stroke="#d9dee7"/>
+  <line x1="78" y1="725" x2="117" y2="725" stroke="#334155" stroke-width="2.2" marker-end="url(#arrowBlue)"/>
+  <text x="128" y="729" class="small">Allowed dependency</text>
+
+  <line x1="292" y1="725" x2="331" y2="725" stroke="#dc2626" stroke-width="2" stroke-dasharray="6 6" marker-end="url(#arrowRed)"/>
+  <text x="342" y="729" class="small">Forbidden dependency</text>
+
+  <text x="505" y="729" class="small">X = architectural violation</text>
+</svg>
