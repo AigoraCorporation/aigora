@@ -5,3 +5,29 @@ addopts = "-ra --import-mode=importlib"
 markers = [
     "integration: marks tests as integration tests",
 ]
+
+[tool.importlinter]
+root_packages = ["aigora.curriculum_graph"]
+
+[[tool.importlinter.contracts]]
+name = "Domain isolation"
+type = "forbidden"
+source_modules = ["aigora.curriculum_graph.domain"]
+forbidden_modules = [
+    "aigora.curriculum_graph.application",
+    "aigora.curriculum_graph.infrastructure",
+    "fastapi",
+    "requests",
+    "neo4j",
+]
+
+[[tool.importlinter.contracts]]
+name = "Application must not depend on infrastructure"
+type = "forbidden"
+source_modules = ["aigora.curriculum_graph.application"]
+forbidden_modules = [
+    "aigora.curriculum_graph.infrastructure",
+    "fastapi",
+    "neo4j",
+]
+
