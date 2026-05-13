@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="820" height="560" viewBox="0 0 820 560" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowDark" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#334155"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#7c3aed"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#ea580c"/>
+    </marker>
+
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+
+    <style>
+      .title { font: 700 30px Arial, sans-serif; fill: #10214d; }
+      .subtitle { font: 14px Arial, sans-serif; fill: #374151; }
+      .box-title { font: 700 14px Arial, sans-serif; }
+      .box-text { font: 12px Arial, sans-serif; fill: #334155; }
+      .small { font: 12px Arial, sans-serif; fill: #334155; }
+      .arrow { fill: none; stroke-width: 2.2; }
+      .dashed { fill: none; stroke-width: 1.8; stroke-dasharray: 6 6; }
+    </style>
+  </defs>
+
+  <rect width="820" height="560" fill="#ffffff"/>
+
+  <text x="32" y="45" class="title">Use Case Boundary</text>
+  <text x="32" y="73" class="subtitle">
+    External entry points interact with the Curriculum Graph through application use cases only.
+  </text>
+
+  <!-- External adapter -->
+  <rect x="36" y="210" width="185" height="82" rx="7" fill="#f4fff7" stroke="#22c55e" stroke-width="1.4" filter="url(#softShadow)"/>
+  <rect x="52" y="232" width="39" height="39" rx="7" fill="#dcfce7"/>
+  <circle cx="71.5" cy="251.5" r="14" fill="none" stroke="#15803d" stroke-width="2.7"/>
+  <path d="M58 251.5 H85 M71.5 238 C64 246 64 257 71.5 265 M71.5 238 C79 246 79 257 71.5 265" fill="none" stroke="#15803d" stroke-width="1.8"/>
+  <text x="103" y="244" class="box-title" fill="#15803d">API / CLI / Worker</text>
+  <text x="103" y="263" class="box-text">External adapter</text>
+
+  <!-- Use case -->
+  <rect x="300" y="210" width="170" height="82" rx="7" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.4" filter="url(#softShadow)"/>
+  <rect x="316" y="232" width="39" height="39" rx="7" fill="#dbeafe"/>
+  <path d="M334 239 h9 v11 h11 v9 h-11 v11 h-9 v-11 h-11 v-9 h11 z" fill="none" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+  <text x="368" y="244" class="box-title" fill="#1d4ed8">Use Case</text>
+  <text x="368" y="263" class="box-text">Application entry point</text>
+
+  <!-- Command -->
+  <rect x="585" y="72" width="150" height="70" rx="7" fill="#faf5ff" stroke="#8b5cf6" stroke-width="1.4" filter="url(#softShadow)"/>
+  <rect x="600" y="89" width="34" height="34" rx="6" fill="#ede9fe"/>
+  <path d="M609 98 h16 M609 106 h16 M609 114 h10" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round"/>
+  <text x="646" y="108" class="box-title" fill="#6d28d9">Command</text>
+  <text x="646" y="126" class="box-text">Input contract</text>
+
+  <!-- Result -->
+  <rect x="585" y="205" width="150" height="70" rx="7" fill="#faf5ff" stroke="#8b5cf6" stroke-width="1.4" filter="url(#softShadow)"/>
+  <rect x="600" y="222" width="34" height="34" rx="6" fill="#ede9fe"/>
+  <path d="M608 239 l7 7 l14 -16" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="646" y="241" class="box-title" fill="#6d28d9">Result</text>
+  <text x="646" y="259" class="box-text">Output contract</text>
+
+  <!-- Ports -->
+  <rect x="585" y="335" width="150" height="70" rx="7" fill="#faf5ff" stroke="#8b5cf6" stroke-width="1.4" filter="url(#softShadow)"/>
+  <rect x="600" y="352" width="34" height="34" rx="6" fill="#ede9fe"/>
+  <path d="M617 358 v22 M606 369 h22" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+  <text x="646" y="371" class="box-title" fill="#6d28d9">Ports</text>
+  <text x="646" y="389" class="box-text">Abstractions</text>
+
+  <!-- Infrastructure Adapter -->
+  <rect x="278" y="400" width="230" height="82" rx="7" fill="#fff7ed" stroke="#f97316" stroke-width="1.4" filter="url(#softShadow)"/>
+  <rect x="294" y="422" width="39" height="39" rx="7" fill="#ffedd5"/>
+  <rect x="305" y="429" width="20" height="7" rx="1.5" fill="none" stroke="#ea580c" stroke-width="2.6"/>
+  <rect x="305" y="441" width="20" height="7" rx="1.5" fill="none" stroke="#ea580c" stroke-width="2.6"/>
+  <rect x="305" y="453" width="20" height="7" rx="1.5" fill="none" stroke="#ea580c" stroke-width="2.6"/>
+  <text x="345" y="435" class="box-title" fill="#c2410c">Infrastructure Adapter</text>
+  <text x="345" y="454" class="box-text">Technical implementation</text>
+
+  <!-- Neo4j DB -->
+  <g filter="url(#softShadow)">
+    <ellipse cx="675" cy="448" rx="34" ry="12" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.4"/>
+    <rect x="641" y="448" width="68" height="44" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.4"/>
+    <ellipse cx="675" cy="492" rx="34" ry="12" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.4"/>
+  </g>
+  <text x="656" y="474" class="box-title" fill="#6d28d9">Neo4j</text>
+
+  <!-- Files -->
+  <g filter="url(#softShadow)">
+    <ellipse cx="675" cy="520" rx="34" ry="12" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.4"/>
+    <rect x="641" y="520" width="68" height="32" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.4"/>
+    <ellipse cx="675" cy="552" rx="34" ry="12" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.4"/>
+  </g>
+  <text x="659" y="543" class="box-title" fill="#6d28d9">Files</text>
+
+  <!-- Arrows -->
+  <line x1="221" y1="251" x2="300" y2="251" class="arrow" stroke="#2563eb" marker-end="url(#arrowBlue)"/>
+
+  <path d="M470 225 C525 175 545 130 585 107" class="arrow" stroke="#7c3aed" marker-end="url(#arrowPurple)"/>
+  <line x1="470" y1="245" x2="585" y2="240" class="arrow" stroke="#7c3aed" marker-end="url(#arrowPurple)"/>
+  <path d="M470 275 C525 300 545 350 585 370" class="arrow" stroke="#7c3aed" marker-end="url(#arrowPurple)"/>
+
+  <line x1="508" y1="441" x2="641" y2="463" class="arrow" stroke="#ea580c" marker-end="url(#arrowOrange)"/>
+  <path d="M508 458 C560 510 595 530 641 536" class="arrow" stroke="#ea580c" marker-end="url(#arrowOrange)"/>
+  <path d="M508 410 C545 388 560 372 585 370" class="arrow" stroke="#ea580c" marker-end="url(#arrowOrange)"/>
+
+  <!-- Divider / boundary hint -->
+  <line x1="540" y1="96" x2="540" y2="492" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="7 7"/>
+  <text x="548" y="330" class="small">ports separate application from infrastructure</text>
+
+  <!-- legend -->
+  <rect x="42" y="506" width="470" height="38" rx="6" fill="#ffffff" stroke="#d9dee7"/>
+  <line x1="60" y1="525" x2="98" y2="525" stroke="#334155" stroke-width="2.2" marker-end="url(#arrowDark)"/>
+  <text x="108" y="530" class="small">Arrows represent dependency/call direction within the use case boundary</text>
+</svg>
