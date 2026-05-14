@@ -109,17 +109,31 @@ AIGORA is currently in the **Early Development**.
 
 | Component  | Release Focus | Maturity | Description |
 |----------|--------------|----------|------------|
-| Curriculum Graph | ⏳ Planned | [v0.2.1](https://github.com/AigoraCorporation/aigora/issues/124) | Defines the structured knowledge graph and dependencies |
+| Curriculum Graph | 🚧 In Progress | [v0.2.1](https://github.com/AigoraCorporation/aigora/issues/124) | Defines the structured knowledge graph and dependencies |
 | Tutor Orchestrator | 🚧 In Progress | N/A | Responsible for pedagogical orchestration and decision-making |
-| Student Model | ⏳ Planned' | N/A | Models student knowledge, progress, and learning state |
+| Student Model | ⏳ Planned | N/A | Models student knowledge, progress, and learning state |
 
-### Current Release
+### Current Releases
 
-**vX.X.X — XXX**
+**v0.2.2 — Curriculum Graph API Foundation**
 
-Focus areas:
-- XXXXXXXX
-- XXXXXXXX
+Focus:
+
+* FastAPI delivery layer
+* API boundary exposure
+* Request / response contracts
+* Dependency injection structure
+* OpenAPI documentation
+
+**v0.3.0 — Orchestrator Core (Deterministic)**
+
+Focus:
+
+* Deterministic orchestration engine
+* Rule-based progression decisions
+* Curriculum Graph traversal
+* Learning state evaluation
+* Pedagogical orchestration flow
 
 ---
 
@@ -133,17 +147,16 @@ Latest release:
 
 | Version | Name | Status |
 |--------|------|--------|
+| v0.2.1 | Curriculum Graph Persistence & Change Management | ✅ Released |
 | v0.2.0 | Curriculum Graph (Core Runtime) | ✅ Released |
 | v0.1.1 | Architecture v1 | ✅ Released |
-| v0.1.0 | Architecture Foundations | ✅ Released |
-
 
 Release Roadmap:
 
 | Version | Name | Status | Planned Date | Details |
 |--------|------|--------|---------|---------|
-| v0.2.1 | Curriculum Graph Persistence & Change Management | 🚧 In Progress | 2026-05-15 | [Plan](https://github.com/AigoraCorporation/aigora/issues/124) |
-| v0.3.0 | Orchestrator Core (Deterministic) | ⏳ Planned | TBD |  — |
+| v0.2.2 | Curriculum Graph API Foundation | 🚧 In Progress | 2026-06-15 | [Plan](https://github.com/AigoraCorporation/aigora/issues/186) |
+| v0.3.0 | Orchestrator Core (Deterministic) | 🚧 In Progress | 2026-06-15 | [Plan](https://github.com/AigoraCorporation/aigora/issues/185) |
 
 See full roadmap: [Release Roadmap](docs/06-engineering/governance/release-roadmap.md)
 
