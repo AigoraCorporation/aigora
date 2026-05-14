@@ -75,7 +75,7 @@ Release ──includes──▶ ADR Milestone
 
 | Artifact | Location | Purpose |
 |----------|----------|---------|
-| ADR documents | `docs/02-architecture/decisions/` | Record binding decisions and milestones |
+| ADR documents | `docs/02-architecture/[component]/adr/` | Record binding decisions and milestones |
 | Release documents | `docs/releases/` | Declare ADR Milestones and Issues per release |
 | Issue ADR fields | GitHub Issue body | Link Issue to ADR Milestone |
 
@@ -150,5 +150,5 @@ A Release is only considered complete when:
 
 - [Engineering Policies](engineering-policies.md)
 - [Pull Request Policy](pull-request-policy.md)
-- `docs/02-architecture/decisions/` — ADR documents
+- `docs/02-architecture/[component]/adr/` — ADR documents
 - `docs/releases/` — Release documents
