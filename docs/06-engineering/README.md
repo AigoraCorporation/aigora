@@ -14,6 +14,10 @@ Rules and constraints that must be followed:
 Core principles and constraints for system design.
 - [Pull Request Policy](governance/pull-request-policy.md)
 How work is planned, implemented, and reviewed.
+- [Implementation Guardrails](governance/implementation-guardrails.md)  
+Guidelines and boundaries for implementation decisions across the system.
+- [Release Roadmap](governance/release-roadmap.md)  
+Defines upcoming releases, priorities, and component-level evolution.
 
 ---
 
@@ -24,3 +28,4 @@ How work is executed:
 - [Development Workflow](workflow/development-workflow.md)
 - [Git Flow](workflow/git-flow.md)
 - [Release Workflow](workflow/release-workflow.md)
+- [Neo4j Local Setup](workflow/neo4j-local-setup.md)

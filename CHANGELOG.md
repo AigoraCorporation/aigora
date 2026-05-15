@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.2.1] - 2026-05-15
+
+### Added
+
+* Neo4j persistence layer for Curriculum Graph
+* Graph publication pipeline from canonical artifacts to Neo4j
+* Idempotent graph loading strategy
+* Neo4j constraints and index definitions
+* Structural validation flow for persisted graph state
+* Initial graph change management strategy
+* Persistence validation architecture
+* Graph synchronization and loading documentation
+* Architecture Decision Records (ADR) structure
+
+### Changed
+
+* Transitioned Curriculum Graph from logical-only architecture to persistent graph infrastructure
+* Refined separation between domain, application, and infrastructure responsibilities
+* Improved alignment between domain entities and persistence schema
+* Standardized graph publication orchestration through application use cases
+* Refined validation responsibilities across structural, semantic, and operational layers
+* Improved architectural documentation structure and navigation
+
+### Fixed
+
+* Inconsistencies between persistence model and canonical graph structure
+* Broken or outdated architectural documentation references
+* Misaligned terminology between graph artifacts and persistence layer
+
+### Removed
+
+* Early persistence assumptions from conceptual documentation
+* Redundant graph publication flows from initial architecture drafts
+
+---
+
 ## [v0.2.0] - 2026-04-24
 
 ### Added
