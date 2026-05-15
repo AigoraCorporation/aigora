@@ -10,8 +10,8 @@ This directory contains Architecture Decision Records (ADRs) documenting signifi
 
 | ADR | Title | Version | Date |
 |-----|-------|---------|------|
-| [ADR-001](ADR-001-graph-loader-remains-file-based) | Graph Loader Remains File-Based | v0.2.1 | 2026-05-14 |
-| [ADR-002](ADR-002-neo4j-persistence-via-repository-port) | Neo4j Persistence via Repository Port | v0.2.1 | 2026-05-14 |
+| [ADR-001](ADR-001-graph-loader-remains-file-based.md) | Graph Loader Remains File-Based | v0.2.1 | 2026-05-14 |
+| [ADR-002](ADR-002-neo4j-persistence-via-repository-port.md) | Neo4j Persistence via Repository Port | v0.2.1 | 2026-05-14 |
 | [ADR-003](ADR-003-graph-publication-use-case-is-the-entrypoint.md) | Graph Publication Use Case Is the Entrypoint | v0.2.1 | 2026-05-14 |
 | [ADR-004](ADR-004-use-command-result-contracts-for-use-cases.md) | Use Command / Result Contracts for Use Cases | v0.2.1 | 2026-05-14 |
 | [ADR-005](ADR-005-model-graph-loading-as-explicit-pipeline.md) | Model Graph Loading as Explicit Pipeline | v0.2.1 | 2026-05-14 |
