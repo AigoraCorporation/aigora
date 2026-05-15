@@ -1,186 +1,99 @@
-# Neo4j Publication Architecture — Curriculum Graph
+# Curriculum Graph — Neo4j Publication
 
-## Objective
+## Purpose
 
-Define the official architecture for publishing the `CurriculumGraph` to CSV and Neo4j,
-while preserving the existing file-based loading flow.
+This document describes how Curriculum Graph snapshots are published to Neo4j.
 
----
-
-## Fundamental Principles
-
-1. The `GraphLoader` remains the official entry point of the canonical graph
-2. The graph is first built in memory, not directly in the database
-3. Neo4j persistence is implemented via a port (`GraphRepository`) and an adapter
-4. CSV is a derived artifact, not the primary source
-5. Existing validations must be reused, not duplicated
+Neo4j is treated as an infrastructure adapter. The application layer must interact with persistence through the `CurriculumGraphRepository` contract, not through Neo4j-specific classes.
 
 ---
 
-## Complete Flow
+## Publication Flow
 
 ```text
-Canonical file (yaml/json)
-    ↓
-GraphLoader
-    ↓
-CurriculumGraph (in memory)
-    ↓
-GraphCsvExporter (optional)
-    ↓
-GraphRepository (port)
-    ↓
-Neo4jGraphRepository (adapter)
-    ↓
+PublishGraphCommand
+  ↓
+PublishGraphUseCase
+  ↓
+LoadGraphUseCase
+  ↓
+CurriculumGraphRepository
+  ↓
+Neo4jCurriculumGraphRepository
+  ↓
 Neo4j
-    ↓
-Post-persistence validations
-````
+```
 
 ---
 
-## CSV Contract
+## Responsibility Split
 
-The CSV structure used for graph publication is defined in:
-
-- [`docs/05-data/canonical-csv-model.md`](../../05-data/canonical-csv-model.md)
-
-This contract defines:
-
-- all exported CSV files
-- column structure and types
-- required vs optional fields
-- referential integrity rules
-
-The `GraphCsvExporter` must strictly follow this contract.
-
---- 
-
-## Components and Responsibilities
-
-### GraphLoader (application)
-
-Responsible for:
-
-* reading the file
-* validating schema
-* building `CurriculumGraph`
-* validating domain rules
-* validating version
-
-Does NOT:
-
-* perform persistence
-* export CSV
-* communicate with the database
+| Component | Responsibility |
+|---|---|
+| `PublishGraphUseCase` | Orchestrates publication |
+| `LoadGraphUseCase` | Loads and validates the graph snapshot |
+| `CurriculumGraphRepository` | Defines the persistence contract |
+| `Neo4jCurriculumGraphRepository` | Implements persistence using Neo4j |
+| `CurriculumGraphPersistenceValidator` | Validates persisted state |
 
 ---
 
-### GraphCsvExporter (application)
+## Repository Boundary
 
-Responsible for:
+The application layer must depend on:
 
-* converting `CurriculumGraph` into CSV
-* generating deterministic artifacts
+```text
+CurriculumGraphRepository
+```
 
----
+It must not depend on:
 
-### GraphRepository (application/port)
-
-Persistence contract.
-
-Defines:
-
-* applying schema
-* persisting graph
-* validating persistence
+```text
+Neo4jCurriculumGraphRepository
+Neo4j driver
+Cypher queries
+Neo4j sessions
+```
 
 ---
 
-### Neo4jGraphRepository (infrastructure)
+## Cypher Ownership
 
-Concrete implementation using Neo4j.
+Cypher must remain inside infrastructure.
 
-Responsible for:
+Allowed location:
 
-* executing Cypher
-* applying constraints
-* persisting nodes and edges
-* using UNWIND/MERGE in batches
+```text
+src/aigora/curriculum_graph/infrastructure/neo4j/
+```
 
----
+Forbidden locations:
 
-### GraphPublicationService (application)
-
-Flow orchestrator.
-
-Responsible for:
-
-1. loading the graph
-2. optionally exporting CSV
-3. applying schema
-4. persisting data
-5. validating persistence
+```text
+src/aigora/curriculum_graph/domain/
+src/aigora/curriculum_graph/application/
+```
 
 ---
 
-## Validations
+## Persistence Validation
 
-### Before persistence
+After publication, infrastructure may validate the persisted state.
 
-* GraphSchemaValidator
-* GraphValidator
-* GraphVersionValidator
-
-### After persistence
-
-* node count validation
-* consistency validation
-* referential integrity validation
+Persistence validation is technical validation and belongs to infrastructure because it depends on Neo4j state.
 
 ---
 
-## Important Decisions
+## Constraints
 
-### ❗ GraphLoader MUST NOT be modified to interact with Neo4j
-
-It remains file-based.
-
-### ❗ Persistence must happen only through GraphRepository
-
-Never directly in the service or loader.
-
-### ❗ Cypher must not be scattered across the codebase
-
-It must be centralized in the adapter or `.cypher` files.
+- Publication must go through `PublishGraphUseCase`.
+- Persistence must go through `CurriculumGraphRepository`.
+- Neo4j implementation details must stay in infrastructure.
+- Graph loading must remain file-based and deterministic.
+- Student mastery state must not be stored in the Curriculum Graph persistence model.
 
 ---
 
-## Anti-patterns (forbidden)
+## Summary
 
-* GraphLoader using Neo4j
-* Domain importing Neo4j driver
-* Cypher inside CLI
-* Domain logic inside infrastructure
-* duplicated validations
-
---- 
-
-## Local Environment
-
-For local Neo4j setup, see:
-
-- docs/06-engineering/workflow/neo4j-local-setup.md
-
----
-
-## Conclusion
-
-This architecture ensures:
-
-* clear separation of concerns
-* testability
-* future evolution (other databases, APIs, etc.)
-* control over AI-driven implementations in the project
-
-
+Neo4j publication is an infrastructure concern orchestrated by the application use case through a domain repository contract.

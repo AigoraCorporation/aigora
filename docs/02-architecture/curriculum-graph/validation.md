@@ -3,6 +3,17 @@
 This document defines the validation rules applied to curriculum graph
 artifacts — canonical nodes, prerequisite edges, and curriculum profiles.
 
+Validation is intentionally separated by responsibility so that
+structural integrity, pedagogical correctness, and runtime compatibility
+remain independently enforceable.
+
+This separation helps preserve:
+
+* architectural clarity
+* orchestration stability
+* domain consistency
+* infrastructure independence
+
 Validations are grouped into three layers: structural, semantic, and
 operational. Each layer addresses a distinct class of integrity concern.
 
@@ -10,13 +21,34 @@ operational. Each layer addresses a distinct class of integrity concern.
 
 ## Validation Layers
 
-| Layer | Concern | Applied at |
-|---|---|---|
-| **Structural** | Graph integrity and schema conformance | Authoring time and CI |
-| **Semantic** | Conceptual soundness and pedagogical coherence | Review process |
+| Layer           | Concern                                                       | Applied at                 |
+| --------------- | ------------------------------------------------------------- | -------------------------- |
+| **Structural**  | Graph integrity and schema conformance                        | Authoring time and CI      |
+| **Semantic**    | Conceptual soundness and pedagogical coherence                | Review process             |
 | **Operational** | Runtime compatibility with the orchestrator and student model | Integration and deployment |
 
 All three layers must pass before any artifact is merged into the canonical graph.
+
+---
+
+## Validation Flow
+
+Validation occurs progressively during the graph lifecycle.
+
+```text
+Authoring
+  ↓
+Structural Validation
+  ↓
+Semantic Review
+  ↓
+Operational Validation
+  ↓
+Canonical Publication
+```
+
+Each validation stage owns a distinct responsibility and should not
+mix concerns from other layers.
 
 ---
 
@@ -25,6 +57,10 @@ All three layers must pass before any artifact is merged into the canonical grap
 Structural validations verify that graph artifacts are well-formed
 and internally consistent at the data level. They are automatable
 and enforced by CI.
+
+Structural validations focus on graph integrity and machine-verifiable
+constraints. They must not encode pedagogical judgement or runtime
+orchestration concerns.
 
 ### S1 — ID Uniqueness
 
@@ -37,7 +73,7 @@ Duplication of any id is a hard failure.
 
 All node ids must conform to the format defined in [authoring.md](authoring.md):
 
-```
+```text
 <domain>.<subtopic>.<concept>
 ```
 
@@ -103,6 +139,10 @@ Zero or negative weights are not permitted.
 Semantic validations verify that the graph accurately and coherently
 represents mathematical knowledge. They require expert judgement and
 are enforced through the human review process.
+
+Semantic validations intentionally require expert judgement because
+conceptual correctness and pedagogical coherence cannot be fully
+reduced to automated structural checks.
 
 ### SE1 — Concept Distinctness
 
@@ -184,6 +224,10 @@ Operational validations verify that graph artifacts are compatible
 with the runtime behaviour of the Tutor Orchestrator and the
 Student Model. They are verified during integration testing.
 
+Operational validations ensure that the graph remains compatible with
+runtime orchestration, student modeling, readiness computation and
+future adaptive tutoring flows.
+
 ### O1 — Orchestrator Traversability
 
 The orchestrator must be able to resolve any required node in any
@@ -226,28 +270,45 @@ node content at runtime fails this validation.
 
 ---
 
+## Architectural Boundaries
+
+Validation responsibilities must remain separated across architectural
+layers.
+
+Examples of invalid responsibility mixing include:
+
+* structural validators enforcing pedagogical judgement
+* semantic validation coupled to infrastructure concerns
+* runtime orchestration logic embedded into canonical graph definitions
+* persistence-specific assumptions leaking into domain validation
+
+Validation orchestration should remain explicit and isolated from
+infrastructure implementations.
+
+---
+
 ## Validation Summary
 
-| ID | Layer | Automatable | Hard Failure |
-|---|---|---|---|
-| S1 | Structural | Yes | Yes |
-| S2 | Structural | Yes | Yes |
-| S3 | Structural | Yes | Yes |
-| S4 | Structural | Yes | Yes |
-| S5 | Structural | Yes | Yes |
-| S6 | Structural | Yes | Yes |
-| S7 | Structural | Yes | Yes |
-| S8 | Structural | Yes | Yes |
-| SE1 | Semantic | No | Yes (review gate) |
-| SE2 | Semantic | Partial (keyword scan) | Yes |
-| SE3 | Semantic | No | Yes (review gate) |
-| SE4 | Semantic | No | Yes (review gate) |
-| SE5 | Semantic | No | Yes (review gate) |
-| SE6 | Semantic | No | Yes (review gate) |
-| SE7 | Semantic | Partial | Yes (review gate) |
-| SE8 | Semantic | Partial (keyword scan) | Yes |
-| O1 | Operational | Yes | Yes |
-| O2 | Operational | Yes | Yes |
-| O3 | Operational | Partial | Yes |
-| O4 | Operational | Yes | Yes |
-| O5 | Operational | Yes | Yes |
+| ID  | Layer       | Automatable            | Hard Failure      |
+| --- | ----------- | ---------------------- | ----------------- |
+| S1  | Structural  | Yes                    | Yes               |
+| S2  | Structural  | Yes                    | Yes               |
+| S3  | Structural  | Yes                    | Yes               |
+| S4  | Structural  | Yes                    | Yes               |
+| S5  | Structural  | Yes                    | Yes               |
+| S6  | Structural  | Yes                    | Yes               |
+| S7  | Structural  | Yes                    | Yes               |
+| S8  | Structural  | Yes                    | Yes               |
+| SE1 | Semantic    | No                     | Yes (review gate) |
+| SE2 | Semantic    | Partial (keyword scan) | Yes               |
+| SE3 | Semantic    | No                     | Yes (review gate) |
+| SE4 | Semantic    | No                     | Yes (review gate) |
+| SE5 | Semantic    | No                     | Yes (review gate) |
+| SE6 | Semantic    | No                     | Yes (review gate) |
+| SE7 | Semantic    | Partial                | Yes (review gate) |
+| SE8 | Semantic    | Partial (keyword scan) | Yes               |
+| O1  | Operational | Yes                    | Yes               |
+| O2  | Operational | Yes                    | Yes               |
+| O3  | Operational | Partial                | Yes               |
+| O4  | Operational | Yes                    | Yes               |
+| O5  | Operational | Yes                    | Yes               |
