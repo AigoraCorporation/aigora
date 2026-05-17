@@ -6,6 +6,18 @@ labels: task
 assignees: ""
 ---
 
+## ADR Linkage (Required for Architectural Features; Optional Otherwise)
+
+- ADR: ADR-XXX
+- Milestone: M1
+- Justification (if multiple ADRs or exception):
+
+## Issue Type (Required)
+
+- [ ] Feature
+- [ ] Bugfix
+- [ ] Chore
+
 ## Context
 
 Why is this needed?
@@ -21,6 +33,16 @@ What must be achieved?
 
 ### Excluded
 - 
+
+## Dependencies (Optional)
+
+- Depends on: #
+- Blocks: #
+
+## Behavior Scenarios (only if externally observable)
+
+If this change affects user-visible or system-level behavior, define scenarios.
+Otherwise, omit this section.
 
 ## Behavior Scenarios (BDD)
 
@@ -56,9 +78,12 @@ What must be achieved?
 
 ## Acceptance Criteria
 
+Must be verifiable and tied to the ADR Milestone.
+
 - [ ]
 - [ ]
 - [ ]
+- [ ] Criteria explicitly linked to milestone outcome
 
 ## Notes (Optional)
 
