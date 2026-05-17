@@ -4,7 +4,7 @@
 
 This directory contains Architecture Decision Records (ADRs) documenting significant technical decisions for Curriculum-Graph Component.
 
-Use the ADR template at [ADR-TEMPLATE.md](ADR-TEMPLATE.md) when creating new records.
+Use the shared ADR template at [`docs/06-engineering/governance/templates/ADR-TEMPLATE.md`](../../../06-engineering/governance/templates/ADR-TEMPLATE.md) when creating new records.
 
 ---
 

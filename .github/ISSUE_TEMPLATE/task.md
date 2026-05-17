@@ -6,7 +6,7 @@ labels: task
 assignees: ""
 ---
 
-## ADR Linkage (Required for Features)
+## ADR Linkage (Required for Architectural Features; Optional Otherwise)
 
 - ADR: ADR-XXX
 - Milestone: M1
