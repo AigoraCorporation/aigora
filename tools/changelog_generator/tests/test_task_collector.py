@@ -213,17 +213,18 @@ def test_timeout_parameter_is_passed_to_urlopen():
     responses = [milestones, issues, []]
 
     captured_timeout = []
-    call_count = [0]  # Use list to allow mutation in nested function
+    call_count = 0
 
     def fake_urlopen_with_timeout_capture(req, timeout=None):
+        nonlocal call_count
         captured_timeout.append(timeout)
-        if call_count[0] >= len(responses):
+        if call_count >= len(responses):
             raise AssertionError(
-                f"Unexpected HTTP call #{call_count[0] + 1}. "
+                f"Unexpected HTTP call #{call_count + 1}. "
                 f"Only {len(responses)} response(s) were provided."
             )
-        data = json.dumps(responses[call_count[0]]).encode("utf-8")
-        call_count[0] += 1
+        data = json.dumps(responses[call_count]).encode("utf-8")
+        call_count += 1
 
         mock_response = MagicMock()
         mock_response.read.return_value = data
