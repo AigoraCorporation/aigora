@@ -37,6 +37,17 @@ Release Roadmap:
 | v0.3.0 | Second Release | 🚧 In Progress | 2026-09-01 | [Plan](https://example.com/185) |
 """
 
+README_MULTIPLE_IN_PROGRESS_REVERSE = """\
+# Project
+
+Release Roadmap:
+
+| Version | Name | Status | Planned Date | Details |
+|--------|------|--------|---------|---------|
+| v0.3.0 | Second Release | 🚧 In Progress | 2026-09-01 | [Plan](https://example.com/185) |
+| v0.2.2 | First Release | 🚧 In Progress | 2026-06-15 | [Plan](https://example.com/186) |
+"""
+
 README_NO_IN_PROGRESS = """\
 # Project
 
@@ -107,8 +118,23 @@ def test_raises_when_multiple_in_progress_rows_exist(tmp_path):
     readme = tmp_path / "README.md"
     readme.write_text(README_MULTIPLE_IN_PROGRESS, encoding="utf-8")
 
-    with pytest.raises(ReleaseDetectionError, match="Multiple releases marked as 'In Progress'"):
+    with pytest.raises(ReleaseDetectionError, match="Multiple releases marked as 'In Progress'") as exc_info:
         ReleaseDetector().detect(readme)
+    
+    # Verify versions are listed in sorted order
+    assert "v0.2.2, v0.3.0" in str(exc_info.value)
+
+
+def test_error_message_sorts_versions_consistently(tmp_path):
+    """Verify that multiple in-progress versions are sorted in error message."""
+    readme = tmp_path / "README.md"
+    readme.write_text(README_MULTIPLE_IN_PROGRESS_REVERSE, encoding="utf-8")
+
+    with pytest.raises(ReleaseDetectionError) as exc_info:
+        ReleaseDetector().detect(readme)
+    
+    # Even though v0.3.0 appears first in README, error should show sorted order
+    assert "v0.2.2, v0.3.0" in str(exc_info.value)
 
 
 # ---------------------------------------------------------------------------
