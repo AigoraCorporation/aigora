@@ -59,7 +59,12 @@ class TaskCollector:
             f"/repos/{self._owner}/{self._repo}/issues"
             f"?milestone={milestone_number}&labels=release&state=open&per_page=100"
         )
-        return [self._map_task(issue) for issue in self._get(path)]
+        issues = self._get(path)
+        return [
+            self._map_task(issue)
+            for issue in issues
+            if "pull_request" not in issue
+        ]
 
     def _map_task(self, issue: dict) -> ReleaseTask:
         return ReleaseTask(
