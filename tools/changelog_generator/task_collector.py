@@ -31,9 +31,9 @@ class TaskCollector:
     """
 
     _GITHUB_API = "https://api.github.com"
-    _DEFAULT_TIMEOUT = 30
+    _DEFAULT_TIMEOUT = 30.0
 
-    def __init__(self, token: str, owner: str, repo: str, timeout: int = _DEFAULT_TIMEOUT) -> None:
+    def __init__(self, token: str, owner: str, repo: str, timeout: float = _DEFAULT_TIMEOUT) -> None:
         self._token = token
         self._owner = owner
         self._repo = repo
