@@ -1,0 +1,174 @@
+from __future__ import annotations
+
+import json
+from io import BytesIO
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+from changelog_generator.release_detector import ReleaseMetadata
+from changelog_generator.task_collector import (
+    ReleaseTask,
+    TaskCollectionError,
+    TaskCollector,
+)
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+
+def make_release(name: str = "Curriculum Graph API Foundation") -> ReleaseMetadata:
+    return ReleaseMetadata(
+        version="v0.2.2",
+        name=name,
+        planned_date="2026-06-15",
+        status="🚧 In Progress",
+        details_url="https://example.com/186",
+    )
+
+
+def make_milestone(number: int = 5, title: str = "Curriculum Graph API Foundation") -> dict:
+    return {"number": number, "title": title}
+
+
+def make_issue(
+    number: int = 42,
+    title: str = "Add feature X",
+    labels: list[str] | None = None,
+    milestone_title: str = "Curriculum Graph API Foundation",
+) -> dict:
+    return {
+        "number": number,
+        "title": title,
+        "body": "## Changelog Entry Draft\n\n### Added\n- Feature X\n",
+        "state": "open",
+        "labels": [{"name": lbl} for lbl in (labels or ["release"])],
+        "milestone": {"title": milestone_title},
+    }
+
+
+def _make_fake_urlopen(responses: list[list[dict]]):
+    """Returns a fake urlopen that yields successive JSON payloads."""
+    call_count = 0
+
+    def fake_urlopen(req):
+        nonlocal call_count
+        data = json.dumps(responses[call_count]).encode("utf-8")
+        call_count += 1
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = data
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+        return mock_response
+
+    return fake_urlopen
+
+
+def make_collector() -> TaskCollector:
+    return TaskCollector(token="fake-token", owner="AigoraCorporation", repo="aigora")
+
+
+# ---------------------------------------------------------------------------
+# Scenario 1 — Happy Path
+# ---------------------------------------------------------------------------
+
+
+def test_collects_tasks_matching_label_and_milestone():
+    milestones = [make_milestone()]
+    issues = [make_issue()]
+
+    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues])):
+        result = make_collector().collect(make_release())
+
+    assert len(result) == 1
+    assert result[0].number == 42
+    assert result[0].title == "Add feature X"
+    assert "release" in result[0].labels
+    assert result[0].milestone == "Curriculum Graph API Foundation"
+
+
+def test_returned_task_contains_all_required_fields():
+    milestones = [make_milestone()]
+    issues = [make_issue(number=7, title="Fix crash")]
+
+    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues])):
+        result = make_collector().collect(make_release())
+
+    task = result[0]
+    assert isinstance(task, ReleaseTask)
+    assert task.number == 7
+    assert task.title == "Fix crash"
+    assert task.state == "open"
+    assert "release" in task.labels
+    assert task.milestone == "Curriculum Graph API Foundation"
+
+
+# ---------------------------------------------------------------------------
+# Scenario 2 — Edge Case: partial matches are excluded
+# ---------------------------------------------------------------------------
+
+
+def test_only_issues_matching_both_criteria_are_returned():
+    """GitHub API is queried with both milestone and label filters.
+
+    The API itself enforces both filters, so an empty response means
+    no double-matching issues exist.
+    """
+    milestones = [make_milestone()]
+    issues = []  # API returns nothing when both filters applied and nothing matches
+
+    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues])):
+        result = make_collector().collect(make_release())
+
+    assert result == []
+
+
+def test_returns_empty_list_when_no_issues_match():
+    milestones = [make_milestone()]
+    issues = []
+
+    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues])):
+        result = make_collector().collect(make_release())
+
+    assert result == []
+
+
+# ---------------------------------------------------------------------------
+# Scenario 3 — Failure Cases
+# ---------------------------------------------------------------------------
+
+
+def test_raises_when_milestone_not_found():
+    milestones: list[dict] = []
+
+    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones])):
+        with pytest.raises(TaskCollectionError, match="No GitHub milestone found"):
+            make_collector().collect(make_release())
+
+
+def test_raises_when_github_api_returns_http_error():
+    import urllib.error
+
+    http_error = urllib.error.HTTPError(
+        url="https://api.github.com/repos/org/repo/milestones",
+        code=401,
+        msg="Unauthorized",
+        hdrs=MagicMock(),
+        fp=None,
+    )
+
+    with patch("urllib.request.urlopen", side_effect=http_error):
+        with pytest.raises(TaskCollectionError, match=r"GitHub API request failed \[401\]"):
+            make_collector().collect(make_release())
+
+
+def test_raises_when_github_api_is_unreachable():
+    import urllib.error
+
+    url_error = urllib.error.URLError(reason="Name or service not known")
+
+    with patch("urllib.request.urlopen", side_effect=url_error):
+        with pytest.raises(TaskCollectionError, match="GitHub API connection error"):
+            make_collector().collect(make_release())
