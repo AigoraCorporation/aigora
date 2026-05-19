@@ -162,6 +162,8 @@ class TaskCollector:
         
         for link in link_header.split(","):
             parts = link.strip().split(";")
+            # GitHub Link headers can have additional attributes beyond URL and rel,
+            # so we check for at least 2 parts and use the first two (URL and rel).
             if len(parts) >= 2:
                 url_part = parts[0].strip()
                 rel_part = parts[1].strip()
