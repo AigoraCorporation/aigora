@@ -1,5 +1,5 @@
-import sys
-from pathlib import Path
+"""Pytest configuration for changelog_generator tests.
 
-# Add tools/ to sys.path so that `changelog_generator` is importable as a package.
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+`changelog_generator` is importable via the `pythonpath = ["tools"]` setting
+in pyproject.toml — no manual sys.path manipulation needed.
+"""
