@@ -103,13 +103,12 @@ def test_ignores_released_and_planned_rows(tmp_path):
     assert "Planned" not in result.status
 
 
-def test_returns_first_row_when_multiple_in_progress(tmp_path):
+def test_raises_when_multiple_in_progress_rows_exist(tmp_path):
     readme = tmp_path / "README.md"
     readme.write_text(README_MULTIPLE_IN_PROGRESS, encoding="utf-8")
 
-    result = ReleaseDetector().detect(readme)
-
-    assert result.version == "v0.2.2"
+    with pytest.raises(ReleaseDetectionError, match="Multiple releases marked as 'In Progress'"):
+        ReleaseDetector().detect(readme)
 
 
 # ---------------------------------------------------------------------------

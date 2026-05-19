@@ -80,9 +80,12 @@ def main() -> None:
         sys.exit(f"Changelog draft consolidation failed: {exc}")
 
     # Step 4: render and write changelog
-    writer = ChangelogWriter()
-    entry = writer.render(release, draft)
-    writer.prepend_to_changelog(entry, changelog_path)
+    try:
+        writer = ChangelogWriter()
+        entry = writer.render(release, draft)
+        writer.prepend_to_changelog(entry, changelog_path)
+    except OSError as exc:
+        sys.exit(f"Failed to write CHANGELOG.md: {exc}")
 
     print(f"CHANGELOG.md updated for {release.version}.")
 
