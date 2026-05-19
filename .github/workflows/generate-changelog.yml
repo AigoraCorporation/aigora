@@ -6,6 +6,10 @@ on:
     branches:
       - release
 
+concurrency:
+  group: changelog-generation-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   generate-changelog:
     name: Generate CHANGELOG.md
@@ -40,4 +44,5 @@ jobs:
           git add CHANGELOG.md
           git diff --cached --quiet \
             || git commit -m "chore(ci): generate changelog entry for release"
+          git pull --rebase origin release
           git push

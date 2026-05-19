@@ -49,7 +49,7 @@ class TaskCollector:
         return self._fetch_tasks(milestone_number)
 
     def _find_milestone_number(self, name: str) -> int | None:
-        milestones = self._get(
+        milestones = self._get_paginated(
             f"/repos/{self._owner}/{self._repo}/milestones?per_page=100&state=all"
         )
         return next(
@@ -62,7 +62,7 @@ class TaskCollector:
             f"/repos/{self._owner}/{self._repo}/issues"
             f"?milestone={milestone_number}&labels=release&state=open&per_page=100"
         )
-        return [self._map_task(issue) for issue in self._get(path)]
+        return [self._map_task(issue) for issue in self._get_paginated(path)]
 
     def _map_task(self, issue: dict) -> ReleaseTask:
         return ReleaseTask(
@@ -95,3 +95,69 @@ class TaskCollector:
             raise TaskCollectionError(
                 f"GitHub API connection error for {url}: {exc.reason}"
             ) from exc
+
+    def _get_paginated(self, path: str) -> list[dict]:
+        """Fetch all pages of results from a GitHub API endpoint.
+        
+        Follows the Link header to retrieve all pages until no 'next' link is present.
+        """
+        results = []
+        current_path = path
+        
+        while current_path:
+            url = f"{self._GITHUB_API}{current_path}"
+            req = urllib.request.Request(
+                url,
+                headers={
+                    "Authorization": f"Bearer {self._token}",
+                    "Accept": "application/vnd.github+json",
+                    "X-GitHub-Api-Version": "2022-11-28",
+                },
+            )
+            try:
+                with urllib.request.urlopen(req) as response:
+                    page_data = json.loads(response.read().decode("utf-8"))
+                    results.extend(page_data)
+                    
+                    # Parse Link header for next page
+                    link_header = response.headers.get("Link", "")
+                    current_path = self._parse_next_link(link_header)
+                    
+            except urllib.error.HTTPError as exc:
+                raise TaskCollectionError(
+                    f"GitHub API request failed [{exc.code}] for {url}: {exc.reason}"
+                ) from exc
+            except urllib.error.URLError as exc:
+                raise TaskCollectionError(
+                    f"GitHub API connection error for {url}: {exc.reason}"
+                ) from exc
+        
+        return results
+
+    def _parse_next_link(self, link_header: str) -> str | None:
+        """Extract the 'next' link path from a GitHub API Link header.
+        
+        Example Link header:
+        <https://api.github.com/repos/owner/repo/issues?page=2>; rel="next",
+        <https://api.github.com/repos/owner/repo/issues?page=5>; rel="last"
+        
+        Returns the path portion (e.g., "/repos/owner/repo/issues?page=2") or None.
+        """
+        if not link_header:
+            return None
+        
+        for link in link_header.split(","):
+            parts = link.strip().split(";")
+            if len(parts) == 2:
+                url_part = parts[0].strip()
+                rel_part = parts[1].strip()
+                
+                if 'rel="next"' in rel_part:
+                    # Extract URL from <...>
+                    if url_part.startswith("<") and url_part.endswith(">"):
+                        full_url = url_part[1:-1]
+                        # Extract path from full URL
+                        if self._GITHUB_API in full_url:
+                            return full_url.replace(self._GITHUB_API, "")
+        
+        return None
