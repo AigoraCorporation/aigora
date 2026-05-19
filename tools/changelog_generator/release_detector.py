@@ -100,5 +100,5 @@ class ReleaseDetector:
             name=row["name"],
             planned_date=row["planned_date"],
             status=row["status"],
-            details_url=details_match.group(1) if details_match else "",
+            details_url=details_match.group(1),
         )
