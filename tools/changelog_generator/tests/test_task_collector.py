@@ -238,3 +238,37 @@ def test_timeout_parameter_is_passed_to_urlopen():
     # Should have made 3 calls: milestones page 1, issues page 1, issues page 2 (empty)
     assert len(captured_timeout) == 3
     assert all(t == 15.5 for t in captured_timeout)
+
+
+# ---------------------------------------------------------------------------
+# Scenario 4 — Pull-request filtering
+# ---------------------------------------------------------------------------
+
+
+def test_pull_requests_are_excluded_from_results():
+    """Verify that items with a pull_request key are filtered out of collected tasks."""
+    milestones = [make_milestone()]
+    pr_item = {**make_issue(number=99, title="A PR"), "pull_request": {"url": "..."}}
+    regular = make_issue(number=42, title="A real issue")
+
+    with patch(
+        "urllib.request.urlopen",
+        side_effect=_make_fake_urlopen([milestones, [pr_item, regular], []]),
+    ):
+        result = make_collector().collect(make_release())
+
+    assert len(result) == 1
+    assert result[0].number == 42
+
+
+# ---------------------------------------------------------------------------
+# Scenario 5 — Fake urlopen guard
+# ---------------------------------------------------------------------------
+
+
+def test_fake_urlopen_raises_assertion_error_when_over_called():
+    fake = _make_fake_urlopen([[make_milestone()]])
+    fake(MagicMock())  # first call: OK
+
+    with pytest.raises(AssertionError, match="Unexpected HTTP call"):
+        fake(MagicMock())
