@@ -52,8 +52,13 @@ def _make_fake_urlopen(responses: list[list[dict]]):
     """Returns a fake urlopen that yields successive JSON payloads."""
     call_count = 0
 
-    def fake_urlopen(req):
+    def fake_urlopen(req, timeout=None):
         nonlocal call_count
+        if call_count >= len(responses):
+            raise AssertionError(
+                f"Unexpected HTTP call #{call_count + 1}. "
+                f"Only {len(responses)} response(s) were provided."
+            )
         data = json.dumps(responses[call_count]).encode("utf-8")
         call_count += 1
 
@@ -79,7 +84,7 @@ def test_collects_tasks_matching_label_and_milestone():
     milestones = [make_milestone()]
     issues = [make_issue()]
 
-    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues])):
+    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues, []])):
         result = make_collector().collect(make_release())
 
     assert len(result) == 1
@@ -93,7 +98,7 @@ def test_returned_task_contains_all_required_fields():
     milestones = [make_milestone()]
     issues = [make_issue(number=7, title="Fix crash")]
 
-    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues])):
+    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues, []])):
         result = make_collector().collect(make_release())
 
     task = result[0]
@@ -133,6 +138,33 @@ def test_returns_empty_list_when_no_issues_match():
         result = make_collector().collect(make_release())
 
     assert result == []
+
+
+def test_pagination_collects_all_milestones_across_pages():
+    """Verify milestone pagination works when target is on page 2."""
+    milestones_page1 = [make_milestone(number=1, title="Other Release")]
+    milestones_page2 = [make_milestone(number=5, title="Curriculum Graph API Foundation")]
+    issues = [make_issue()]
+
+    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones_page1, milestones_page2, issues, []])):
+        result = make_collector().collect(make_release())
+
+    assert len(result) == 1
+    assert result[0].number == 42
+
+
+def test_pagination_collects_all_issues_across_pages():
+    """Verify issue pagination works when there are multiple pages."""
+    milestones = [make_milestone()]
+    issues_page1 = [make_issue(number=1, title="Task 1")]
+    issues_page2 = [make_issue(number=2, title="Task 2")]
+
+    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues_page1, issues_page2, []])):
+        result = make_collector().collect(make_release())
+
+    assert len(result) == 2
+    assert result[0].number == 1
+    assert result[1].number == 2
 
 
 # ---------------------------------------------------------------------------

@@ -31,11 +31,13 @@ class TaskCollector:
     """
 
     _GITHUB_API = "https://api.github.com"
+    _DEFAULT_TIMEOUT = 30
 
-    def __init__(self, token: str, owner: str, repo: str) -> None:
+    def __init__(self, token: str, owner: str, repo: str, timeout: int = _DEFAULT_TIMEOUT) -> None:
         self._token = token
         self._owner = owner
         self._repo = repo
+        self._timeout = timeout
 
     def collect(self, release: ReleaseMetadata) -> list[ReleaseTask]:
         milestone_number = self._find_milestone_number(release.name)
@@ -46,23 +48,35 @@ class TaskCollector:
         return self._fetch_tasks(milestone_number)
 
     def _find_milestone_number(self, name: str) -> int | None:
-        milestones = self._get(
-            f"/repos/{self._owner}/{self._repo}/milestones?per_page=100&state=all"
-        )
-        return next(
-            (ms["number"] for ms in milestones if ms["title"] == name),
-            None,
-        )
+        page = 1
+        while True:
+            milestones = self._get(
+                f"/repos/{self._owner}/{self._repo}/milestones?per_page=100&state=all&page={page}"
+            )
+            if not milestones:
+                break
+            for ms in milestones:
+                if ms["title"] == name:
+                    return ms["number"]
+            page += 1
+        return None
 
     def _fetch_tasks(self, milestone_number: int) -> list[ReleaseTask]:
-        path = (
-            f"/repos/{self._owner}/{self._repo}/issues"
-            f"?milestone={milestone_number}&labels=release&state=open&per_page=100"
-        )
-        issues = self._get(path)
+        all_issues = []
+        page = 1
+        while True:
+            path = (
+                f"/repos/{self._owner}/{self._repo}/issues"
+                f"?milestone={milestone_number}&labels=release&state=open&per_page=100&page={page}"
+            )
+            issues = self._get(path)
+            if not issues:
+                break
+            all_issues.extend(issues)
+            page += 1
         return [
             self._map_task(issue)
-            for issue in issues
+            for issue in all_issues
             if "pull_request" not in issue
         ]
 
@@ -87,7 +101,7 @@ class TaskCollector:
             },
         )
         try:
-            with urllib.request.urlopen(req) as response:
+            with urllib.request.urlopen(req, timeout=self._timeout) as response:
                 return json.loads(response.read().decode("utf-8"))
         except urllib.error.HTTPError as exc:
             raise TaskCollectionError(
