@@ -51,8 +51,13 @@ def _make_fake_urlopen(responses: list[list[dict]]):
     """Returns a fake urlopen that yields successive JSON payloads."""
     call_count = 0
 
-    def fake_urlopen(req):
+    def fake_urlopen(req, timeout=None):
         nonlocal call_count
+        if call_count >= len(responses):
+            raise AssertionError(
+                f"Unexpected HTTP call #{call_count + 1}. "
+                f"Only {len(responses)} response(s) were provided."
+            )
         data = json.dumps(responses[call_count]).encode("utf-8")
         call_count += 1
 
@@ -78,7 +83,7 @@ def test_collects_tasks_matching_label_and_milestone():
     milestones = [make_milestone()]
     issues = [make_issue()]
 
-    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues])):
+    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues, []])):
         result = make_collector().collect(make_release())
 
     assert len(result) == 1
@@ -92,7 +97,7 @@ def test_returned_task_contains_all_required_fields():
     milestones = [make_milestone()]
     issues = [make_issue(number=7, title="Fix crash")]
 
-    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues])):
+    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues, []])):
         result = make_collector().collect(make_release())
 
     task = result[0]
@@ -134,6 +139,33 @@ def test_returns_empty_list_when_no_issues_match():
     assert result == []
 
 
+def test_pagination_collects_all_milestones_across_pages():
+    """Verify milestone pagination works when target is on page 2."""
+    milestones_page1 = [make_milestone(number=1, title="Other Release")]
+    milestones_page2 = [make_milestone(number=5, title="Curriculum Graph API Foundation")]
+    issues = [make_issue()]
+
+    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones_page1, milestones_page2, issues, []])):
+        result = make_collector().collect(make_release())
+
+    assert len(result) == 1
+    assert result[0].number == 42
+
+
+def test_pagination_collects_all_issues_across_pages():
+    """Verify issue pagination works when there are multiple pages."""
+    milestones = [make_milestone()]
+    issues_page1 = [make_issue(number=1, title="Task 1")]
+    issues_page2 = [make_issue(number=2, title="Task 2")]
+
+    with patch("urllib.request.urlopen", side_effect=_make_fake_urlopen([milestones, issues_page1, issues_page2, []])):
+        result = make_collector().collect(make_release())
+
+    assert len(result) == 2
+    assert result[0].number == 1
+    assert result[1].number == 2
+
+
 # ---------------------------------------------------------------------------
 # Scenario 3 — Failure Cases
 # ---------------------------------------------------------------------------
@@ -171,3 +203,72 @@ def test_raises_when_github_api_is_unreachable():
     with patch("urllib.request.urlopen", side_effect=url_error):
         with pytest.raises(TaskCollectionError, match="GitHub API connection error"):
             make_collector().collect(make_release())
+
+
+def test_timeout_parameter_is_passed_to_urlopen():
+    """Verify that the timeout parameter is correctly passed to urlopen."""
+    milestones = [make_milestone()]
+    issues = [make_issue()]
+    responses = [milestones, issues, []]
+
+    captured_timeout = []
+    call_count = 0
+
+    def fake_urlopen_with_timeout_capture(req, timeout=None):
+        nonlocal call_count
+        captured_timeout.append(timeout)
+        if call_count >= len(responses):
+            raise AssertionError(
+                f"Unexpected HTTP call #{call_count + 1}. "
+                f"Only {len(responses)} response(s) were provided."
+            )
+        data = json.dumps(responses[call_count]).encode("utf-8")
+        call_count += 1
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = data
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+        return mock_response
+
+    with patch("urllib.request.urlopen", side_effect=fake_urlopen_with_timeout_capture):
+        collector = TaskCollector(token="fake-token", owner="AigoraCorporation", repo="aigora", timeout=15.5)
+        collector.collect(make_release())
+
+    # Should have made 3 calls: milestones page 1, issues page 1, issues page 2 (empty terminator)
+    assert len(captured_timeout) == 3
+    assert all(t == 15.5 for t in captured_timeout)
+
+
+# ---------------------------------------------------------------------------
+# Scenario 4 — Pull-request filtering
+# ---------------------------------------------------------------------------
+
+
+def test_pull_requests_are_excluded_from_results():
+    """Verify that items with a pull_request key are filtered out of collected tasks."""
+    milestones = [make_milestone()]
+    pr_item = {**make_issue(number=99, title="A PR"), "pull_request": {"url": "..."}}
+    regular = make_issue(number=42, title="A real issue")
+
+    with patch(
+        "urllib.request.urlopen",
+        side_effect=_make_fake_urlopen([milestones, [pr_item, regular], []]),
+    ):
+        result = make_collector().collect(make_release())
+
+    assert len(result) == 1
+    assert result[0].number == 42
+
+
+# ---------------------------------------------------------------------------
+# Scenario 5 — Fake urlopen guard
+# ---------------------------------------------------------------------------
+
+
+def test_fake_urlopen_raises_assertion_error_when_over_called():
+    fake = _make_fake_urlopen([[make_milestone()]])
+    fake(MagicMock())  # first call: OK
+
+    with pytest.raises(AssertionError, match="Unexpected HTTP call"):
+        fake(MagicMock())
