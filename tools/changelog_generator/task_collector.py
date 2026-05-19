@@ -5,7 +5,10 @@ import urllib.error
 import urllib.request
 from dataclasses import dataclass
 
-from changelog_generator.release_detector import ReleaseMetadata
+try:
+    from .release_detector import ReleaseMetadata
+except ImportError:
+    from release_detector import ReleaseMetadata
 
 
 @dataclass(frozen=True)
