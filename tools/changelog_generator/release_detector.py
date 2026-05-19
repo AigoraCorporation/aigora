@@ -93,7 +93,7 @@ class ReleaseDetector:
                 "Expected a row with '🚧 In Progress' status and a [Plan] link in Details."
             )
         if len(candidates) > 1:
-            versions = ", ".join(row["version"] for row in candidates)
+            versions = ", ".join(sorted(row["version"] for row in candidates))
             raise ReleaseDetectionError(
                 f"Multiple releases marked as 'In Progress' in README Release Roadmap: {versions}. "
                 "Only one release should be 'In Progress' at a time."

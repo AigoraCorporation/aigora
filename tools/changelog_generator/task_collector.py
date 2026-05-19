@@ -100,6 +100,15 @@ class TaskCollector:
         """Fetch all pages of results from a GitHub API endpoint.
         
         Follows the Link header to retrieve all pages until no 'next' link is present.
+        
+        Args:
+            path: The API endpoint path (e.g., "/repos/owner/repo/milestones?per_page=100")
+        
+        Returns:
+            A list of dictionaries representing GitHub API resources (milestones or issues).
+        
+        Raises:
+            TaskCollectionError: If the API request fails due to HTTP errors or connection issues.
         """
         results = []
         current_path = path
@@ -137,18 +146,23 @@ class TaskCollector:
     def _parse_next_link(self, link_header: str) -> str | None:
         """Extract the 'next' link path from a GitHub API Link header.
         
-        Example Link header:
-        <https://api.github.com/repos/owner/repo/issues?page=2>; rel="next",
-        <https://api.github.com/repos/owner/repo/issues?page=5>; rel="last"
+        Args:
+            link_header: The Link header value from the GitHub API response.
+                         An empty string returns None.
         
-        Returns the path portion (e.g., "/repos/owner/repo/issues?page=2") or None.
+        Example Link header:
+            <https://api.github.com/repos/owner/repo/issues?page=2>; rel="next",
+            <https://api.github.com/repos/owner/repo/issues?page=5>; rel="last"
+        
+        Returns:
+            The path portion (e.g., "/repos/owner/repo/issues?page=2") or None if no 'next' link exists.
         """
         if not link_header:
             return None
         
         for link in link_header.split(","):
             parts = link.strip().split(";")
-            if len(parts) == 2:
+            if len(parts) >= 2:
                 url_part = parts[0].strip()
                 rel_part = parts[1].strip()
                 
