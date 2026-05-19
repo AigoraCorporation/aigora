@@ -210,22 +210,29 @@ def test_timeout_parameter_is_passed_to_urlopen():
     """Verify that the timeout parameter is correctly passed to urlopen."""
     milestones = [make_milestone()]
     issues = [make_issue()]
-    
+
     captured_timeout = []
-    
+
     def fake_urlopen_with_timeout_capture(req, timeout=None):
         captured_timeout.append(timeout)
-        data = json.dumps(milestones if len(captured_timeout) == 1 else issues if len(captured_timeout) == 2 else []).encode("utf-8")
+        call_num = len(captured_timeout)
+        if call_num == 1:
+            response_data = milestones
+        elif call_num == 2:
+            response_data = issues
+        else:
+            response_data = []
+        data = json.dumps(response_data).encode("utf-8")
         mock_response = MagicMock()
         mock_response.read.return_value = data
         mock_response.__enter__ = lambda s: s
         mock_response.__exit__ = MagicMock(return_value=False)
         return mock_response
-    
+
     with patch("urllib.request.urlopen", side_effect=fake_urlopen_with_timeout_capture):
         collector = TaskCollector(token="fake-token", owner="AigoraCorporation", repo="aigora", timeout=15.5)
         collector.collect(make_release())
-    
+
     # Should have made 3 calls: milestones page 1, issues page 1, issues page 2 (empty)
     assert len(captured_timeout) == 3
     assert all(t == 15.5 for t in captured_timeout)
