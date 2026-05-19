@@ -236,7 +236,7 @@ def test_timeout_parameter_is_passed_to_urlopen():
         collector = TaskCollector(token="fake-token", owner="AigoraCorporation", repo="aigora", timeout=15.5)
         collector.collect(make_release())
 
-    # Should have made 3 calls: milestones page 1, issues page 1, issues page 2 (empty)
+    # Should have made 3 calls: milestones page 1, issues page 1, issues page 2 (empty terminator)
     assert len(captured_timeout) == 3
     assert all(t == 15.5 for t in captured_timeout)
 
