@@ -1,5 +1,5 @@
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = ["src", "tools"]
 testpaths = ["tests"]
 addopts = "-ra --import-mode=importlib"
 markers = [
