@@ -127,7 +127,7 @@ Responsibilities:
 - guiding student progression
 
 > **Documentation**  
-> See: [Tutor Orchestrator](tutor-orchestrator.md)
+> See: [Tutor Orchestrator](tutor-orchestrator/index.md)
 
 ---
 
@@ -227,7 +227,7 @@ The architecture documentation is organized into the following sections:
 | Document | Description | Status |
 |--------|-------------| ------- |
 | [Architecture Overview](overview.md) | High-level architecture description | ✅ Available | 
-| [Tutor Orchestrator](tutor-orchestrator.md) | Pedagogical orchestration engine | ✅ Available |
+| [Tutor Orchestrator](tutor-orchestrator/index.md) | Pedagogical orchestration engine | ✅ Available |
 | [Student Model](student-model.md) | Representation of learner knowledge | ✅ Available |
 | [Curriculum Graph](curriculum-graph/index.md) | Learning dependency structure | ✅ Available |
 | [Assessment Engine](assessment-engine.md) | Diagnostic and exercise system | ✅ Available |

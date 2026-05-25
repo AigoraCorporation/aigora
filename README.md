@@ -53,7 +53,7 @@ to provide deterministic and curriculum-aware pedagogical orchestration.
 
 | Component | Role |
 |------|------|
-| [Tutor Orchestrator](docs/02-architecture/tutor-orchestrator/tutor-orchestrator.md) | Coordinates pedagogical decisions and orchestration behavior |
+| [Tutor Orchestrator](docs/02-architecture/tutor-orchestrator/index.md) | Coordinates pedagogical decisions and orchestration behavior |
 | [Student Model](docs/02-architecture/student-model.md) | Stores evidence of student performance and computes mastery progression |
 | [Curriculum Graph](docs/02-architecture/curriculum-graph/index.md) | Represents curriculum topology, prerequisites, and knowledge relationships |
 | [Assessment Engine](docs/02-architecture/assessment-engine.md) | Evaluates learning outcomes, mastery, and learning gaps |
@@ -188,7 +188,7 @@ and evaluation mechanisms interact.
 
 - Engineering architecture docs:
   - [Interaction Model](docs/02-architecture/interaction-model.md)
-  - [Tutor Orchestrator](docs/02-architecture/tutor-orchestrator.md)
+  - [Tutor Orchestrator](docs/02-architecture/tutor-orchestrator/index.md)
   - [Curriculum Graph](docs/02-architecture/curriculum-graph/index.md)
   - [Student Model](docs/02-architecture/student-model.md) 
   - [Retrieval Layer](docs/02-architecture/retrieval-layer.md) 

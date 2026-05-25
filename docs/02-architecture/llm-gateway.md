@@ -132,6 +132,6 @@ The LLM Gateway must respect the following constraints defined in [System Constr
 | Document | Description |
 |----------|-------------|
 | [Architecture Overview](overview.md) | High-level system architecture |
-| [Tutor Orchestrator](tutor-orchestrator.md) | Central orchestration engine |
+| [Tutor Orchestrator](tutor-orchestrator/index.md) | Central orchestration engine |
 | [Retrieval Layer](retrieval-layer.md) | Knowledge retrieval architecture |
 | [Assessment Engine](assessment-engine.md) | Diagnostic and evaluation system |

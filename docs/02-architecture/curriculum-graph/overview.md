@@ -11,7 +11,7 @@ the graph's structure.
 
 This document is a companion to the
 [Architecture Overview](overview.md) and
-[Tutor Orchestrator](tutor-orchestrator.md).
+[Tutor Orchestrator](tutor-orchestrator/index.md).
 
 ## Problem Statement
 

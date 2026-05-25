@@ -127,10 +127,10 @@ E --> SM3[Student Model]
 | Step       | Responsible Component                                               | Responsibility                                                                                 | Main Dependencies                                  |
 | ---------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------- |
 | Diagnosis  | [Assessment Engine](../02-architecture/assessment-engine.md)             | Evaluates student mastery, performance, and learning gaps.                                     | Student Model                                      |
-| Plan       | [Tutor Orchestrator](../02-architecture/tutor-orchestrator.md)           | Selects the next pedagogical action using deterministic orchestration rules.                   | Curriculum Graph, Student Model, Assessment Engine |
+| Plan       | [Tutor Orchestrator](../02-architecture/tutor-orchestrator/index.md)           | Selects the next pedagogical action using deterministic orchestration rules.                   | Curriculum Graph, Student Model, Assessment Engine |
 | Practice   | [Learning Session Engine](../02-architecture/learning-session-engine.md) | Conducts guided learning sessions, exercises, hints, and interaction flow.                     | Retrieval Layer, LLM Gateway                       |
 | Evaluation | [Assessment Engine](../02-architecture/assessment-engine.md)             | Measures learning progression and validates learning outcomes.                                 | Student Model, Learning Session Engine             |
-| Adjustment | [Tutor Orchestrator](../02-architecture/tutor-orchestrator.md)           | Updates orchestration decisions based on evaluation outcomes and curriculum progression rules. | Student Model, Curriculum Graph, Assessment Engine |
+| Adjustment | [Tutor Orchestrator](../02-architecture/tutor-orchestrator/index.md)           | Updates orchestration decisions based on evaluation outcomes and curriculum progression rules. | Student Model, Curriculum Graph, Assessment Engine |
 
 The deterministic orchestration model establishes the architectural foundation for future hybrid and heuristic orchestration capabilities.
 

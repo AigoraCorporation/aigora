@@ -136,6 +136,6 @@ The Retrieval Layer must respect the following constraints defined in
 | Document | Description |
 |----------|-------------|
 | [Architecture Overview](overview.md) | High-level system architecture |
-| [Tutor Orchestrator](tutor-orchestrator.md) | Central orchestration engine |
+| [Tutor Orchestrator](tutor-orchestrator/index.md) | Central orchestration engine |
 | [Assessment Engine](assessment-engine.md) | Diagnostic and evaluation system |
 | [LLM Gateway](llm-interface.md) | Integration with language models |

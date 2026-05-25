@@ -10,7 +10,7 @@ and the property of the student it represents.
 
 This document is a companion to the
 [Curriculum Graph](curriculum-graph/index.md) and
-[Tutor Orchestrator](tutor-orchestrator.md).
+[Tutor Orchestrator](tutor-orchestrator/index.md).
 
 ## Problem Statement
 
