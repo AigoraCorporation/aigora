@@ -64,11 +64,85 @@ No flat list of exercises.
 
 ## 2.4 Adaptive Tutoring Loop
 
-The tutor must operate as a structured loop:
+The tutoring process must initially operate as a deterministic pedagogical orchestration loop coordinated by specialized platform components.
 
-Diagnosis → Plan → Practice → Evaluation → Adjustment
+The system must behave as a structured pedagogical orchestration pipeline rather than as a reactive chatbot.
 
-Not a reactive chatbot.
+### Orchestration Flow
+
+Diagnosis
+  → Assessment Engine
+
+Plan
+  → Tutor Orchestrator
+  → Curriculum Graph
+  → Student Model
+
+Practice
+  → Learning Session Engine
+  → Retrieval Layer
+  → LLM Gateway
+
+Evaluation
+  → Assessment Engine
+  → Student Model
+
+Adjustment
+  → Tutor Orchestrator
+  → Curriculum Graph
+  → Student Model
+
+
+### High-Level Component Interaction
+
+```mermaid
+flowchart LR
+
+A[Diagnosis]
+--> B[Plan]
+--> C[Practice]
+--> D[Evaluation]
+--> E[Adjustment]
+
+A --> AE[Assessment Engine]
+
+B --> TO[Tutor Orchestrator]
+B --> CG[Curriculum Graph]
+B --> SM[Student Model]
+
+C --> LSE[Learning Session Engine]
+C --> RAG[Retrieval Layer]
+C --> LLM[LLM Gateway]
+
+D --> AE2[Assessment Engine]
+D --> SM2[Student Model]
+
+E --> TO2[Tutor Orchestrator]
+E --> CG2[Curriculum Graph]
+E --> SM3[Student Model]
+```
+
+### Component Responsibilities
+
+| Step       | Responsible Component                                               | Responsibility                                                                                 | Main Dependencies                                  |
+| ---------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| Diagnosis  | [Assessment Engine](../02-architecture/assessment-engine.md)             | Evaluates student mastery, performance, and learning gaps.                                     | Student Model                                      |
+| Plan       | [Tutor Orchestrator](../02-architecture/tutor-orchestrator.md)           | Selects the next pedagogical action using deterministic orchestration rules.                   | Curriculum Graph, Student Model, Assessment Engine |
+| Practice   | [Learning Session Engine](../02-architecture/learning-session-engine.md) | Conducts guided learning sessions, exercises, hints, and interaction flow.                     | Retrieval Layer, LLM Gateway                       |
+| Evaluation | [Assessment Engine](../02-architecture/assessment-engine.md)             | Measures learning progression and validates learning outcomes.                                 | Student Model, Learning Session Engine             |
+| Adjustment | [Tutor Orchestrator](../02-architecture/tutor-orchestrator.md)           | Updates orchestration decisions based on evaluation outcomes and curriculum progression rules. | Student Model, Curriculum Graph, Assessment Engine |
+
+The deterministic orchestration model establishes the architectural foundation for future hybrid and heuristic orchestration capabilities.
+
+Future platform evolution may introduce:
+
+* heuristic orchestration
+* probabilistic ranking
+* adaptive personalization
+* experimentation layers
+* AI-assisted pedagogical decisions
+
+while preserving deterministic governance and pedagogical auditability.
 
 ------------------------------------------------------------------------
 
