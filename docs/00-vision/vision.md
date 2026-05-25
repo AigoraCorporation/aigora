@@ -1,8 +1,8 @@
-# Aigora Vision
+# AIGORA Vision
 
 ## 1. Purpose
 
-Aigora exists to build an intelligent, adaptive mathematics tutor capable of guiding a student from foundational knowledge to competitive university-level performance.
+AIGORA exists to build an intelligent, adaptive mathematics tutor capable of guiding a student from foundational knowledge to competitive university-level performance.
 
 The long-term ambition is not to create a chatbot that answers questions, but a structured learning system that:
 
@@ -13,7 +13,7 @@ The long-term ambition is not to create a chatbot that answers questions, but a 
 - Trains speed and exam strategy  
 - Cultivates self-regulated learning habits  
 
-Aigora aims to function as an elite private tutor in agent form.
+AIGORA aims to function as an elite private tutor in agent form.
 
 ---
 
@@ -67,7 +67,7 @@ The tutor adapts based on:
 
 ### 3.3 Pedagogical Rigor
 
-Aigora does not simply solve problems.
+AIGORA does not simply solve problems.
 
 It enforces:
 
@@ -105,7 +105,7 @@ The goal is:
 
 ## 4. Target Outcome
 
-A student who completes the full Aigora pathway should be able to:
+A student who completes the full AIGORA pathway should be able to:
 
 - Interpret complex mathematical problems independently  
 - Model real-world problems mathematically  
@@ -147,7 +147,7 @@ In its mature form, Aigora becomes:
 
 ## 7. Strategic Positioning
 
-Aigora is positioned at the intersection of:
+AIGORA is positioned at the intersection of:
 
 - Educational science  
 - Artificial intelligence  
@@ -166,6 +166,6 @@ Every design decision must answer:
 
 > Does this improve the student's ability to think mathematically and solve problems independently?
 
-If not, it does not belong in Aigora.
+If not, it does not belong in AIGORA.
 
 ---
