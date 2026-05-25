@@ -48,16 +48,21 @@ with explicit curriculum modeling and architectural governance.
 
 # Core Concepts
 
-AIGORA is built around three central architectural components:
+AIGORA is built around central architectural components that collaborate
+to provide deterministic and curriculum-aware pedagogical orchestration.
 
 | Component | Role |
 |------|------|
-| **Tutor Orchestrator** | Coordinates tutoring decisions and system behavior |
-| **Student Model** | Stores evidence of student performance and computes mastery |
-| **Curriculum Graph** | Represents mathematical knowledge and prerequisite structure |
+| [Tutor Orchestrator](docs/02-architecture/tutor-orchestrator/tutor-orchestrator.md) | Coordinates pedagogical decisions and orchestration behavior |
+| [Student Model](docs/02-architecture/student-model.md) | Stores evidence of student performance and computes mastery progression |
+| [Curriculum Graph](docs/02-architecture/curriculum-graph/index.md) | Represents curriculum topology, prerequisites, and knowledge relationships |
+| [Assessment Engine](docs/02-architecture/assessment-engine.md) | Evaluates learning outcomes, mastery, and learning gaps |
+| [Learning Session Engine](docs/02-architecture/learning-session-engine.md) | Conducts guided learning sessions and exercise delivery |
+| [Retrieval Layer (RAG)](docs/02-architecture/retrieval-layer.md) | Retrieves contextual learning resources and supporting material |
+| [LLM Gateway](docs/02-architecture/llm-gateway.md) | Provides controlled access to language model generation capabilities |
 
-Together, these components allow the system to guide learning progression
-while maintaining transparency, consistency, and curriculum grounding.
+Together, these components allow the platform to guide learning progression
+while maintaining transparency, consistency, auditability, and curriculum grounding.
 
 ---
 
