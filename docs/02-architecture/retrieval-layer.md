@@ -15,7 +15,7 @@ traceable reasoning.
 The Retrieval Layer acts as the interface between the tutoring system and its body of
 curated learning content.
 
-When the Tutor Orchestrator, Assessment Engine, or LLM Interface requires contextual
+When the Tutor Orchestrator, Assessment Engine, or LLM Gateway requires contextual
 material — an explanation of a concept, a worked example, a reference definition — the
 Retrieval Layer is responsible for locating and returning the most relevant content from
 the knowledge base.
@@ -31,7 +31,7 @@ The Retrieval Layer is responsible for:
 
 - receiving retrieval requests from system components and resolving them against the knowledge base
 - returning learning material relevant to the current topic, objective, or student context
-- supporting explanation generation by providing grounded reference content to the LLM Interface
+- supporting explanation generation by providing grounded reference content to the LLM Gateway
 - supplying exercise material and worked examples to the Assessment Engine
 - operating transparently, without exposing the internal structure of the knowledge base to callers
 
@@ -45,13 +45,13 @@ The Retrieval Layer is responsible for:
 |-------|--------|
 | Retrieval request with topic or concept context | Tutor Orchestrator |
 | Exercise or explanation material request | Assessment Engine |
-| Context enrichment request | LLM Interface |
+| Context enrichment request | LLM Gateway |
 
 ## Outputs
 
 | Output | Destination |
 |--------|-------------|
-| Relevant learning material (concepts, examples, definitions) | LLM Interface |
+| Relevant learning material (concepts, examples, definitions) | LLM Gateway |
 | Exercise content and reference problems | Assessment Engine |
 | Contextual grounding for tutoring decisions | Tutor Orchestrator |
 
@@ -64,7 +64,7 @@ flowchart TB
     orchestrator["🧭 **Tutor Orchestrator**<br/>Requests contextual material<br/>for tutoring decisions"]
     retrievalLayer["📚 **Retrieval Layer**"]
     assessmentEngine["**Assessment Engine**<br/>Requests exercise material<br/>and reference content"]
-    llmInterface["**LLM Interface**<br/>Requests grounding content<br/>for explanation generation"]
+    llmInterface["**LLM Gateway**<br/>Requests grounding content<br/>for explanation generation"]
     knowledgeBase[("**Knowledge Base**<br/>Curated learning material,<br/>examples, definitions")]
 
     orchestrator -->|"topic + context request"| retrievalLayer
@@ -100,7 +100,7 @@ the requesting component's need (e.g., explanation vs. exercise vs. reference).
 
 **4. Result Delivery**
 Retrieved content is returned to the requesting component in a form suitable for
-its intended use — enrichment context for the LLM Interface, problem material for
+its intended use — enrichment context for the LLM Gateway, problem material for
 the Assessment Engine, or decision support for the Tutor Orchestrator.
 
 ---
@@ -109,7 +109,7 @@ the Assessment Engine, or decision support for the Tutor Orchestrator.
 
 AIGORA adopts a retrieval-augmented approach to tutoring interactions.
 
-Rather than allowing the LLM Interface to generate explanations from model parameters
+Rather than allowing the LLM Gateway to generate explanations from model parameters
 alone, the Retrieval Layer first supplies relevant, curated material as grounding context.
 This approach reduces the risk of inaccurate or inconsistent explanations and ensures
 that tutoring content remains aligned with the defined curriculum.
@@ -138,4 +138,4 @@ The Retrieval Layer must respect the following constraints defined in
 | [Architecture Overview](overview.md) | High-level system architecture |
 | [Tutor Orchestrator](tutor-orchestrator.md) | Central orchestration engine |
 | [Assessment Engine](assessment-engine.md) | Diagnostic and evaluation system |
-| [LLM Interface](llm-interface.md) | Integration with language models |
+| [LLM Gateway](llm-interface.md) | Integration with language models |

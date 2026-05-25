@@ -1,6 +1,6 @@
-# LLM Interface
+# LLM Gateway
 
-The LLM Interface is the component responsible for mediating all communication between the AIGORA tutoring system and large language models.
+The LLM Gateway is the component responsible for mediating all communication between the AIGORA tutoring system and large language models.
 
 It establishes a clear architectural boundary between the core tutoring logic and the underlying AI model providers, ensuring that the rest of the system interacts with language models through a controlled and well-defined integration point rather than
 directly.
@@ -9,17 +9,17 @@ directly.
 
 # Role in the Architecture
 
-The LLM Interface serves as the single point of contact between AIGORA and external language models.
+The LLM Gateway serves as the single point of contact between AIGORA and external language models.
 
 All requests that require natural language generation — explanations, hints, guided problem-solving responses, and narrative feedback — pass through this component. By centralising model interactions here, the architecture remains independent of specific model providers and preserves flexibility for future evolution.
 
-The LLM Interface does not determine what to say or when to say it. Those decisions belong to the Tutor Orchestrator. The interface is responsible only for how those decisions are translated into model requests and how the resulting output is returned to the system.
+The LLM Gateway does not determine what to say or when to say it. Those decisions belong to the Tutor Orchestrator. The interface is responsible only for how those decisions are translated into model requests and how the resulting output is returned to the system.
 
 ---
 
 # Responsibilities
 
-The LLM Interface is responsible for:
+The LLM Gateway is responsible for:
 
 - receiving generation requests from system components and translating them into
   model interactions
@@ -57,7 +57,7 @@ The LLM Interface is responsible for:
 ```mermaid
 flowchart TB
     orchestrator["🧭 **Tutor Orchestrator**<br/>Issues generation requests;<br/>receives natural language output"]
-    llmInterface["🤖 **LLM Interface**"]
+    llmInterface["🤖 **LLM Gateway**"]
     retrievalLayer["**Retrieval Layer**<br/>Provides grounding context<br/>for generation requests"]
     llmProvider[("**LLM Provider**<br/>External language model")]
 
@@ -73,7 +73,7 @@ flowchart TB
 
 # Model Interaction Workflow
 
-The LLM Interface operates through the following conceptual stages:
+The LLM Gateway operates through the following conceptual stages:
 
 **1. Request Reception**
 
@@ -95,7 +95,7 @@ The generated output is returned to the Tutor Orchestrator, which is responsible
 
 # Conceptual Role in Tutoring Assistance
 
-The LLM Interface supports the following categories of tutoring interaction:
+The LLM Gateway supports the following categories of tutoring interaction:
 
 **Explanation Generation**
 
@@ -117,7 +117,7 @@ Communicating evaluation results from the Assessment Engine in natural language,
 
 # Architectural Constraints
 
-The LLM Interface must respect the following constraints defined in [System Constraints](../01-requirements/constraints.md):
+The LLM Gateway must respect the following constraints defined in [System Constraints](../01-requirements/constraints.md):
 
 - All LLM usage in the system must be mediated through this component
 - No other component may interact with a language model directly

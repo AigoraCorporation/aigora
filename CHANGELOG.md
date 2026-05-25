@@ -88,7 +88,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Assessment Engine documentation
 - Retrieval Layer documentation
-- LLM Interface documentation
+- LLM Gateway documentation
 
 ### Changed
 - Tutor Orchestrator documentation refined

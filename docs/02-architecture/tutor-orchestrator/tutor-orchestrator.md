@@ -53,7 +53,7 @@ studentModel["Student Model"]
 curriculum["Curriculum Graph"]
 assessment["Assessment Engine"]
 retrieval["Retrieval Layer (RAG)"]
-llm["LLM Interface"]
+llm["LLM Gateway"]
 
 student --> orchestrator
 
@@ -143,7 +143,7 @@ A single input may require more than one authority.
 |---|---|---|
 | **Structural** | Curriculum Graph | Prerequisite reasoning, topic location, concept relationships |
 | **Contextual** | Student Model | Current mastery, known gaps, interaction history |
-| **Generative** | LLM Interface | Explanations, hints, analogies, guided responses |
+| **Generative** | LLM Gateway | Explanations, hints, analogies, guided responses |
 | **Evaluative** | Assessment Engine | Exercise outcomes, answer correctness, diagnostic results |
 | **Retrievive** | Retrieval Layer | Grounded learning material, worked examples |
 | **Orchestral** | Tutor Orchestrator | Strategic or metacognitive inputs the orchestrator resolves directly |
@@ -309,7 +309,7 @@ The plan is not execution. It is the decision to execute.
 4. Traverse Authorities         (consultive calls, nature-guided, bounded)
 5. Resolve Scope                (output of traversal)
 6. Form Response Strategy       (using resolved intent + scope)
-7. Execute Response             (LLM Interface, student-facing)
+7. Execute Response             (LLM Gateway, student-facing)
 8. Commit Reflexive Updates     (Student Model, Assessment Engine)
 ```
 

@@ -48,7 +48,7 @@ flowchart TB
             curriculumGraph["**Curriculum Graph**<br/>Topics and prerequisites"]
             assessmentEngine["**Assessment Engine**<br/>Diagnostics and evaluation"]
             retrievalLayer["**Retrieval Layer (RAG)**<br/>Knowledge retrieval"]
-            llmInterface["**LLM Interface**<br/>Model interaction"]
+            llmInterface["**LLM Gateway**<br/>Model interaction"]
         end
     end
 
@@ -82,7 +82,7 @@ flowchart TB
     subgraph consultive["Consultive Components (read-only)"]
         curriculum["Curriculum Graph"]
         retrieval["Retrieval Layer"]
-        llm["LLM Interface"]
+        llm["LLM Gateway"]
     end
 
     subgraph reflexive["Reflexive Components (state-mutating)"]
@@ -203,9 +203,9 @@ interaction, enabling LLMs to generate grounded explanations.
 
 ---
 
-## LLM Interface
+## LLM Gateway
 
-The LLM Interface provides a controlled integration point with
+The LLM Gateway provides a controlled integration point with
 large language models used for tutoring assistance.
 
 Typical responsibilities include:
@@ -232,7 +232,7 @@ The architecture documentation is organized into the following sections:
 | [Curriculum Graph](curriculum-graph/index.md) | Learning dependency structure | ✅ Available |
 | [Assessment Engine](assessment-engine.md) | Diagnostic and exercise system | ✅ Available |
 | [Retrieval Layer](retrieval-layer.md) | Knowledge retrieval architecture | ✅ Available |
-| [LLM Interface](llm-interface.md) | Integration with language models | ✅ Available |
+| [LLM Gateway](llm-interface.md) | Integration with language models | ✅ Available |
 
 ---
 

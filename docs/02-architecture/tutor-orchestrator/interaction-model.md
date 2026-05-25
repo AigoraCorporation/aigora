@@ -69,7 +69,7 @@ The orchestrator uses them to *inform* a decision.
 |---|---|
 | Curriculum Graph | Query topic dependencies and prerequisites |
 | Retrieval Layer (RAG) | Retrieve grounded learning material |
-| LLM Interface | Generate explanations, hints, and guided responses |
+| LLM Gateway | Generate explanations, hints, and guided responses |
 
 Consultive calls are safe to retry and safe to parallelize.
 
@@ -169,7 +169,7 @@ flowchart TB
     subgraph consultive["Consultive Components (read-only)"]
         curriculum["Curriculum Graph"]
         retrieval["Retrieval Layer"]
-        llm["LLM Interface"]
+        llm["LLM Gateway"]
     end
 
     subgraph reflexive["Reflexive Components (state-mutating)"]
