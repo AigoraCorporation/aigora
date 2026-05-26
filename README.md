@@ -46,6 +46,20 @@ with explicit curriculum modeling and architectural governance.
 
 --- 
 
+# Strategic Foundation
+
+The conceptual basis of the project is defined in the following documents:
+
+- [Project Vision](docs/00-vision/vision.md)
+- [System Overview](docs/02-architecture/overview.md)
+- [Curriculum Model](docs/04-curriculum/README.md)
+- [Goals & Non-Goals](docs/00-vision/goals-non-goals.md)
+
+These documents define the long-term direction of the project and establish
+clear architectural and strategic boundaries for its evolution.
+
+---
+
 # Core Concepts
 
 AIGORA is built around central architectural components that collaborate
@@ -82,7 +96,14 @@ See the full language policy:
 
 ---
 
-## Documentation Map
+## Key Documents
+
+- [Project Vision](docs/00-vision/vision.md)
+- [Architecture Overview](docs/02-architecture/overview.md)
+- [Canonical CSV Model](docs/05-data/canonical-csv-model.md)
+- [Engineering Guide](docs/06-engineering/README.md)
+
+### Documentation Map
 
 The project documentation is organized into the following areas:
 
@@ -95,14 +116,6 @@ The project documentation is organized into the following areas:
 | Data | Data contracts and exchange formats | [`docs/05-data`](docs/05-data/README.md) |
 | Engineering | Workflow, governance and development processes | [`docs/06-engineering`](docs/06-engineering/README.md) |
 
----
-
-### Key Documents
-
-- [Project Vision](docs/00-vision/vision.md)
-- [Architecture Overview](docs/02-architecture/overview.md)
-- [Canonical CSV Model](docs/05-data/canonical-csv-model.md)
-- [Engineering Guide](docs/06-engineering/README.md)
 
 ---
 
@@ -167,58 +180,14 @@ See full roadmap: [Release Roadmap](docs/06-engineering/governance/release-roadm
 
 ---
 
-# Strategic Foundation
-
-The conceptual basis of the project is defined in the following documents:
-
-- [Project Vision](docs/00-vision/vision.md)
-- [Goals & Non-Goals](docs/00-vision/goals-non-goals.md)
-
-These documents define the long-term direction of the project and
-establish clear boundaries for its scope.
-
----
-
-# System Architecture
-
-The system architecture defines how AI components, curriculum models,
-and evaluation mechanisms interact.
-
-- [System Overview](docs/02-architecture/overview.md)
-
-- Engineering architecture docs:
-  - [Interaction Model](docs/02-architecture/interaction-model.md)
-  - [Tutor Orchestrator](docs/02-architecture/tutor-orchestrator/index.md)
-  - [Curriculum Graph](docs/02-architecture/curriculum-graph/index.md)
-  - [Student Model](docs/02-architecture/student-model.md) 
-  - [Retrieval Layer](docs/02-architecture/retrieval-layer.md) 
-
-Architecture is designed **before implementation** to ensure scalability
-and conceptual consistency.
-
----
-
-# Curriculum Model
-
-The curriculum is structured as a **prerequisite graph**, enabling
-mastery-based progression through mathematical topics.
-
-- [Scope Definition](docs/04-curriculum/scope-fuvest.md)
-- [Topic Map](docs/04-curriculum/topic-map.md)
-
-This structure allows the system to:
-
-- identify knowledge gaps
-- recommend learning paths
-- reinforce conceptual understanding
-
----
-
 # Engineering Workflow & Governance
 
 All project work follows a structured engineering workflow and governance model.
 
 ## Workflow
+
+AIGORA follows a structured development workflow to ensure engineering consistency,
+traceability, collaboration, and long-term maintainability.
 
 - [Development Workflow](docs/06-engineering/workflow/development-workflow.md)
 - [Git Flow](docs/06-engineering/workflow/git-flow.md)
@@ -230,21 +199,13 @@ All project work follows a structured engineering workflow and governance model.
 AIGORA follows a structured engineering governance model to ensure code quality,
 consistency, and long-term maintainability.
 
-This includes:
-
-- Engineering policies (DDD, SOLID, etc.)
-- Pull request rules and validation criteria
-- Development workflow and branching strategy
+- [Engineering Policies](docs/06-engineering/governance/engineering-policies.md)
+- [Implementation Guardrails](docs/06-engineering/governance/implementation-guardrails.md)
+- [Pull Request Policy](docs/06-engineering/governance/pull-request-policy.md)
+- [Release Roadmap](docs/06-engineering/governance/release-roadmap.md)
+- [Traceability Model — ADRs, Issues, and Releases](docs/06-engineering/governance/traceability-model.md)
 
 [See full documentation: Engineering](docs/06-engineering/README.md)
-
-Every change must:
-
-1. originate from an Issue
-2. be implemented in a dedicated branch
-3. follow the commit convention
-4. be submitted via Pull Request
-5. pass CI checks
 
 
 ## Conventions
@@ -254,6 +215,7 @@ To maintain consistency and quality, the repository enforces:
 - [Commit Convention](docs/06-engineering/conventions/commits.md)
 - [Branch Naming Convention](docs/06-engineering/conventions/branch-naming.md)
 - [Pull Request Template](.github/PULL_REQUEST_TEMPLATE/pull_request_template.md)
+- [Language Policy](docs/06-engineering/conventions/language-policy.md)
 
 The `main`, `release`, and `dev` branches are protected and cannot be updated directly.
 
