@@ -1,4 +1,4 @@
-# AIGORA — Deterministic Orchestration Architecture
+# Deterministic Orchestration Architecture
 
 ## Overview
 
