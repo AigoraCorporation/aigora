@@ -19,4 +19,5 @@ strategy of the AIGORA Tutor Orchestrator.
 
 | Document | Description |
 |---|---|
-| [Deterministic Orchestration Architecture](deterministic_orchestration_architecture.md) | Deterministic orchestration lifecycle and coordination |
+| [Deterministic Orchestration Architecture](deterministic-orchestration-architecture.md) | Deterministic orchestration lifecycle and coordination |
+| [Learning Node Selection Strategy](learning-node-selection-strategy.md) | Learning progression selection behavior |
