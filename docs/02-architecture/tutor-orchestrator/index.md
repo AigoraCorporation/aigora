@@ -29,6 +29,6 @@ strategy of the AIGORA Tutor Orchestrator.
 
 | Document | Description |
 |---|---|
-| [Decision Engine Design](aigora_decision_engine_design.docx) | Decision engine responsibilities and architecture |
+| [Decision Engine Design](decision_engine_design.md) | Decision engine responsibilities and architecture |
 
 ---
