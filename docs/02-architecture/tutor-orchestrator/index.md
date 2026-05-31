@@ -22,3 +22,13 @@ strategy of the AIGORA Tutor Orchestrator.
 | [Deterministic Orchestration Architecture](deterministic-orchestration-architecture.md) | Deterministic orchestration lifecycle and coordination |
 | [Learning Node Selection Strategy](learning-node-selection-strategy.md) | Learning progression selection behavior |
 | [Event-Driven Pedagogical Flow](event-driven-pedagogical-flow.md) | Event-driven orchestration lifecycle |
+
+---
+
+# Decision Systems
+
+| Document | Description |
+|---|---|
+| [Decision Engine Design](aigora_decision_engine_design.docx) | Decision engine responsibilities and architecture |
+
+---
