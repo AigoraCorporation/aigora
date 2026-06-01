@@ -32,5 +32,6 @@ strategy of the AIGORA Tutor Orchestrator.
 | [Decision Engine Design](decision-engine-design.md) | Decision engine responsibilities and architecture |
 | [Candidate Generation Model](candidate-generation-model.md) | Candidate generation lifecycle |
 | [Candidate Ranking Architecture](candidate-ranking-architecture.md) | Deterministic ranking model |
+| [Deterministic Orchestration Approaches](deterministic-orchestration-approaches.md) | Architectural orchestration alternatives |
 
 ---
