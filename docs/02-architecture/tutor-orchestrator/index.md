@@ -29,6 +29,7 @@ strategy of the AIGORA Tutor Orchestrator.
 
 | Document | Description |
 |---|---|
-| [Decision Engine Design](decision_engine_design.md) | Decision engine responsibilities and architecture |
+| [Decision Engine Design](decision-engine-design.md) | Decision engine responsibilities and architecture |
+| [Candidate Generation Model](candidate-generation-model.md) | Candidate generation lifecycle |
 
 ---
