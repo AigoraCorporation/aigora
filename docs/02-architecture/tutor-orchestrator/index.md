@@ -10,7 +10,7 @@ strategy of the AIGORA Tutor Orchestrator.
 
 | Document | Description |
 |---|---|
-| [Tutor Orchestrator](tutor-orchestrator/index.md) | Core orchestration responsibilities and pedagogical coordination model |
+| [Tutor Orchestrator](tutor-orchestrator.md) | Core orchestration responsibilities and pedagogical coordination model |
 | [Interaction Model](interaction-model.md) | Interaction dynamics, component coordination, and domain ownership |
 
 --- 
