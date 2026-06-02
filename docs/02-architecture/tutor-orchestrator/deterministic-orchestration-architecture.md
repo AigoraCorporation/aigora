@@ -44,16 +44,29 @@ The orchestration pipeline evolves incrementally while preserving deterministic 
 
 # High-Level Orchestration Pipeline
 
-```text
-retrieval
-↓
-candidate generation
-↓
-policy filtering
-↓
-ranking
-↓
-selection
+The orchestration pipeline transforms retrieved curriculum nodes into deterministic pedagogical decisions.
+
+Each stage owns a specific orchestration responsibility:
+
+- **Retrieval** determines what learning nodes are reachable
+- **Candidate Generation** builds orchestration-ready candidates
+- **Policy Filtering** enforces deterministic pedagogical constraints
+- **Ranking** prioritizes valid candidates deterministically
+- **Selection** commits the final pedagogical orchestration decision
+
+```mermaid
+flowchart LR
+
+retrieval["Retrieval"]
+candidate["Candidate Generation"]
+policy["Policy Filtering"]
+ranking["Ranking"]
+selection["Selection"]
+
+retrieval --> candidate
+candidate --> policy
+policy --> ranking
+ranking --> selection
 ```
 
 ---
