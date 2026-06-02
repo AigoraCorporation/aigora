@@ -1,42 +1,99 @@
-# AIGORA — Learning Node Selection Strategy
+# Learning Node Selection Strategy
 
 ## Overview
 
-This document defines the learning node selection architecture used by the AIGORA Tutor Orchestrator.
+This document defines the selection architecture used by the AIGORA Tutor Orchestrator.
 
-The selection system is responsible for determining the final learning node after orchestration evaluation, policy execution, and candidate ranking are completed.
+The selection subsystem is responsible for committing the final pedagogical orchestration decision after candidate generation, policy evaluation, and deterministic ranking have already been completed.
 
-The architecture is intentionally deterministic-first and evolves incrementally toward student-aware and adaptive orchestration capabilities.
+Selection represents the final orchestration commitment stage of the deterministic orchestration pipeline.
 
-Selection operates as the final orchestration commitment layer.
+The architecture is intentionally deterministic-first and designed to evolve incrementally toward adaptive and student-aware orchestration capabilities while preserving:
+
+- deterministic governance
+- orchestration reproducibility
+- bounded context isolation
+- auditability
+- pedagogical consistency
+
+The global orchestration lifecycle is documented in:
+
+- [Deterministic Orchestration Architecture](deterministic-orchestration-architecture.md)
 
 ---
 
-# Selection Architecture
+# Architectural Principle
 
-The selection pipeline operates after candidate ranking has already produced an ordered candidate set.
+Selection commits the final pedagogical orchestration decision.
 
-```text
-retrieval
-↓
-candidate generation
-↓
-policy filtering
-↓
-ranking
-↓
-selection
+The selection subsystem receives an ordered candidate set and determines which learning node becomes the next pedagogical objective.
+
+Selection must preserve:
+
+- deterministic behavior
+- stable orchestration ordering
+- explicit governance constraints
+- reproducible decision-making
+- auditable orchestration flow
+
+Ranking determines preference ordering.
+
+Selection commits orchestration intent.
+
+---
+
+# Selection Lifecycle
+
+The selection subsystem operates after orchestration ranking has already completed.
+
+```mermaid
+flowchart LR
+
+ranked["Ranked Candidates"]
+evaluation["Selection Evaluation"]
+tie["Tie-Breaking"]
+fallback["Fallback Validation"]
+selected["Selected Node"]
+
+ranked --> evaluation
+evaluation --> tie
+tie --> fallback
+fallback --> selected
 ```
 
-Ranking determines candidate preference ordering.
+Selection does not perform:
 
-Selection commits the final orchestration decision.
+- topology retrieval
+- candidate generation
+- policy evaluation
+- ranking evaluation
+
+Selection operates exclusively on policy-approved and ranked orchestration candidates.
 
 ---
 
-# Selection Categories
+# Selection Responsibilities
 
-The orchestration engine organizes selection behavior into distinct categories according to orchestration maturity and dependency scope.
+| Responsibility | Purpose |
+|---|---|
+| Final orchestration commitment | Commit the next pedagogical decision |
+| Deterministic candidate evaluation | Preserve reproducible orchestration behavior |
+| Stable tie-breaking | Resolve equivalent candidates deterministically |
+| Fallback selection | Guarantee orchestration continuity |
+| Governance enforcement | Preserve orchestration constraints |
+| Selection traceability | Preserve orchestration auditability |
+
+---
+
+# Selection Strategy Categories
+
+| # | Category | Dependency Scope | Student-Aware | Determinism Level | Complexity | Status |
+|---|---|---|---|---|---|---|
+| 1 | [Graph-Only Selection](#1-graph-only-selection) | Curriculum Graph | No | Fully deterministic | Low | Implemented First |
+| 2 | [Student-Aware Selection](#2-student-aware-selection) | Student Model | Yes | Deterministic | Medium | Planned for Future Iterations |
+| 3 | [Hybrid Selection](#3-hybrid-selection) | Curriculum Graph + Student Model | Yes | Hybrid deterministic orchestration | High | Planned for Advanced Orchestration |
+
+The selection subsystem evolves incrementally while preserving deterministic orchestration guarantees.
 
 ---
 
@@ -48,10 +105,9 @@ These strategies do not require Student Model integration.
 
 ## Responsibilities
 
-- highest-ranked topology-valid node selection
-- deterministic tie-breaking
-- stable deterministic ordering
-- traversal-priority selection
+- topology-valid node selection
+- deterministic orchestration commitment
+- stable topology progression
 - deterministic fallback selection
 - adjacency-preserving progression
 
@@ -97,11 +153,10 @@ These strategies require Student Model integration.
 
 ## Responsibilities
 
-- remediation overrides
-- review-first selection
-- unstable mastery prioritization
+- remediation-aware selection
+- review-first orchestration
+- instability-aware progression
 - regression-triggered selection
-- learning fatigue avoidance
 - progression pacing control
 
 ## Example Rules
@@ -133,24 +188,23 @@ when mastery instability is detected.
 PLANNED FOR FUTURE ITERATIONS
 ```
 
-Student-aware selection introduces personalized orchestration behavior while preserving deterministic governance guarantees.
+Student-aware selection progressively introduces personalized orchestration behavior while preserving deterministic governance guarantees.
 
 ---
 
 # 3. Hybrid Selection
 
-Hybrid selection combines curriculum topology with adaptive student-aware orchestration behavior.
+Hybrid selection combines curriculum topology with student learning state.
 
-These strategies represent advanced orchestration capabilities.
+These strategies represent advanced adaptive orchestration capabilities.
 
 ## Responsibilities
 
-- personalized progression selection
-- adaptive learning path overrides
-- context-aware remediation
-- dynamic progression balancing
-- heuristic-assisted deterministic selection
-- adaptive pedagogical prioritization
+- adaptive progression balancing
+- personalized learning continuity
+- remediation-aware orchestration
+- context-sensitive selection
+- hybrid pedagogical prioritization
 
 ## Example Rules
 
@@ -185,6 +239,45 @@ Hybrid selection represents the long-term evolution of adaptive pedagogical orch
 
 ---
 
+# Tie-Breaking Strategy
+
+The selection subsystem must preserve stable deterministic tie-breaking behavior.
+
+Tie-breaking strategies may include:
+
+- dependency distance
+- topology proximity
+- traversal depth
+- stable candidate identifiers
+- deterministic fallback ordering
+
+Tie-breaking behavior must remain:
+
+- explicit
+- reproducible
+- deterministic
+- auditable
+
+Stable tie-breaking guarantees orchestration reproducibility.
+
+---
+
+# Fallback Selection
+
+The selection subsystem must guarantee orchestration continuity under constrained orchestration scenarios.
+
+Possible fallback strategies include:
+
+- nearest topology-adjacent node
+- remediation-first fallback
+- review-priority fallback
+- deterministic safe-node selection
+- curriculum continuity fallback
+
+Fallback behavior must preserve deterministic orchestration guarantees.
+
+---
+
 # Deterministic Guarantees
 
 The selection architecture preserves the following guarantees:
@@ -201,59 +294,90 @@ These guarantees ensure pedagogical consistency and orchestration reproducibilit
 
 ---
 
-# Selection vs Ranking
+# Selection Governance Constraints
 
-Selection and ranking have different responsibilities inside the orchestration pipeline.
+The selection subsystem must preserve strict orchestration governance boundaries.
 
-| Stage | Responsibility |
+| Constraint | Description |
 |---|---|
-| Ranking | Creates candidate preference ordering |
-| Selection | Creates the final orchestration commitment |
+| Policy isolation | Selection cannot bypass policy evaluation |
+| Ranking isolation | Selection does not perform ranking evaluation |
+| Topology isolation | Selection does not mutate curriculum topology |
+| Governance preservation | Selection must preserve deterministic guarantees |
+| Infrastructure isolation | Selection logic remains infrastructure-independent |
 
-Ranking evaluates preference.
-
-Selection commits the final pedagogical decision.
-
-This separation preserves orchestration clarity, deterministic governance, and auditability.
+These constraints preserve orchestration consistency and bounded context isolation.
 
 ---
 
-# Architectural Principle
+# Auditability and Traceability
 
-The selection architecture evolves incrementally while preserving deterministic guarantees.
+The selection subsystem must support complete orchestration traceability.
 
-Initial implementations prioritize:
+The architecture preserves:
 
-- topology consistency
-- deterministic ordering
-- stable tie-breaking
-- reproducible orchestration commitments
+- selection traceability
+- deterministic tie-breaking reconstruction
+- fallback decision visibility
+- orchestration reproducibility
+- stable decision reconstruction
+- orchestration event traceability
+
+Every selection decision must remain explainable and reconstructable.
+
+---
+
+# Operational Visibility
+
+The selection subsystem must expose operational orchestration visibility.
+
+The architecture must support:
+
+- selection latency visibility
+- tie-breaking visibility
+- fallback selection traceability
+- orchestration interruption visibility
+- deterministic replay capability
+- distributed orchestration observability
+
+Operational visibility is fundamental for production-grade orchestration systems.
+
+---
+
+# Non-Goals
+
+The selection subsystem does not aim to:
+
+- perform curriculum retrieval
+- replace ranking behavior
+- bypass orchestration policies
+- mutate curriculum topology
+- centralize orchestration logic
+- bypass deterministic governance
+
+These non-goals preserve orchestration boundaries and architectural consistency.
+
+---
+
+# Future Evolution
+
+The current selection architecture is deterministic-first.
 
 Future orchestration capabilities may progressively introduce:
 
-- adaptive progression balancing
-- heuristic-assisted prioritization
-- personalized orchestration behavior
-- dynamic remediation strategies
+- heuristic-assisted selection
+- adaptive orchestration balancing
+- semantic pedagogical prioritization
+- AI-assisted selection evaluation
+- probabilistic orchestration signals
+- hybrid orchestration strategies
 
 while preserving:
 
 - deterministic governance guarantees
 - orchestration auditability
 - bounded context isolation
+- selection traceability
 - pedagogical consistency
 
----
-
-# Governance Constraints
-
-The selection system must preserve the following architectural constraints:
-
-- selection must always occur after policy evaluation
-- ranking must not directly commit orchestration decisions
-- all selection overrides must remain explicit and traceable
-- student state must not bypass deterministic governance rules
-- topology ownership remains isolated inside Curriculum Graph
-- heuristic orchestration must not violate deterministic guarantees
-
-These constraints preserve long-term orchestration consistency as adaptive capabilities evolve.
+The deterministic selection architecture establishes the orchestration foundation for future adaptive orchestration evolution.
