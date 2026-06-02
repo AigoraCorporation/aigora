@@ -1,116 +1,222 @@
-# Decision Engine Design
+# Decision Engine Architecture
 
 ## Overview
 
 This document defines the Decision Engine architecture used by the AIGORA Tutor Orchestrator.
 
-The Decision Engine acts as the deterministic pedagogical reasoning core responsible for:
+The Decision Engine acts as the deterministic pedagogical reasoning core responsible for coordinating specialized orchestration engines.
 
-- orchestration coordination
-- policy execution
-- candidate evaluation
-- deterministic ranking
-- tie-breaking
-- final learning node selection
+Each engine owns an isolated orchestration responsibility while preserving:
 
-The architecture is intentionally deterministic-first and designed to evolve incrementally while preserving:
+* deterministic governance
+* orchestration reproducibility
+* bounded context isolation
+* auditability
+* pedagogical consistency
 
-- deterministic behavior
-- orchestration traceability
-- bounded context isolation
-- auditability
-- reproducible pedagogical decisions
+The orchestration architecture is intentionally deterministic-first and designed to evolve incrementally toward adaptive and hybrid orchestration capabilities.
+
+---
+
+# Initial Implementation Scope
+
+The first implementation phase focuses exclusively on the deterministic Tutor Orchestrator core.
+
+At this stage, the primary goal is to establish the deterministic orchestration foundation and validate:
+
+* orchestration lifecycle coordination
+* engine boundaries
+* deterministic governance
+* orchestration contracts
+* reproducible decision-making
+
+The initial implementation scope includes:
+
+* Orchestration Engine
+* Policy Engine
+* Strategy Engine
+* Selection Engine
+* Auditability Engine
+
+The initial implementation phase prioritizes deterministic orchestration governance over adaptive orchestration capabilities.
+
+---
+
+# External Components During Initial Phase
+
+During the first implementation phase, the following components are considered external dependencies:
+
+* Curriculum Graph
+* Student Model
+* Assessment Engine
+* Retrieval Layer
+* LLM Gateway
+
+These components may initially be integrated through:
+
+* mocked adapters
+* simplified implementations
+* static contracts
+* gRPC contract simulations
+* temporary infrastructure abstractions
+
+This approach allows the deterministic orchestration core to evolve independently while preserving bounded context isolation.
+
+---
+
+# Deferred Capabilities
+
+The following capabilities are intentionally deferred to future implementation phases:
+
+* student-aware orchestration
+* hybrid orchestration
+* heuristic-assisted ranking
+* adaptive learning progression
+* AI-assisted recommendation strategies
+* distributed orchestration coordination
+* semantic orchestration evaluation
+* probabilistic orchestration models
+
+The architecture is intentionally designed to evolve incrementally while preserving deterministic governance guarantees.
 
 ---
 
 # Architectural Principle
 
-The Decision Engine coordinates orchestration stages using:
+The Decision Engine coordinates orchestration stages through specialized deterministic orchestration engines.
 
-- explicit orchestration policies
-- deterministic evaluation strategies
-- ranking rules
-- stable tie-breaking
-- reproducible selection guarantees
+Each engine owns an isolated orchestration responsibility while preserving deterministic governance guarantees.
 
-The orchestration architecture must preserve deterministic governance across all orchestration stages.
+The orchestration architecture must preserve:
+
+* deterministic execution
+* stable orchestration sequencing
+* orchestration auditability
+* bounded context isolation
+* reproducible orchestration behavior
 
 Every orchestration decision must remain explainable, traceable, and reproducible.
 
 ---
 
-# Decision Engine Responsibilities
+# High-Level Orchestration Pipeline
 
-| Responsibility | Purpose | Deterministic Role | Primary Output |
-|---|---|---|---|
-| Orchestration Coordination | Coordinate orchestration stages | Ensure deterministic orchestration flow | Orchestration pipeline execution |
-| Policy Execution | Evaluate pedagogical constraints | Determine allowed candidates | Filtered candidates |
-| Ranking Evaluation | Score and prioritize candidates | Determine candidate preference | Ranked candidates |
-| Selection | Choose the final learning node | Commit final orchestration decision | Selected node |
-| Tie-Breaking | Resolve equivalent candidates | Guarantee deterministic ordering | Stable orchestration output |
-| Auditability | Trace orchestration decisions | Preserve reproducibility | Decision trace |
+The orchestration pipeline transforms retrieved curriculum nodes into deterministic pedagogical decisions.
+
+Each stage owns a specific orchestration responsibility:
+
+* **Retrieval** determines what learning nodes are reachable
+* **Candidate Generation** builds orchestration-ready candidates
+* **Policy Filtering** enforces deterministic pedagogical constraints
+* **Ranking** prioritizes valid candidates deterministically
+* **Selection** commits the final pedagogical orchestration decision
+
+```mermaid
+flowchart LR
+
+retrieval["Retrieval"]
+candidate["Candidate Generation"]
+policy["Policy Filtering"]
+ranking["Ranking"]
+selection["Selection"]
+
+retrieval --> candidate
+candidate --> policy
+policy --> ranking
+ranking --> selection
+```
 
 ---
 
-# High-Level Orchestration Pipeline
+# Orchestration Component Flow
 
-```text
-retrieval
-↓
-candidate generation
-↓
-policy filtering
-↓
-ranking
-↓
-selection
+The orchestration architecture coordinates multiple specialized orchestration engines.
+
+```mermaid
+flowchart LR
+
+orchestrator["Tutor Orchestrator"]
+
+curriculum["Curriculum Graph"]
+retrieved["Retrieved Nodes"]
+
+candidate["Candidate Generation"]
+policy["Policy Execution"]
+ranking["Ranking"]
+selection["Selection"]
+
+orchestrator --> curriculum
+curriculum --> retrieved
+
+retrieved --> candidate
+candidate --> policy
+policy --> ranking
+ranking --> selection
 ```
+
+The Tutor Orchestrator coordinates orchestration behavior while specialized engines remain responsible for their isolated orchestration responsibilities.
+
+---
+
+# Decision Engine Architecture
+
+The Decision Engine is composed of multiple specialized orchestration engines.
+
+| Engine                                        | Responsibility                                           |
+| --------------------------------------------- | -------------------------------------------------------- |
+| [Orchestration Engine](#orchestration-engine) | Coordinates orchestration flow and stage sequencing      |
+| [Policy Engine](#policy-engine)               | Evaluates deterministic pedagogical constraints          |
+| [Strategy Engine](#strategy-engine)           | Scores and prioritizes orchestration candidates          |
+| [Selection Engine](#selection-engine)         | Commits the final orchestration decision                 |
+| [Auditability Engine](#auditability-engine)   | Preserves orchestration traceability and reproducibility |
+
+This separation prevents orchestration logic from becoming tightly coupled and preserves bounded orchestration responsibilities.
 
 ---
 
 # Orchestration Engine
 
-The orchestration engine coordinates execution flow between orchestration stages.
+The Orchestration Engine coordinates execution flow between orchestration stages.
 
 ## Responsibilities
 
-- pipeline coordination
-- orchestration stage sequencing
-- candidate lifecycle management
-- deterministic execution ordering
-- bounded context coordination
-- orchestration flow management
+* pipeline coordination
+* orchestration stage sequencing
+* candidate lifecycle management
+* deterministic execution ordering
+* bounded context coordination
+* orchestration flow management
 
-The orchestration engine guarantees that all orchestration stages execute in a stable and reproducible order.
+The Orchestration Engine guarantees that all orchestration stages execute in a stable and reproducible order.
 
 ---
 
 # Policy Engine
 
-The policy engine evaluates deterministic pedagogical constraints using explicit orchestration policies.
+The Policy Engine evaluates deterministic pedagogical constraints using explicit orchestration policies.
 
 ## Policies
 
-- `EligibilityPolicy`
-- `RegressionPolicy`
-- `DifficultyPolicy`
-- `CompletionPolicy`
-- `ReviewPolicy`
+* `EligibilityPolicy`
+* `RegressionPolicy`
+* `DifficultyPolicy`
+* `CompletionPolicy`
+* `ReviewPolicy`
 
 ## Responsibilities
 
-- candidate validation
-- progression restriction
-- remediation enforcement
-- deterministic orchestration filtering
-- pedagogical governance enforcement
+* candidate validation
+* progression restriction
+* remediation enforcement
+* deterministic orchestration filtering
+* pedagogical governance enforcement
 
 Policy execution order must remain:
 
-- deterministic
-- reproducible
-- traceable
-- stable
+* deterministic
+* reproducible
+* traceable
+* stable
 
 No orchestration stage may bypass policy evaluation.
 
@@ -118,49 +224,54 @@ No orchestration stage may bypass policy evaluation.
 
 # Strategy Engine
 
-The strategy engine defines how orchestration candidates are evaluated, prioritized, and selected.
+The Strategy Engine defines how orchestration candidates are evaluated, prioritized, and ranked.
 
 ## Responsibilities
 
-- ranking strategies
-- selection strategies
-- tie-breaking strategies
-- fallback strategies
-- weighting strategies
-- deterministic scoring
+* ranking strategies
+* scoring strategies
+* weighting strategies
+* tie-breaking strategies
+* fallback prioritization
+* deterministic candidate scoring
 
-The strategy engine transforms policy-approved candidates into stable orchestration preference ordering.
+The Strategy Engine transforms policy-approved candidates into stable orchestration preference ordering.
 
 ---
 
-# Ranking and Selection
+# Selection Engine
 
-Ranking and selection have distinct orchestration responsibilities.
+The Selection Engine commits the final pedagogical orchestration decision.
 
-| Stage | Responsibility |
-|---|---|
-| Ranking | Creates candidate preference ordering |
-| Selection | Commits the final orchestration decision |
+## Responsibilities
 
-## Ranking Responsibilities
+* deterministic node selection
+* orchestration commitment
+* deterministic fallback selection
+* stable tie-breaking
+* reproducible node selection
 
-- candidate scoring
-- weighted prioritization
-- deterministic ordering
-- stable candidate evaluation
+The Selection Engine operates only on policy-approved and ranked candidates.
 
-## Selection Responsibilities
+Selection must preserve deterministic orchestration guarantees.
 
-- stable tie-breaking
-- deterministic fallback selection
-- orchestration commitment
-- reproducible node selection
+---
 
-Ranking evaluates preference.
+# Auditability Engine
 
-Selection commits the final pedagogical decision.
+The Auditability Engine preserves orchestration traceability and reproducibility across all orchestration stages.
 
-This separation preserves orchestration clarity and bounded governance.
+## Responsibilities
+
+* policy execution tracing
+* candidate evaluation traceability
+* ranking trace reconstruction
+* selection traceability
+* graph version persistence
+* orchestration reproducibility
+* deterministic orchestration logs
+
+Every orchestration decision must remain explainable and reconstructable.
 
 ---
 
@@ -168,14 +279,14 @@ This separation preserves orchestration clarity and bounded governance.
 
 The Decision Engine preserves the following deterministic guarantees:
 
-- same input produces the same orchestration output
-- deterministic policy execution
-- deterministic ranking
-- stable orchestration ordering
-- deterministic tie-breaking
-- graph version traceability
-- reproducible selection guarantees
-- deterministic orchestration sequencing
+* same input produces the same orchestration output
+* deterministic policy execution
+* deterministic ranking
+* stable orchestration ordering
+* deterministic tie-breaking
+* graph version traceability
+* reproducible selection guarantees
+* deterministic orchestration sequencing
 
 These guarantees ensure orchestration consistency and pedagogical reproducibility.
 
@@ -183,43 +294,27 @@ These guarantees ensure orchestration consistency and pedagogical reproducibilit
 
 # Orchestration Contracts
 
-The Decision Engine enforces explicit orchestration contracts between components.
+The Decision Engine enforces explicit orchestration contracts between orchestration engines and external platform components.
 
-| Component | Responsibility |
-|---|---|
-| Curriculum Graph | Owns topology retrieval |
-| Tutor Orchestrator | Owns pedagogical orchestration decisions |
-| Policy Engine | Owns candidate validation and pedagogical constraints |
-| Strategy Engine | Owns ranking and prioritization behavior |
-| Selection Layer | Owns final orchestration commitment |
+| Engine / Component   | Responsibility                           |
+| -------------------- | ---------------------------------------- |
+| Curriculum Graph     | Owns topology retrieval                  |
+| Tutor Orchestrator   | Owns pedagogical orchestration decisions |
+| Orchestration Engine | Coordinates orchestration sequencing     |
+| Policy Engine        | Evaluates pedagogical constraints        |
+| Strategy Engine      | Owns candidate prioritization            |
+| Selection Engine     | Commits orchestration decisions          |
+| Auditability Engine  | Preserves orchestration traceability     |
 
 ## Governance Constraints
 
-- policies cannot mutate curriculum topology
-- ranking cannot bypass policy execution
-- selection cannot bypass deterministic guarantees
-- orchestration stages must remain auditable
-- orchestration logic must remain isolated from infrastructure concerns
+* policies cannot mutate curriculum topology
+* ranking cannot bypass policy evaluation
+* selection cannot bypass deterministic guarantees
+* orchestration stages must remain auditable
+* orchestration logic must remain isolated from infrastructure concerns
 
 These constraints preserve architectural governance and bounded context isolation.
-
----
-
-# Auditability and Traceability
-
-The orchestration architecture must support complete decision reconstruction.
-
-The Decision Engine preserves:
-
-- policy execution tracing
-- candidate evaluation traceability
-- ranking trace reconstruction
-- selection traceability
-- graph version persistence
-- orchestration reproducibility
-- deterministic orchestration logs
-
-Every orchestration decision must remain explainable and reconstructable.
 
 ---
 
@@ -227,18 +322,21 @@ Every orchestration decision must remain explainable and reconstructable.
 
 The orchestration lifecycle follows a deterministic event-driven flow.
 
-```text
-ExerciseCompleted
-↓
-AssessmentEvaluated
-↓
-StudentModelUpdated
-↓
-PoliciesExecuted
-↓
-CandidateRanked
-↓
-NodeSelected
+```mermaid
+flowchart LR
+
+exercise["Exercise Completed"]
+assessment["Assessment Evaluated"]
+student["Student Model Updated"]
+policies["Policies Executed"]
+ranking["Candidate Ranked"]
+selection["Node Selected"]
+
+exercise --> assessment
+assessment --> student
+student --> policies
+policies --> ranking
+ranking --> selection
 ```
 
 This sequencing guarantees that orchestration decisions occur only after assessment evaluation and student state synchronization are completed.
@@ -249,15 +347,47 @@ This sequencing guarantees that orchestration decisions occur only after assessm
 
 The Decision Engine enforces strict orchestration boundaries.
 
-| Constraint | Description |
-|---|---|
-| Curriculum Graph isolation | Curriculum Graph does not perform pedagogical decisions |
-| Policy isolation | Policies cannot directly mutate graph topology |
-| Ranking isolation | Ranking cannot commit orchestration decisions |
-| Selection isolation | Selection must preserve deterministic guarantees |
-| Infrastructure isolation | Decision logic remains independent from infrastructure concerns |
+| Constraint                 | Description                                                     |
+| -------------------------- | --------------------------------------------------------------- |
+| Curriculum Graph isolation | Curriculum Graph does not perform pedagogical decisions         |
+| Policy isolation           | Policies cannot directly mutate graph topology                  |
+| Ranking isolation          | Ranking cannot commit orchestration decisions                   |
+| Selection isolation        | Selection must preserve deterministic guarantees                |
+| Infrastructure isolation   | Decision logic remains independent from infrastructure concerns |
 
 These constraints preserve orchestration governance and architectural consistency.
+
+---
+
+# Non-Goals
+
+The deterministic orchestration architecture does not aim to:
+
+* replace curriculum ownership
+* generate unrestricted pedagogical decisions
+* bypass deterministic governance
+* allow direct topology mutation
+* centralize all educational logic inside the orchestrator
+
+These non-goals preserve orchestration governance consistency and architectural boundaries.
+
+---
+
+# Operational Visibility
+
+The orchestration architecture must preserve operational visibility across all orchestration stages.
+
+The platform must support:
+
+* orchestration runtime sequencing visibility
+* orchestration interruption tracking
+* asynchronous coordination visibility
+* orchestration retry traceability
+* orchestration timeout visibility
+* deterministic orchestration replay
+* distributed orchestration observability
+
+Operational visibility is fundamental for orchestration governance and production-grade orchestration systems.
 
 ---
 
@@ -267,19 +397,19 @@ The current Decision Engine architecture is deterministic-first.
 
 Future orchestration capabilities may progressively introduce:
 
-- heuristic-assisted orchestration
-- adaptive ranking
-- AI-assisted recommendation strategies
-- semantic evaluation layers
-- probabilistic prioritization
-- hybrid orchestration strategies
+* heuristic-assisted orchestration
+* adaptive ranking
+* AI-assisted recommendation strategies
+* semantic evaluation layers
+* probabilistic prioritization
+* hybrid orchestration strategies
 
 while preserving:
 
-- deterministic governance guarantees
-- orchestration auditability
-- bounded context isolation
-- architectural traceability
-- pedagogical consistency
+* deterministic governance guarantees
+* orchestration auditability
+* bounded context isolation
+* architectural traceability
+* pedagogical consistency
 
 The deterministic Decision Engine establishes the governance foundation for future adaptive orchestration evolution.
