@@ -1,7 +1,6 @@
 # Tutor Orchestrator Architecture
 
-This documentation describes the architectural foundations,
-decision systems, orchestration model, and runtime integration
+This documentation describes the architectural foundations, decision systems, orchestration model, and runtime integration
 strategy of the AIGORA Tutor Orchestrator.
 
 ---
@@ -61,3 +60,18 @@ strategy of the AIGORA Tutor Orchestrator.
 | [Tutor Orchestrator Container Diagram](tutor-orchestrator-container-diagram.md) | Runtime container architecture |
 
 ---
+
+# Architectural Perspectives
+
+The Tutor Orchestrator architecture intentionally separates:
+
+| Perspective | Responsibility |
+|---|---|
+| Pedagogical Orchestration | Learning progression and orchestration decisions |
+| Decision Systems | Candidate generation, ranking, and deterministic rules |
+| Integration Architecture | External systems and gRPC contracts |
+| Governance Architecture | Auditability, traceability, and observability |
+| Runtime Architecture | Containers, infrastructure, and deployment topology |
+
+This separation prevents orchestration logic, infrastructure concerns,
+and pedagogical rules from becoming tightly coupled.
