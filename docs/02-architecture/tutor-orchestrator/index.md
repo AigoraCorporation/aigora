@@ -45,3 +45,11 @@ strategy of the AIGORA Tutor Orchestrator.
 | [Responsibility Matrix](responsibility-matrix.md) | Cross-component responsibility mapping |
 
 ---
+
+# Governance and Observability
+
+| Document | Description |
+|---|---|
+| [Auditability and Decision Traceability](auditability-and-decision-traceability.md) | Decision reconstruction and auditability |
+
+---
