@@ -21,12 +21,15 @@ Candidate Generation transforms retrieved learning nodes into orchestration-read
 
 The orchestration architecture evolves incrementally across multiple maturity stages:
 
-```text
-Graph-Only Candidate Generation
-↓
-Student-Aware Candidate Generation
-↓
-Hybrid Candidate Generation
+```mermaid
+flowchart LR
+
+graphOnly["Graph-Only Candidate Generation"]
+studentAware["Student-Aware Candidate Generation"]
+hybrid["Hybrid Candidate Generation"]
+
+graphOnly --> studentAware
+studentAware --> hybrid
 ```
 
 Initial implementations prioritize topology-driven deterministic candidate generation.
@@ -37,26 +40,33 @@ Student-aware and hybrid orchestration capabilities are progressively introduced
 
 # Candidate Generation Summary
 
-| Category | Description | Student Model Required | Status |
-|---|---|---|---|
-| Graph-Only Candidate Generation | Uses only curriculum topology and graph structure | No | Implemented First |
-| Student-Aware Candidate Generation | Uses student mastery and learning progression signals | Yes | Planned for Future Iterations |
-| Hybrid Candidate Generation | Combines graph topology with student learning state | Yes | Planned for Advanced Orchestration |
+| # | Category | Description | Student Model Required | Status |
+|---|---|---|---|---|
+| 1 | [Graph-Only Candidate Generation](#1-graph-only-candidate-generation) | Uses only curriculum topology and graph structure | No | Implemented First |
+| 2 | [Student-Aware Candidate Generation](#2-student-aware-candidate-generation) | Uses student mastery and learning progression signals | Yes | Planned for Future Iterations |
+| 3 | [Hybrid Candidate Generation](#3-hybrid-candidate-generation) | Combines graph topology with student learning state | Yes | Planned for Advanced Orchestration |
 
 ---
 
 # High-Level Candidate Generation Flow
 
-```text
-retrieval
-↓
-candidate enrichment
-↓
-candidate normalization
-↓
-candidate classification
-↓
-orchestration-ready candidates
+The candidate generation pipeline transforms retrieved curriculum nodes into orchestration-ready pedagogical candidates.
+
+Each stage incrementally enriches, normalizes, and classifies retrieved nodes while preserving deterministic orchestration guarantees and bounded orchestration responsibilities.
+
+```mermaid
+flowchart LR
+
+retrieval["Retrieval"]
+enrichment["Candidate Enrichment"]
+normalization["Candidate Normalization"]
+classification["Candidate Classification"]
+ready["Orchestration-Ready Candidates"]
+
+retrieval --> enrichment
+enrichment --> normalization
+normalization --> classification
+classification --> ready
 ```
 
 ---
