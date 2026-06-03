@@ -53,3 +53,11 @@ strategy of the AIGORA Tutor Orchestrator.
 | [Auditability and Decision Traceability](auditability-and-decision-traceability.md) | Decision reconstruction and auditability |
 
 ---
+
+# Runtime Architecture
+
+| Document | Description |
+|---|---|
+| [Tutor Orchestrator Container Diagram](tutor-orchestrator-container-diagram.md) | Runtime container architecture |
+
+---
