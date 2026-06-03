@@ -35,3 +35,11 @@ strategy of the AIGORA Tutor Orchestrator.
 | [Deterministic Orchestration Approaches](deterministic-orchestration-approaches.md) | Architectural orchestration alternatives |
 
 ---
+
+# Integration
+
+| Document | Description |
+|---|---|
+| [Curriculum Graph Contracts](curriculum-graph-contracts.md) | gRPC integration contracts and boundaries |
+
+---
