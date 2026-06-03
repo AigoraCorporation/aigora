@@ -280,6 +280,11 @@ Fallback behavior must preserve deterministic orchestration guarantees.
 
 # Deterministic Guarantees
 
+Global deterministic governance is documented in:
+
+- [Deterministic Governance](deterministic-governance.md)
+
+
 The selection architecture preserves the following guarantees:
 
 - same input produces the same selection result
@@ -361,23 +366,8 @@ These non-goals preserve orchestration boundaries and architectural consistency.
 
 # Future Evolution
 
-The current selection architecture is deterministic-first.
+Future orchestration evolution is centralized in:
 
-Future orchestration capabilities may progressively introduce:
+- [Orchestration Roadmap](orchestration-roadmap.md)
 
-- heuristic-assisted selection
-- adaptive orchestration balancing
-- semantic pedagogical prioritization
-- AI-assisted selection evaluation
-- probabilistic orchestration signals
-- hybrid orchestration strategies
-
-while preserving:
-
-- deterministic governance guarantees
-- orchestration auditability
-- bounded context isolation
-- selection traceability
-- pedagogical consistency
-
-The deterministic selection architecture establishes the orchestration foundation for future adaptive orchestration evolution.
+This document focuses only on the subsystem behavior described above.

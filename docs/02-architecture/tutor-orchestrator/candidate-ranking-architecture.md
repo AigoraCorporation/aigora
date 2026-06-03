@@ -16,12 +16,15 @@ Ranking produces candidate preference ordering but does not commit the final orc
 
 The ranking architecture evolves incrementally across multiple orchestration maturity stages.
 
-```text
-Graph-Only Ranking
-↓
-Student-Aware Ranking
-↓
-Hybrid Ranking
+```mermaid
+flowchart LR
+
+graphOnly["Graph-Only Ranking"]
+studentAware["Student-Aware Ranking"]
+hybrid["Hybrid Ranking"]
+
+graphOnly --> studentAware
+studentAware --> hybrid
 ```
 
 Initial implementations prioritize deterministic topology-based ranking.
@@ -41,6 +44,12 @@ The ranking layer must preserve:
 # Ranking Categories
 
 The orchestration engine organizes ranking behavior into distinct categories according to orchestration maturity and dependency scope.
+
+| # | Category | Dependency Scope | Student-Aware | Determinism Level | Complexity | Status |
+|---|---|---|---|---|---|---|
+| 1 | [Graph-Only Ranking](#1-graph-only-ranking) | Curriculum Graph | No | Fully deterministic | Low | Implemented First |
+| 2 | [Student-Aware Ranking](#2-student-aware-ranking) | Student Model | Yes | Deterministic | Medium | Planned for Future Iterations |
+| 3 | [Hybrid Ranking](#3-hybrid-ranking) | Curriculum Graph + Student Model | Yes | Hybrid deterministic orchestration | High | Planned for Advanced Orchestration |
 
 ---
 
@@ -195,18 +204,21 @@ Hybrid ranking represents the long-term evolution of adaptive pedagogical orches
 
 The ranking lifecycle operates after policy evaluation and before final orchestration selection.
 
-```text
-candidate generation
-↓
-policy filtering
-↓
-candidate scoring
-↓
-candidate prioritization
-↓
-deterministic ordering
-↓
-selection
+```mermaid
+flowchart LR
+
+candidate["Candidate Generation"]
+policy["Policy Filtering"]
+scoring["Candidate Scoring"]
+prioritization["Candidate Prioritization"]
+ordering["Deterministic Ordering"]
+selection["Selection"]
+
+candidate --> policy
+policy --> scoring
+scoring --> prioritization
+prioritization --> ordering
+ordering --> selection
 ```
 
 Ranking determines preference ordering.
@@ -242,6 +254,11 @@ All ranking signals must remain deterministic, reproducible, and traceable.
 ---
 
 # Deterministic Guarantees
+
+Global deterministic governance is documented in:
+
+- [Deterministic Governance](deterministic-governance.md)
+
 
 The ranking architecture preserves the following guarantees:
 
@@ -296,23 +313,8 @@ These constraints preserve orchestration governance and bounded context isolatio
 
 # Future Evolution
 
-The current ranking architecture is deterministic-first.
+Future orchestration evolution is centralized in:
 
-Future orchestration capabilities may progressively introduce:
+- [Orchestration Roadmap](orchestration-roadmap.md)
 
-- adaptive ranking
-- heuristic-assisted prioritization
-- semantic ranking strategies
-- AI-assisted pedagogical scoring
-- probabilistic orchestration signals
-- hybrid orchestration prioritization
-
-while preserving:
-
-- deterministic governance guarantees
-- orchestration auditability
-- bounded context isolation
-- ranking traceability
-- pedagogical consistency
-
-The deterministic ranking architecture establishes the orchestration foundation for future adaptive orchestration evolution.
+This document focuses only on the subsystem behavior described above.

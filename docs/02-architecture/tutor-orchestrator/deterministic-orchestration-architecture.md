@@ -256,6 +256,11 @@ This event sequence guarantees orchestration consistency and reproducible orches
 
 # Deterministic Guarantees
 
+Global deterministic governance is documented in:
+
+- [Deterministic Governance](deterministic-governance.md)
+
+
 The orchestration architecture preserves the following guarantees:
 
 - same input produces the same orchestration output

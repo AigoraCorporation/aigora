@@ -305,21 +305,8 @@ Together, these bounded contexts establish the deterministic educational orchest
 
 # Future Evolution
 
-Future platform evolution may progressively introduce:
+refactor(tutor-orchestrator-docs): improve documentation governance and structureFuture orchestration evolution is centralized in:
 
-* adaptive orchestration
-* heuristic-assisted ranking
-* semantic topology retrieval
-* distributed graph traversal
-* event-driven orchestration
-* hybrid orchestration models
+- [Orchestration Roadmap](orchestration-roadmap.md)
 
-while preserving:
-
-* bounded context isolation
-* deterministic governance
-* orchestration auditability
-* topology ownership consistency
-* architectural traceability
-
-The separation between topology ownership and pedagogical orchestration establishes the architectural foundation for future scalable orchestration evolution.
+This document focuses only on the subsystem behavior described above.

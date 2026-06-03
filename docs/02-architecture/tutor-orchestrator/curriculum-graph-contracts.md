@@ -290,22 +290,8 @@ These constraints preserve long-term topology governance and bounded context iso
 
 # Future Evolution
 
-Future topology capabilities may progressively introduce:
+Future orchestration evolution is centralized in:
 
-* distributed graph traversal
-* topology indexing
-* semantic graph retrieval
-* adaptive traversal optimization
-* graph caching strategies
-* traversal performance optimization
-* graph partitioning strategies
+- [Orchestration Roadmap](orchestration-roadmap.md)
 
-while preserving:
-
-* contract stability
-* deterministic topology retrieval
-* graph version traceability
-* bounded context isolation
-* orchestration reproducibility
-
-The Curriculum Graph contracts establish the topology foundation for future distributed orchestration evolution.
+This document focuses only on the subsystem behavior described above.

@@ -14,6 +14,23 @@ The system starts with topology-driven deterministic orchestration and progressi
 
 The orchestration engine organizes rules into distinct categories according to the information required for evaluation.
 
+```mermaid
+flowchart LR
+
+graphOnly["Graph-Only Rules"]
+studentAware["Student-Aware Rules"]
+hybrid["Hybrid Rules"]
+
+graphOnly --> studentAware
+studentAware --> hybrid
+```
+
+| # | Category | Dependency Scope | Student-Aware | Determinism Level | Status |
+|---|---|---|---|---|---|
+| 1 | [Graph-Only Rules](#1-graph-only-rules) | Curriculum Graph | No | Fully deterministic | Implemented First |
+| 2 | [Student-Aware Rules](#2-student-aware-rules) | Student Model | Yes | Deterministic | Planned for Future Iterations |
+| 3 | [Hybrid Rules](#3-hybrid-rules) | Curriculum Graph + Student Model | Yes | Hybrid deterministic orchestration | Planned for Advanced Orchestration |
+
 ---
 
 # 1. Graph-Only Rules

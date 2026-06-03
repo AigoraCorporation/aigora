@@ -266,6 +266,11 @@ Every orchestration decision must be reconstructable through event history.
 
 # Deterministic Guarantees
 
+Global deterministic governance is documented in:
+
+- [Deterministic Governance](deterministic-governance.md)
+
+
 The event-driven orchestration flow preserves the following guarantees:
 
 * stable event sequencing
@@ -298,23 +303,8 @@ These constraints preserve bounded context isolation and orchestration governanc
 
 # Future Evolution
 
-The current orchestration architecture is deterministic-first.
+Future orchestration evolution is centralized in:
 
-Future orchestration capabilities may progressively introduce:
+- [Orchestration Roadmap](orchestration-roadmap.md)
 
-* distributed event streaming
-* asynchronous orchestration pipelines
-* heuristic-assisted orchestration
-* adaptive pedagogical event processing
-* event-driven personalization
-* hybrid orchestration coordination
-
-while preserving:
-
-* deterministic governance guarantees
-* orchestration auditability
-* architectural traceability
-* bounded context isolation
-* pedagogical consistency
-
-The event-driven model establishes the orchestration foundation for future distributed and adaptive learning systems.
+This document focuses only on the subsystem behavior described above.

@@ -393,23 +393,8 @@ Operational visibility is fundamental for orchestration governance and productio
 
 # Future Evolution
 
-The current Decision Engine architecture is deterministic-first.
+Future orchestration evolution is centralized in:
 
-Future orchestration capabilities may progressively introduce:
+- [Orchestration Roadmap](orchestration-roadmap.md)
 
-* heuristic-assisted orchestration
-* adaptive ranking
-* AI-assisted recommendation strategies
-* semantic evaluation layers
-* probabilistic prioritization
-* hybrid orchestration strategies
-
-while preserving:
-
-* deterministic governance guarantees
-* orchestration auditability
-* bounded context isolation
-* architectural traceability
-* pedagogical consistency
-
-The deterministic Decision Engine establishes the governance foundation for future adaptive orchestration evolution.
+This document focuses only on the subsystem behavior described above.

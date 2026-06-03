@@ -251,6 +251,11 @@ Candidate metadata must remain deterministic, reproducible, and auditable.
 
 # Deterministic Guarantees
 
+Global deterministic governance is documented in:
+
+- [Deterministic Governance](deterministic-governance.md)
+
+
 The Candidate Generation architecture preserves the following guarantees:
 
 - same input produces the same candidate set
@@ -282,23 +287,8 @@ These constraints preserve orchestration consistency and bounded context isolati
 
 # Future Evolution
 
-The current Candidate Generation architecture is deterministic-first.
+Future orchestration evolution is centralized in:
 
-Future orchestration capabilities may progressively introduce:
+- [Orchestration Roadmap](orchestration-roadmap.md)
 
-- adaptive candidate enrichment
-- heuristic-assisted candidate preparation
-- semantic candidate classification
-- personalized candidate prioritization
-- AI-assisted orchestration preparation
-- probabilistic orchestration signals
-
-while preserving:
-
-- deterministic governance guarantees
-- orchestration auditability
-- bounded context isolation
-- candidate traceability
-- pedagogical consistency
-
-The deterministic candidate generation model establishes the orchestration foundation for future adaptive orchestration evolution.
+This document focuses only on the subsystem behavior described above.
