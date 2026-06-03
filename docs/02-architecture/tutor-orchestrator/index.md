@@ -41,5 +41,6 @@ strategy of the AIGORA Tutor Orchestrator.
 | Document | Description |
 |---|---|
 | [Curriculum Graph Contracts](curriculum-graph-contracts.md) | gRPC integration contracts and boundaries |
+| [Architectural Responsibility Boundaries](architectural-responsibility-boundaries.md) | Service and component ownership |
 
 ---
