@@ -4,13 +4,11 @@
 
 This document defines the architecture of the Decision Engine used by the AIGORA Tutor Orchestrator.
 
-The Decision Engine acts as the deterministic pedagogical reasoning core of the platform.
+The Decision Engine is the deterministic pedagogical reasoning subsystem responsible for transforming curriculum topology, student context, and assessment signals into a reproducible orchestration decision.
 
-Its responsibility is to coordinate the orchestration engines responsible for evaluating candidates, enforcing policies, producing rankings, selecting learning nodes, and preserving decision traceability.
+The Decision Engine does not centralize decision-making logic in a single component.
 
-The Decision Engine does not centralize all decision logic.
-
-Instead, it delegates responsibilities to specialized engines while preserving deterministic governance guarantees.
+Instead, it delegates responsibilities to specialized orchestration engines while preserving deterministic governance, bounded context isolation, and decision traceability.
 
 ---
 
@@ -26,11 +24,11 @@ To answer this question, the engine coordinates:
 
 * orchestration flow
 * policy evaluation
-* candidate preference
-* final selection
+* candidate prioritization
+* learning node selection
 * decision traceability
 
-The resulting output is a deterministic pedagogical decision.
+The result is a deterministic pedagogical decision that can be explained, reconstructed, and reproduced.
 
 ---
 
@@ -38,22 +36,24 @@ The resulting output is a deterministic pedagogical decision.
 
 The Decision Engine follows a decomposition-first architecture.
 
-Responsibilities are distributed across specialized engines that own specific decision-making concerns.
+Responsibilities are distributed across specialized engines that own a single orchestration concern.
 
 This architecture promotes:
 
-* bounded responsibilities
-* explicit ownership
-* deterministic behavior
-* auditability
-* maintainability
+* clear ownership boundaries
+* deterministic execution
+* easier testing
+* improved maintainability
+* decision transparency
 * long-term extensibility
+
+No individual engine should own the complete decision lifecycle.
 
 ---
 
 # Decision Engine Composition
 
-The Decision Engine is composed of the following engines.
+The Decision Engine is composed of five specialized engines.
 
 ```mermaid
 flowchart TD
@@ -73,25 +73,25 @@ decision --> selection
 decision --> auditability
 ```
 
-Each engine owns a specific part of the decision lifecycle.
+Together, these engines form the pedagogical decision-making subsystem of the Tutor Orchestrator.
 
 ---
 
 # Engine Responsibilities
 
-| Engine               | Responsibility                                     |
-| -------------------- | -------------------------------------------------- |
-| Orchestration Engine | Coordinates orchestration flow and stage execution |
-| Policy Engine        | Determines candidate eligibility                   |
-| Strategy Engine      | Determines candidate preference                    |
-| Selection Engine     | Produces the final orchestration commitment        |
-| Auditability Engine  | Preserves decision reconstruction and traceability |
+| Engine                                          | Responsibility                              |
+| ----------------------------------------------- | ------------------------------------------- |
+| [Orchestration Engine](orchestration-engine.md) | Coordinates orchestration execution flow    |
+| [Policy Engine](policy-engine.md)               | Determines candidate eligibility            |
+| [Strategy Engine](strategy-engine.md)           | Determines candidate preference             |
+| [Selection Engine](selection-engine.md)         | Produces the final orchestration commitment |
+| [Auditability Engine](auditability-engine.md)   | Preserves traceability and reproducibility  |
 
-Together, these engines form the deterministic decision-making subsystem of the Tutor Orchestrator.
+Each engine owns one part of the decision lifecycle.
 
 ---
 
-# High-Level Decision Lifecycle
+# High-Level Decision Flow
 
 ```mermaid
 flowchart LR
@@ -119,33 +119,33 @@ The Decision Engine coordinates this lifecycle while preserving deterministic ex
 
 ---
 
-# Decision Flow Ownership
+# Decision Ownership Model
 
-The Decision Engine delegates responsibility to specialized engines.
+The decision lifecycle follows a strict ownership model.
 
 ```text
 Orchestration Engine
     ↓
-coordinates execution
+Coordinates execution
 
 Policy Engine
     ↓
-determines allowed candidates
+Determines what is allowed
 
 Strategy Engine
     ↓
-determines preferred candidates
+Determines what is preferred
 
 Selection Engine
     ↓
-determines selected candidate
+Determines what is selected
 
 Auditability Engine
     ↓
-explains and reconstructs decisions
+Explains why it happened
 ```
 
-This ownership model prevents decision logic from becoming concentrated in a single component.
+This separation prevents responsibility leakage across engines.
 
 ---
 
@@ -153,12 +153,13 @@ This ownership model prevents decision logic from becoming concentrated in a sin
 
 The Decision Engine consumes information from multiple platform components.
 
-| Source                  | Purpose                          |
-| ----------------------- | -------------------------------- |
-| Curriculum Graph        | Provides topology information    |
-| Student Model           | Provides learning state          |
-| Assessment Engine       | Provides evaluation signals      |
-| Learning Session Engine | Initiates orchestration requests |
+| Source                  | Purpose                              |
+| ----------------------- | ------------------------------------ |
+| Curriculum Graph        | Curriculum topology and dependencies |
+| Student Model           | Learning state and mastery signals   |
+| Assessment Engine       | Evaluation and performance signals   |
+| Learning Session Engine | Orchestration requests               |
+| Retrieval Layer         | Learning context (future use)        |
 
 These inputs provide the context required for deterministic orchestration.
 
@@ -168,15 +169,16 @@ These inputs provide the context required for deterministic orchestration.
 
 The Decision Engine produces a single orchestration decision.
 
-Example output:
+Example:
 
-| Field            | Description               |
-| ---------------- | ------------------------- |
-| selectedNodeId   | Selected learning node    |
-| graphVersion     | Curriculum graph version  |
-| rankingReference | Ranking result identifier |
-| decisionTraceId  | Auditability reference    |
-| timestamp        | Decision timestamp        |
+| Field            | Description                |
+| ---------------- | -------------------------- |
+| selectedNodeId   | Selected learning node     |
+| graphVersion     | Curriculum graph version   |
+| decisionId       | Unique decision identifier |
+| rankingReference | Ranking trace reference    |
+| decisionTraceId  | Auditability reference     |
+| timestamp        | Decision timestamp         |
 
 The output represents the official pedagogical commitment of the Tutor Orchestrator.
 
@@ -189,18 +191,48 @@ The Decision Engine preserves:
 * deterministic orchestration flow
 * deterministic policy execution
 * deterministic ranking
-* deterministic selection
 * deterministic tie-breaking
+* deterministic selection
 * reproducible decisions
 * traceable decision history
 
-The same input must always produce the same decision outcome.
+The same orchestration input must always produce the same orchestration outcome.
+
+---
+
+# Runtime Collaboration
+
+The engines collaborate through a deterministic execution sequence.
+
+```mermaid
+sequenceDiagram
+
+participant O as Orchestration Engine
+participant P as Policy Engine
+participant S as Strategy Engine
+participant SE as Selection Engine
+participant A as Auditability Engine
+
+O->>P: Evaluate Candidates
+P-->>O: Approved Candidates
+
+O->>S: Rank Candidates
+S-->>O: Ranked Candidates
+
+O->>SE: Select Candidate
+SE-->>O: Selected Node
+
+O->>A: Persist Decision Trace
+A-->>O: Decision Trace
+```
+
+This interaction model preserves explicit ownership boundaries.
 
 ---
 
 # Architectural Boundaries
 
-The Decision Engine operates within explicit architectural boundaries.
+The Decision Engine operates within explicit architectural constraints.
 
 | Boundary          | Constraint                        |
 | ----------------- | --------------------------------- |
@@ -210,7 +242,7 @@ The Decision Engine operates within explicit architectural boundaries.
 | Retrieval Layer   | Owns retrieval, not orchestration |
 | LLM Gateway       | Owns generation, not governance   |
 
-These boundaries preserve bounded context ownership.
+These boundaries prevent coupling between educational semantics and infrastructure concerns.
 
 ---
 
@@ -221,7 +253,7 @@ The first implementation phase focuses on deterministic orchestration.
 Implemented capabilities:
 
 * graph-driven orchestration
-* deterministic policies
+* deterministic policy execution
 * deterministic ranking
 * deterministic selection
 * decision traceability foundations
@@ -231,10 +263,10 @@ Deferred capabilities:
 * student-aware orchestration
 * hybrid orchestration
 * adaptive ranking
-* heuristic-assisted decisions
-* AI-assisted recommendations
+* confidence-aware progression
+* heuristic-assisted orchestration
 
-This incremental approach reduces architectural complexity while preserving future extensibility.
+This incremental approach reduces complexity while preserving future extensibility.
 
 ---
 
@@ -242,13 +274,14 @@ This incremental approach reduces architectural complexity while preserving futu
 
 Future versions of the Decision Engine may introduce:
 
-* student-aware decision strategies
-* hybrid topology and mastery orchestration
-* adaptive ranking models
-* confidence-aware progression
+* student-aware orchestration
+* hybrid orchestration
+* adaptive ranking
+* confidence-based progression
 * controlled heuristic assistance
+* AI-assisted recommendation support
 
-All future capabilities must preserve deterministic governance principles.
+All future capabilities must remain compatible with deterministic governance principles.
 
 ---
 
@@ -260,4 +293,5 @@ All future capabilities must preserve deterministic governance principles.
 * [Selection Engine](selection-engine.md)
 * [Auditability Engine](auditability-engine.md)
 * [Deterministic Orchestration Architecture](../02-orchestration/deterministic-orchestration-architecture.md)
+* [Runtime Architecture](../06-integration/runtime-architecture.md)
 * [Component Ownership](../05-governance/component-ownership.md)
