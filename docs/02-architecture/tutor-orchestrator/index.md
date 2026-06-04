@@ -1,91 +1,82 @@
-# Tutor Orchestrator Architecture
+# Tutor Orchestrator
 
-This documentation describes the architectural foundations, decision systems, orchestration model, and runtime integration strategy of the AIGORA Tutor Orchestrator.
+## Overview
 
----
+The Tutor Orchestrator is the deterministic pedagogical decision-making component of AIGORA.
 
-# Recommended Reading Order
-
-| # | Document | Why read it first |
-|---|---|---|
-| 1 | [Tutor Orchestrator](tutor-orchestrator.md) | Understand the core component and its responsibility. |
-| 2 | [Interaction Model](interaction-model.md) | Understand how the orchestrator interacts with students and components. |
-| 3 | [Architectural Responsibility Boundaries](architectural-responsibility-boundaries.md) | Understand ownership boundaries between orchestration and topology. |
-| 4 | [Responsibility Matrix](responsibility-matrix.md) | Understand who owns each responsibility. |
-| 5 | [Deterministic Orchestration Architecture](deterministic-orchestration-architecture.md) | Understand the global orchestration pipeline. |
-| 6 | [Decision Engine Architecture](decision-engine-architecture.md) | Understand the engine-based internal decision architecture. |
-| 7 | [Candidate Generation Model](candidate-generation-model.md) | Understand how learning nodes become candidates. |
-| 8 | [Deterministic Orchestration Rule Model](deterministic-orchestration-rule-model.md) | Understand rule categories and policy evolution. |
-| 9 | [Candidate Ranking Architecture](candidate-ranking-architecture.md) | Understand candidate prioritization. |
-| 10 | [Learning Node Selection Strategy](learning-node-selection-strategy.md) | Understand final node selection. |
-| 11 | [Curriculum Graph Contracts](curriculum-graph-contracts.md) | Understand service contracts with Curriculum Graph. |
-| 12 | [Auditability and Decision Traceability](auditability-and-decision-traceability.md) | Understand decision reconstruction and auditability. |
+It coordinates learning progression through explicit orchestration policies, ranking strategies, selection mechanisms, and auditability guarantees.
 
 ---
 
-# Foundations
+# Documentation Map
 
-| Document | Description |
-|---|---|
-| [Tutor Orchestrator](tutor-orchestrator.md) | Core orchestration responsibilities and pedagogical coordination model. |
-| [Interaction Model](interaction-model.md) | Interaction dynamics, component coordination, and domain ownership. |
-| [Architectural Responsibility Boundaries](architectural-responsibility-boundaries.md) | Service and component ownership boundaries. |
-| [Responsibility Matrix](responsibility-matrix.md) | Cross-component responsibility mapping. |
-| [Glossary](glossary.md) | Shared terminology used across Tutor Orchestrator documentation. |
+## 01. Overview
 
----
-
-# Orchestration
-
-| Document | Description |
-|---|---|
-| [Deterministic Orchestration Architecture](deterministic-orchestration-architecture.md) | Global deterministic orchestration lifecycle and coordination. |
-| [Event-Driven Pedagogical Flow](event-driven-pedagogical-flow.md) | Event-driven orchestration lifecycle. |
-| [Orchestration Roadmap](orchestration-roadmap.md) | Future evolution of deterministic, student-aware, hybrid, and adaptive orchestration. |
+* [Tutor Orchestrator](01-overview/tutor-orchestrator.md)
+* [Architecture Overview](01-overview/architecture-overview.md)
+* [Architecture Map](01-overview/architecture-map.md)
+* [Interaction Model](01-overview/interaction-model.md)
 
 ---
 
-# Decision Systems
+## 02. Orchestration
 
-| Document | Description |
-|---|---|
-| [Decision Engine Architecture](decision-engine-architecture.md) | Engine-based decision architecture and internal coordination. |
-| [Candidate Generation Model](candidate-generation-model.md) | Candidate generation lifecycle. |
-| [Deterministic Orchestration Rule Model](deterministic-orchestration-rule-model.md) | Rule categories and deterministic policy evolution. |
-| [Candidate Ranking Architecture](candidate-ranking-architecture.md) | Deterministic ranking model. |
-| [Learning Node Selection Strategy](learning-node-selection-strategy.md) | Learning progression selection behavior. |
-| [Deterministic Orchestration Approaches](deterministic-orchestration-approaches.md) | Architectural orchestration alternatives. |
+* [Deterministic Orchestration Architecture](02-orchestration/deterministic-orchestration-architecture.md)
+* [Deterministic Governance](02-orchestration/deterministic-governance.md)
+* [Event-Driven Pedagogical Flow](02-orchestration/event-driven-pedagogical-flow.md)
+* [Orchestration Roadmap](02-orchestration/orchestration-roadmap.md)
+* [Deterministic Orchestration Approaches](02-orchestration/deterministic-orchestration-approaches.md)
+* [Deterministic Orchestration Rule Model](02-orchestration/deterministic-orchestration-rule-model.md)
 
 ---
 
-# Integration
+## 03. Decision Engine
 
-| Document | Description |
-|---|---|
-| [Curriculum Graph Contracts](curriculum-graph-contracts.md) | gRPC integration contracts and boundaries. |
-| [Tutor Orchestrator Container Diagram](tutor-orchestrator-container-diagram.md) | Runtime container architecture. |
-
----
-
-# Governance and Observability
-
-| Document | Description |
-|---|---|
-| [Deterministic Governance](deterministic-governance.md) | Shared deterministic guarantees and reproducibility rules. |
-| [Auditability and Decision Traceability](auditability-and-decision-traceability.md) | Decision reconstruction and auditability. |
+* [Decision Engine Architecture](03-decision-engine/decision-engine-architecture.md)
+* [Orchestration Engine](03-decision-engine/orchestration-engine.md)
+* [Policy Engine](03-decision-engine/policy-engine.md)
+* [Strategy Engine](03-decision-engine/strategy-engine.md)
+* [Selection Engine](03-decision-engine/selection-engine.md)
+* [Auditability Engine](03-decision-engine/auditability-engine.md)
 
 ---
 
-# Architectural Perspectives
+## 04. Candidate Lifecycle
 
-The Tutor Orchestrator architecture intentionally separates:
+* [Candidate Generation Model](04-candidate-lifecycle/candidate-generation-model.md)
+* [Candidate Ranking Architecture](04-candidate-lifecycle/candidate-ranking-architecture.md)
+* [Learning Node Selection Strategy](04-candidate-lifecycle/learning-node-selection-strategy.md)
 
-| Perspective | Responsibility |
-|---|---|
-| Pedagogical Orchestration | Learning progression and orchestration decisions. |
-| Decision Systems | Candidate generation, ranking, selection, and deterministic rules. |
-| Integration Architecture | External systems and gRPC contracts. |
-| Governance Architecture | Auditability, traceability, and deterministic guarantees. |
-| Runtime Architecture | Containers, infrastructure, and deployment topology. |
+---
 
-This separation prevents orchestration logic, infrastructure concerns, and pedagogical rules from becoming tightly coupled.
+## 05. Governance
+
+* [Architectural Responsibility Boundaries](05-governance/architectural-responsibility-boundaries.md)
+* [Responsibility Matrix](05-governance/responsibility-matrix.md)
+* [Component Ownership](05-governance/component-ownership.md)
+* [Auditability and Decision Traceability](05-governance/auditability-and-decision-traceability.md)
+
+---
+
+## 06. Integration
+
+* [Runtime Architecture](06-integration/runtime-architecture.md)
+* [Curriculum Graph Contracts](06-integration/curriculum-graph-contracts.md)
+* [Tutor Orchestrator Container Diagram](06-integration/tutor-orchestrator-container-diagram.md)
+
+---
+
+## Architecture Decision Records
+
+* [ADR Index](adr/README.md)
+* [ADR-001 — Deterministic-First Orchestration](adr/ADR-001-deterministic-first-orchestration.md)
+* [ADR-002 — Curriculum Graph Integration via gRPC](adr/ADR-002-curriculum-graph-integration-via-grpc.md)
+* [ADR-003 — Decision Engine Decomposition](adr/ADR-003-decision-engine-decomposition.md)
+* [ADR-004 — Event-Driven Pedagogical Flow](adr/ADR-004-event-driven-pedagogical-flow.md)
+* [ADR-005 — Auditability-First Architecture](adr/ADR-005-auditability-first-architecture.md)
+
+---
+
+## Reference
+
+* [Glossary](glossary.md)
