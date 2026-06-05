@@ -257,7 +257,7 @@ All ranking signals must remain deterministic, reproducible, and traceable.
 
 Global deterministic governance is documented in:
 
-- [Deterministic Governance](deterministic-governance.md)
+- [Deterministic Governance](../02-orchestration/deterministic-governance.md)
 
 
 The ranking architecture preserves the following guarantees:
@@ -315,6 +315,6 @@ These constraints preserve orchestration governance and bounded context isolatio
 
 Future orchestration evolution is centralized in:
 
-- [Orchestration Roadmap](orchestration-roadmap.md)
+- [Orchestration Roadmap](../02-orchestration/orchestration-roadmap.md)
 
 This document focuses only on the subsystem behavior described above.

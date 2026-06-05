@@ -292,6 +292,6 @@ These constraints preserve long-term topology governance and bounded context iso
 
 Future orchestration evolution is centralized in:
 
-- [Orchestration Roadmap](orchestration-roadmap.md)
+- [Orchestration Roadmap](../02-orchestration/orchestration-roadmap.md)
 
 This document focuses only on the subsystem behavior described above.

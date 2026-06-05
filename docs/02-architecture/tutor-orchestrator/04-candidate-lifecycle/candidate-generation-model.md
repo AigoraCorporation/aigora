@@ -253,7 +253,7 @@ Candidate metadata must remain deterministic, reproducible, and auditable.
 
 Global deterministic governance is documented in:
 
-- [Deterministic Governance](deterministic-governance.md)
+- [Deterministic Governance](../02-orchestration/deterministic-governance.md)
 
 
 The Candidate Generation architecture preserves the following guarantees:
@@ -289,6 +289,6 @@ These constraints preserve orchestration consistency and bounded context isolati
 
 Future orchestration evolution is centralized in:
 
-- [Orchestration Roadmap](orchestration-roadmap.md)
+- [Orchestration Roadmap](../02-orchestration/orchestration-roadmap.md)
 
 This document focuses only on the subsystem behavior described above.

@@ -307,6 +307,6 @@ Together, these bounded contexts establish the deterministic educational orchest
 
 refactor(tutor-orchestrator-docs): improve documentation governance and structureFuture orchestration evolution is centralized in:
 
-- [Orchestration Roadmap](orchestration-roadmap.md)
+- [Orchestration Roadmap](../02-orchestration/orchestration-roadmap.md)
 
 This document focuses only on the subsystem behavior described above.

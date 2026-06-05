@@ -18,7 +18,7 @@ The architecture is intentionally deterministic-first and designed to evolve inc
 
 The global orchestration lifecycle is documented in:
 
-- [Deterministic Orchestration Architecture](deterministic-orchestration-architecture.md)
+- [Deterministic Orchestration Architecture](../02-orchestration/deterministic-orchestration-architecture.md)
 
 ---
 

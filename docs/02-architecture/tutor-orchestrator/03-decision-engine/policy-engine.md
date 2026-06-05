@@ -256,9 +256,9 @@ while preserving deterministic governance guarantees.
 
 # Related Documents
 
-* [Decision Engine Architecture](decision-engine-architecture.md)
-* [Orchestration Engine](orchestration-engine.md)
-* [Strategy Engine](strategy-engine.md)
-* [Selection Engine](selection-engine.md)
+* [Decision Engine Architecture](../03-decision-engine/decision-engine-architecture.md)
+* [Orchestration Engine](../03-decision-engine/orchestration-engine.md)
+* [Strategy Engine](../03-decision-engine/selection-engine.md)
+* [Selection Engine](../03-decision-engine/strategy-engine.md)
 * [Deterministic Orchestration Rule Model](../02-orchestration/deterministic-orchestration-rule-model.md)
 * [Deterministic Governance](../02-orchestration/deterministic-governance.md)
