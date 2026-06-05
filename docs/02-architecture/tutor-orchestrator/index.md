@@ -38,6 +38,7 @@ It coordinates learning progression through explicit orchestration policies, ran
 * [Strategy Engine](03-decision-engine/strategy-engine.md)
 * [Selection Engine](03-decision-engine/selection-engine.md)
 * [Auditability Engine](03-decision-engine/auditability-engine.md)
+* [Decision Lifecycle](../03-decision-engine/decision-lifecycle.md)
 
 ---
 

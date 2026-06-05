@@ -12,6 +12,50 @@ The objective is to make architectural knowledge discoverable, maintainable, and
 
 ---
 
+## Documentation Structure
+
+The Tutor Orchestrator documentation is organized into domain-focused sections.
+
+Each section owns a specific architectural concern and contributes to the overall understanding of the orchestration platform.
+
+The recommended reading path follows the architectural progression shown below.
+
+```mermaid
+flowchart LR
+
+overview["01. Overview"]
+orchestration["02. Orchestration"]
+decision["03. Decision Engine"]
+candidate["04. Candidate Lifecycle"]
+governance["05. Governance"]
+integration["06. Integration"]
+adr["07. ADRs"]
+
+overview --> orchestration
+orchestration --> decision
+decision --> candidate
+candidate --> governance
+governance --> integration
+integration --> adr
+```
+
+### Section Responsibilities
+
+| Section                 | Purpose                                                            |
+| ----------------------- | ------------------------------------------------------------------ |
+| 01. Overview            | Introduces the Tutor Orchestrator and its role within AIGORA       |
+| 02. Orchestration       | Defines orchestration principles, governance, and execution models |
+| 03. Decision Engine     | Defines how pedagogical decisions are coordinated and executed     |
+| 04. Candidate Lifecycle | Defines candidate generation, ranking, and selection concepts      |
+| 05. Governance          | Defines ownership boundaries, responsibilities, and auditability   |
+| 06. Integration         | Defines runtime architecture, contracts, and service interactions  |
+| 07. ADRs                | Records significant architectural decisions and their rationale    |
+
+This structure promotes separation of concerns, easier navigation, and long-term maintainability of the architecture documentation.
+
+
+---
+
 # Architectural Domains
 
 ```mermaid

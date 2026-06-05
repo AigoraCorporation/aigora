@@ -341,3 +341,4 @@ The Auditability Engine explains and reconstructs the final decision.
 * [Strategy Engine](strategy-engine.md)
 * [Learning Node Selection Strategy](../04-candidate-lifecycle/learning-node-selection-strategy.md)
 * [Deterministic Governance](../02-orchestration/deterministic-governance.md)
+* [Decision Lifecycle](../03-decision-engine/decision-lifecycle.md)

@@ -286,3 +286,4 @@ These non-goals preserve long-term scalability and maintainability.
 * [Tutor Orchestrator Container Diagram](tutor-orchestrator-container-diagram.md)
 * [Deterministic Governance](../02-orchestration/deterministic-governance.md)
 * [Decision Engine Architecture](../03-decision-engine/decision-engine-architecture.md)
+* [Decision Lifecycle](../03-decision-engine/decision-lifecycle.md)

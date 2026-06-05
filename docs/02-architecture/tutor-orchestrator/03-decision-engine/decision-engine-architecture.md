@@ -295,3 +295,4 @@ All future capabilities must remain compatible with deterministic governance pri
 * [Deterministic Orchestration Architecture](../02-orchestration/deterministic-orchestration-architecture.md)
 * [Runtime Architecture](../06-integration/runtime-architecture.md)
 * [Component Ownership](../05-governance/component-ownership.md)
+* [Decision Lifecycle](../03-decision-engine/decision-lifecycle.md)

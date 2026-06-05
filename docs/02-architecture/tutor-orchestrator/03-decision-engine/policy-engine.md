@@ -262,3 +262,4 @@ while preserving deterministic governance guarantees.
 * [Selection Engine](../03-decision-engine/strategy-engine.md)
 * [Deterministic Orchestration Rule Model](../02-orchestration/deterministic-orchestration-rule-model.md)
 * [Deterministic Governance](../02-orchestration/deterministic-governance.md)
+* [Decision Lifecycle](../03-decision-engine/decision-lifecycle.md)

@@ -326,3 +326,4 @@ The Selection Engine determines which candidate is ultimately selected.
 * [Selection Engine](selection-engine.md)
 * [Candidate Ranking Architecture](../04-candidate-lifecycle/candidate-ranking-architecture.md)
 * [Deterministic Governance](../02-orchestration/deterministic-governance.md)
+* [Decision Lifecycle](../03-decision-engine/decision-lifecycle.md)
