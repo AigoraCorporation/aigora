@@ -17,15 +17,112 @@ The objective is to preserve:
 
 ---
 
+# Physical Service Structure
+
+The Tutor Orchestrator is implemented as an independent Java service within the AIGORA platform.
+
+The physical repository structure follows standard Maven conventions and bounded context isolation principles.
+
+Example:
+
+```text
+services/
+
+├── tutor-orchestrator/
+│   ├── pom.xml
+│   │
+│   └── src
+│       ├── main
+│       │   ├── java
+│       │   └── resources
+│       │
+│       └── test
+│
+├── student-model/
+│
+├── assessment-engine/
+│
+└── api-gateway/
+```
+
+Each service owns:
+
+- source code
+- dependencies
+- deployment lifecycle
+- runtime configuration
+- observability configuration
+
+The Tutor Orchestrator must remain an independently deployable service.
+
+---
+
 # Base Package
 
-All Tutor Orchestrator Java code must live under the following base package:
+All Tutor Orchestrator Java code must live under the following root package:
 
 ```text
 com.aigora.tutororchestrator
 ```
 
-This package is the root namespace for the Tutor Orchestrator bounded context.
+This package represents the root namespace of the Tutor Orchestrator bounded context.
+
+Examples of other AIGORA services:
+
+```text
+com.aigora.tutororchestrator
+
+com.aigora.studentmodel
+
+com.aigora.assessmentengine
+
+com.aigora.apigateway
+```
+
+Each service owns its own package hierarchy.
+
+---
+
+# Logical Package Structure
+
+The following structure represents the internal architecture of the Tutor Orchestrator service.
+
+```text
+src/main/java/com/aigora/tutororchestrator
+
+├── application
+│   ├── usecase
+│   ├── command
+│   └── result
+│
+├── domain
+│   ├── model
+│   ├── policy
+│   ├── ranking
+│   └── decision
+│
+├── ports
+│   ├── in
+│   └── out
+│
+├── adapters
+│   ├── grpc
+│   └── web
+│
+├── infrastructure
+│   ├── config
+│   ├── observability
+│   └── error
+│
+└── shared
+```
+
+The physical service structure and the logical package structure serve different purposes.
+
+- Physical structure organizes deployable services.
+- Logical package structure organizes code inside a service.
+
+This separation preserves bounded context isolation and supports long-term scalability of the AIGORA platform.
 
 ---
 
