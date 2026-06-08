@@ -48,6 +48,54 @@ The recommended reading order follows the architecture progression from structur
 
 ---
 
+---
+
+# Physical vs Logical Architecture
+
+The Java Architecture documentation describes two complementary views of the Tutor Orchestrator.
+
+## Physical Service Structure
+
+Represents how the Tutor Orchestrator is deployed inside the AIGORA platform.
+
+Example:
+
+```text
+services/
+
+├── tutor-orchestrator
+├── student-model
+├── assessment-engine
+└── api-gateway
+```
+
+Each service is independently deployable and owns its own runtime lifecycle.
+
+## Logical Package Structure
+
+Represents the internal organization of code inside the Tutor Orchestrator service.
+
+Example:
+
+```text
+src/main/java/com/aigora/tutororchestrator
+
+├── application
+├── domain
+├── ports
+├── adapters
+├── infrastructure
+└── shared
+```
+
+The physical architecture organizes services.
+
+The logical architecture organizes code within a service.
+
+Both views are required to understand the complete architecture of the Tutor Orchestrator.
+
+---
+
 # Reading Order
 
 For new contributors, the recommended reading sequence is:
@@ -261,24 +309,31 @@ Those concerns belong to their respective bounded contexts.
 The Java Architecture documentation builds upon the conceptual architecture already defined in the Tutor Orchestrator documentation.
 
 ```mermaid
-flowchart LR
+flowchart TD
 
 overview["Architecture Overview"]
 
-orchestration["Orchestration"]
+map["Architecture Map"]
+
+runtime["Runtime Architecture"]
 
 decision["Decision Engine"]
 
 java["Java Architecture"]
 
-overview --> orchestration
+overview --> map
 
-orchestration --> decision
+map --> decision
 
 decision --> java
+
+runtime --> java
 ```
 
 The Java Architecture section translates architectural concepts into implementation-ready structures.
+
+It serves as the bridge between architecture design and future implementation.
+
 
 ---
 
