@@ -290,6 +290,51 @@ This leaks infrastructure concerns into orchestration logic.
 
 ---
 
+# Error Mapping Matrix
+
+External failures must be translated into stable orchestration errors before entering the application core.
+
+The following matrix defines the expected mappings.
+
+| External Failure           | Internal Error            |
+| -------------------------- | ------------------------- |
+| gRPC UNAVAILABLE           | GraphUnavailable          |
+| gRPC DEADLINE_EXCEEDED     | DependencyTimeout         |
+| Invalid gRPC Response      | InvalidDependencyResponse |
+| Neo4j Connection Failure   | GraphUnavailable          |
+| Student Model Timeout      | DependencyTimeout         |
+| Assessment Service Timeout | DependencyTimeout         |
+| Serialization Exception    | SerializationFailure      |
+| Invalid Configuration      | ConfigurationFailure      |
+
+---
+
+## Example Mapping
+
+```text
+StatusRuntimeException
+        ↓
+GrpcCurriculumGraphAdapter
+        ↓
+GraphUnavailable
+```
+
+The application layer must never depend on infrastructure-specific exceptions.
+
+Only orchestration errors may cross the adapter boundary.
+
+---
+
+## Mapping Ownership
+
+Adapters own error translation.
+
+The application layer owns error handling.
+
+The domain layer owns business error semantics.
+
+---
+
 ## Correct Flow
 
 ```text
