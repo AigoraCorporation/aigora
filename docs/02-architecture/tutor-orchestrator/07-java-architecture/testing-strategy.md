@@ -106,6 +106,71 @@ The higher the test level, the fewer tests should exist.
 
 ---
 
+# Test Ownership Matrix
+
+The following matrix defines the expected test strategy for each architectural artifact.
+
+| Artifact           | Primary Test Type |
+| ------------------ | ----------------- |
+| Domain Model       | Unit Test         |
+| Value Object       | Unit Test         |
+| Policy             | Unit Test         |
+| Ranking Strategy   | Unit Test         |
+| Selection Strategy | Unit Test         |
+| Use Case           | Application Test  |
+| Input Port         | Contract Test     |
+| Output Port        | Contract Test     |
+| Adapter            | Integration Test  |
+| Architecture Rule  | Architecture Test |
+| End-to-End Flow    | End-to-End Test   |
+
+---
+
+## Ownership Guidelines
+
+### Domain
+
+Responsible for:
+
+```text
+Unit Tests
+```
+
+---
+
+### Application
+
+Responsible for:
+
+```text
+Application Tests
+```
+
+---
+
+### Integration
+
+Responsible for:
+
+```text
+Contract Tests
+Integration Tests
+```
+
+---
+
+### Platform Engineering
+
+Responsible for:
+
+```text
+Architecture Tests
+CI Validation
+```
+
+
+---
+
 # Unit Tests
 
 ## Purpose
