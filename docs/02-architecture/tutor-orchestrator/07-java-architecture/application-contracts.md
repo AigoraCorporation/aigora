@@ -192,6 +192,109 @@ command --> usecase
 
 ---
 
+# Command Lifecycle
+
+Commands follow a deterministic execution lifecycle.
+
+```mermaid
+flowchart LR
+
+created["Created"]
+
+validated["Validated"]
+
+executed["Executed"]
+
+completed["Completed"]
+
+failed["Failed"]
+
+created --> validated
+
+validated --> executed
+
+executed --> completed
+
+executed --> failed
+```
+
+---
+
+## Lifecycle Stages
+
+### Created
+
+The command is instantiated and contains all required input data.
+
+---
+
+### Validated
+
+Application-level validation rules are executed.
+
+Examples:
+
+* mandatory fields
+* identifier validation
+* command consistency
+
+---
+
+### Executed
+
+The corresponding use case is executed.
+
+Examples:
+
+* candidate generation
+* policy evaluation
+* ranking
+* selection
+
+---
+
+### Completed
+
+The use case successfully returns a result.
+
+---
+
+### Failed
+
+The use case terminates with an orchestration error.
+
+Examples:
+
+```text
+GraphUnavailable
+
+DependencyTimeout
+
+NoCandidateAvailable
+
+DecisionExecutionFailed
+```
+
+---
+
+## Observability
+
+Every command execution should be traceable through:
+
+```text
+CorrelationId
+
+Command Type
+
+Execution Timestamp
+
+DecisionId
+```
+
+when available.
+
+---
+
 # SelectNextLearningNodeCommand
 
 ## Purpose
