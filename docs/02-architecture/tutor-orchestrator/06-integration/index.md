@@ -23,6 +23,12 @@ port["Curriculum Graph Application Port"]
 
 integration["Curriculum Graph Integration"]
 
+grpc["gRPC Infrastructure Adapter Strategy"]
+
+dockerStrategy["Docker Local Execution Strategy"]
+
+dockerEnvironment["Docker Local Environment"]
+
 contracts["Curriculum Graph Contracts"]
 
 container["Container Diagram"]
@@ -31,7 +37,13 @@ runtime --> port
 
 port --> integration
 
-integration --> contracts
+integration --> grpc
+
+grpc --> dockerStrategy
+
+dockerStrategy --> dockerEnvironment
+
+dockerEnvironment --> contracts
 
 contracts --> container
 ```
@@ -48,8 +60,11 @@ For new contributors, the recommended reading sequence is:
 1. Runtime Architecture
 2. Curriculum Graph Application Port
 3. Curriculum Graph Integration
-4. Curriculum Graph Contracts
-5. Container Diagram
+4. gRPC Infrastructure Adapter Strategy
+5. Docker Local Execution Strategy
+6. Docker Local Environment
+7. Curriculum Graph Contracts
+8. Container Diagram
 ```
 
 This sequence progressively introduces:
@@ -57,6 +72,9 @@ This sequence progressively introduces:
 * runtime interactions
 * application integration boundaries
 * communication architecture
+* infrastructure adapters
+* local execution architecture
+* local development environment
 * service contracts
 * deployment topology
 
@@ -78,10 +96,22 @@ Defines how components collaborate during orchestration execution.
 
 Defines how external systems are accessed from the application layer.
 
-| Document                                                                  | Purpose                                                                                               |
-| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| [Curriculum Graph Application Port](curriculum-graph-application-port.md) | Defines the CurriculumGraphClient application contract                                                |
-| [Curriculum Graph Integration](curriculum-graph-integration.md)           | Defines integration boundaries and communication flow between Tutor Orchestrator and Curriculum Graph |
+| Document                                                                        | Purpose                                                                                               |
+| ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [Curriculum Graph Application Port](curriculum-graph-application-port.md)       | Defines the CurriculumGraphClient application contract                                                |
+| [Curriculum Graph Integration](curriculum-graph-integration.md)                 | Defines integration boundaries and communication flow between Tutor Orchestrator and Curriculum Graph |
+| [gRPC Infrastructure Adapter Strategy](grpc-infrastructure-adapter-strategy.md) | Defines the gRPC adapter architecture, mapping strategy, and error translation responsibilities       |
+
+---
+
+## Local Development Environment
+
+Defines how the Tutor Orchestrator ecosystem is executed locally for development, onboarding, architecture validation, and future integration testing.
+
+| Document                                                              | Purpose                                                                                                                   |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| [Docker Local Execution Strategy](docker-local-execution-strategy.md) | Defines the local execution architecture, service topology, communication model, and Docker Compose expectations          |
+| [Docker Local Environment](docker-local-environment.md)               | Defines the developer-facing local environment, startup workflow, environment variables, ports, and integration workflows |
 
 ---
 
@@ -224,6 +254,8 @@ This section defines:
 * service communication
 * dependency isolation
 * runtime interactions
+* local execution architecture
+* local development environment
 * service contracts
 
 This section does not define:
@@ -278,6 +310,10 @@ Communication Boundaries
 Dependency Isolation Rules
 
 Runtime Interactions
+
+Local Execution Architecture
+
+Local Development Environment
 ```
 
 The Integration Architecture section does not own:
@@ -304,5 +340,8 @@ Those responsibilities remain inside their respective bounded contexts.
 * [Runtime Architecture](runtime-architecture.md)
 * [Curriculum Graph Application Port](curriculum-graph-application-port.md)
 * [Curriculum Graph Integration](curriculum-graph-integration.md)
+* [gRPC Infrastructure Adapter Strategy](grpc-infrastructure-adapter-strategy.md)
+* [Docker Local Execution Strategy](docker-local-execution-strategy.md)
+* [Docker Local Environment](docker-local-environment.md)
 * [Curriculum Graph Contracts](curriculum-graph-contracts.md)
 * [Tutor Orchestrator Container Diagram](tutor-orchestrator-container-diagram.md)
