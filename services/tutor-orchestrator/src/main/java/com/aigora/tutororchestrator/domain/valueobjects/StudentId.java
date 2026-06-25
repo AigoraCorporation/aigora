@@ -1,7 +1,5 @@
 package com.aigora.tutororchestrator.domain.valueobjects;
 
-import java.util.Objects;
-
 public record StudentId(String value) {
 
     public StudentId {
