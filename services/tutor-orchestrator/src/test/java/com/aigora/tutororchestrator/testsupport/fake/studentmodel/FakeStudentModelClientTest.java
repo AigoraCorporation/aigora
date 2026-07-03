@@ -1,17 +1,17 @@
-package com.aigora.tutororchestrator.application.ports;
-
+package com.aigora.tutororchestrator.testsupport.fake.studentmodel;
 import com.aigora.tutororchestrator.domain.model.StudentLearningState;
 import com.aigora.tutororchestrator.domain.valueobjects.GraphVersion;
 import com.aigora.tutororchestrator.domain.valueobjects.NodeId;
 import com.aigora.tutororchestrator.domain.valueobjects.StudentId;
+import com.aigora.tutororchestrator.application.ports.StudentModelClient;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class StudentModelClientTest {
+class FakeStudentModelClientTest {
 
     @Test
-    void shouldExposeStudentModelOperationsUsingDomainSafeTypes() {
+    public void shouldExposeStudentModelOperationsUsingDomainSafeTypes() {
         StudentModelClient client = new FakeStudentModelClient();
 
         var studentId = new StudentId("student-001");

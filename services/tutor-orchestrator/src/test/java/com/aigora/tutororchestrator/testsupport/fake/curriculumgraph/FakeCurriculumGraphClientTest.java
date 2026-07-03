@@ -1,17 +1,17 @@
-package com.aigora.tutororchestrator.application.ports;
-
+package com.aigora.tutororchestrator.testsupport.fake.curriculumgraph;
 import com.aigora.tutororchestrator.domain.model.CandidateClassification;
 import com.aigora.tutororchestrator.domain.model.LearningCandidate;
 import com.aigora.tutororchestrator.domain.valueobjects.GraphVersion;
 import com.aigora.tutororchestrator.domain.valueobjects.NodeId;
 import com.aigora.tutororchestrator.domain.valueobjects.StudentId;
+import com.aigora.tutororchestrator.application.ports.CurriculumGraphClient;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CurriculumGraphClientTest {
+public class FakeCurriculumGraphClientTest {
 
     @Test
     void shouldExposeCurriculumGraphOperationsUsingDomainSafeTypes() {

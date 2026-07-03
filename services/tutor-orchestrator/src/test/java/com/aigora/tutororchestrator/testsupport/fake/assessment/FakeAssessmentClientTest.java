@@ -1,15 +1,16 @@
-package com.aigora.tutororchestrator.application.ports;
+package com.aigora.tutororchestrator.testsupport.fake.assessment;
 
 import com.aigora.tutororchestrator.domain.valueobjects.NodeId;
 import com.aigora.tutororchestrator.domain.valueobjects.StudentId;
+import com.aigora.tutororchestrator.application.ports.AssessmentClient;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AssessmentClientTest {
+public class FakeAssessmentClientTest {
 
     @Test
-    void shouldExposeAssessmentOperationsUsingDomainSafeTypes() {
+    public void shouldExposeAssessmentOperationsUsingDomainSafeTypes() {
         AssessmentClient client = new FakeAssessmentClient();
 
         var studentId = new StudentId("student-001");
