@@ -11,9 +11,18 @@ import java.util.List;
 public final class FakeCurriculumGraphClient implements CurriculumGraphClient {
 
     private final List<LearningCandidate> candidates;
+    private final List<NodeId> prerequisites;
 
     public FakeCurriculumGraphClient(List<LearningCandidate> candidates) {
+        this(candidates, List.of());
+    }
+
+    public FakeCurriculumGraphClient(
+            List<LearningCandidate> candidates,
+            List<NodeId> prerequisites
+    ) {
         this.candidates = candidates;
+        this.prerequisites = prerequisites;
     }
 
     @Override
@@ -23,7 +32,7 @@ public final class FakeCurriculumGraphClient implements CurriculumGraphClient {
 
     @Override
     public List<NodeId> getPrerequisites(NodeId nodeId, GraphVersion graphVersion) {
-        return List.of();
+        return prerequisites;
     }
 
     @Override

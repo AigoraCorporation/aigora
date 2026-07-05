@@ -1,6 +1,7 @@
 package com.aigora.tutororchestrator.testsupport.builder;
 
 import com.aigora.tutororchestrator.application.contracts.command.SelectNextLearningNodeCommand;
+import com.aigora.tutororchestrator.application.contracts.command.SelectRegressionNodeCommand;
 import com.aigora.tutororchestrator.domain.valueobjects.CorrelationId;
 import com.aigora.tutororchestrator.domain.valueobjects.GraphVersion;
 import com.aigora.tutororchestrator.domain.valueobjects.NodeId;
@@ -48,4 +49,13 @@ public final class CommandBuilder {
                 correlationId
         );
     }
+
+    public SelectRegressionNodeCommand buildSelectRegressionNodeCommand() {
+    return new SelectRegressionNodeCommand(
+            studentId,
+            currentNodeId,
+            graphVersion,
+            correlationId
+    );
+}
 }
