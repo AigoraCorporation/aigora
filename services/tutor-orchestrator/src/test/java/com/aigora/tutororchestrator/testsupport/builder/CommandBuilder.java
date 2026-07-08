@@ -1,5 +1,6 @@
 package com.aigora.tutororchestrator.testsupport.builder;
 
+import com.aigora.tutororchestrator.application.contracts.command.EvaluateLearningProgressCommand;
 import com.aigora.tutororchestrator.application.contracts.command.SelectNextLearningNodeCommand;
 import com.aigora.tutororchestrator.application.contracts.command.SelectRegressionNodeCommand;
 import com.aigora.tutororchestrator.domain.valueobjects.CorrelationId;
@@ -57,5 +58,15 @@ public final class CommandBuilder {
             graphVersion,
             correlationId
     );
-}
+    }
+
+    public EvaluateLearningProgressCommand buildEvaluateLearningProgressCommand() {
+    return new EvaluateLearningProgressCommand(
+            studentId,
+            currentNodeId,
+            graphVersion,
+            correlationId
+    );
+    }
+
 }
