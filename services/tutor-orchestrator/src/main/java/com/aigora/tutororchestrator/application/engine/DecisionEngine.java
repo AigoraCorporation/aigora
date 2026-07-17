@@ -10,12 +10,14 @@ import com.aigora.tutororchestrator.application.usecase.EvaluateLearningProgress
 import com.aigora.tutororchestrator.application.usecase.SelectNextLearningNodeUseCase;
 import com.aigora.tutororchestrator.application.usecase.SelectRegressionNodeUseCase;
 
+import static com.aigora.tutororchestrator.shared.validation.Require.nonNull;
+
 /**
  * Application-level facade for deterministic orchestration operations.
  *
  * <p>The engine delegates each command to its corresponding use case.
- * It must not contain domain policies, ranking logic, selection logic,
- * infrastructure integration, or transport-specific behavior.</p>
+ * It contains no policy, ranking, selection, transport, or infrastructure
+ * behavior.</p>
  */
 public final class DecisionEngine {
 
@@ -28,72 +30,52 @@ public final class DecisionEngine {
             SelectRegressionNodeUseCase selectRegressionNodeUseCase,
             EvaluateLearningProgressUseCase evaluateLearningProgressUseCase
     ) {
-        this.selectNextLearningNodeUseCase = requireNonNull(
+        this.selectNextLearningNodeUseCase = nonNull(
                 selectNextLearningNodeUseCase,
-                "SelectNextLearningNodeUseCase must not be null"
+                "SelectNextLearningNodeUseCase"
         );
 
-        this.selectRegressionNodeUseCase = requireNonNull(
+        this.selectRegressionNodeUseCase = nonNull(
                 selectRegressionNodeUseCase,
-                "SelectRegressionNodeUseCase must not be null"
+                "SelectRegressionNodeUseCase"
         );
 
-        this.evaluateLearningProgressUseCase = requireNonNull(
+        this.evaluateLearningProgressUseCase = nonNull(
                 evaluateLearningProgressUseCase,
-                "EvaluateLearningProgressUseCase must not be null"
+                "EvaluateLearningProgressUseCase"
         );
     }
 
-    /**
-     * Delegates next-learning-node selection to its dedicated use case.
-     */
     public SelectNextLearningNodeResult selectNextLearningNode(
             SelectNextLearningNodeCommand command
     ) {
-        if (command == null) {
-            throw new IllegalArgumentException(
-                    "SelectNextLearningNodeCommand must not be null"
-            );
-        }
-
-        return selectNextLearningNodeUseCase.execute(command);
+        return selectNextLearningNodeUseCase.execute(
+                nonNull(
+                        command,
+                        "SelectNextLearningNodeCommand"
+                )
+        );
     }
 
-    /**
-     * Delegates regression-node selection to its dedicated use case.
-     */
     public SelectRegressionNodeResult selectRegressionNode(
             SelectRegressionNodeCommand command
     ) {
-        if (command == null) {
-            throw new IllegalArgumentException(
-                    "SelectRegressionNodeCommand must not be null"
-            );
-        }
-
-        return selectRegressionNodeUseCase.execute(command);
+        return selectRegressionNodeUseCase.execute(
+                nonNull(
+                        command,
+                        "SelectRegressionNodeCommand"
+                )
+        );
     }
 
-    /**
-     * Delegates learning-progress evaluation to its dedicated use case.
-     */
     public EvaluateLearningProgressResult evaluateLearningProgress(
             EvaluateLearningProgressCommand command
     ) {
-        if (command == null) {
-            throw new IllegalArgumentException(
-                    "EvaluateLearningProgressCommand must not be null"
-            );
-        }
-
-        return evaluateLearningProgressUseCase.execute(command);
-    }
-
-    private static <T> T requireNonNull(T dependency, String message) {
-        if (dependency == null) {
-            throw new IllegalArgumentException(message);
-        }
-
-        return dependency;
+        return evaluateLearningProgressUseCase.execute(
+                nonNull(
+                        command,
+                        "EvaluateLearningProgressCommand"
+                )
+        );
     }
 }

@@ -1,6 +1,7 @@
 package com.aigora.tutororchestrator.domain.selection;
 
 import com.aigora.tutororchestrator.domain.model.DecisionReason;
+import com.aigora.tutororchestrator.domain.model.DecisionReasonCode;
 import com.aigora.tutororchestrator.domain.model.DecisionStatus;
 import com.aigora.tutororchestrator.domain.model.LearningCandidate;
 import com.aigora.tutororchestrator.domain.model.OrchestrationDecision;
@@ -11,6 +12,9 @@ import com.aigora.tutororchestrator.domain.valueobjects.StudentId;
 
 import java.util.List;
 
+import static com.aigora.tutororchestrator.shared.validation.Require.nonNull;
+import static com.aigora.tutororchestrator.shared.validation.Require.withoutNullElements;
+
 public final class DefaultSelectionStrategy implements SelectionStrategy {
 
     @Override
@@ -20,27 +24,25 @@ public final class DefaultSelectionStrategy implements SelectionStrategy {
             GraphVersion graphVersion,
             CorrelationId correlationId
     ) {
-        if (rankedCandidates == null) {
-            throw new IllegalArgumentException("Ranked candidates must not be null");
-        }
+        withoutNullElements(
+                rankedCandidates,
+                "Ranked candidates"
+        );
 
-        if (studentId == null) {
-            throw new IllegalArgumentException("StudentId must not be null");
-        }
-
-        if (graphVersion == null) {
-            throw new IllegalArgumentException("GraphVersion must not be null");
-        }
-
-        if (correlationId == null) {
-            throw new IllegalArgumentException("CorrelationId must not be null");
-        }
+        nonNull(studentId, "StudentId");
+        nonNull(graphVersion, "GraphVersion");
+        nonNull(correlationId, "CorrelationId");
 
         if (rankedCandidates.isEmpty()) {
-            return noCandidateAvailableDecision(studentId, graphVersion, correlationId);
+            return noCandidateAvailableDecision(
+                    studentId,
+                    graphVersion,
+                    correlationId
+            );
         }
 
-        LearningCandidate selectedCandidate = rankedCandidates.get(0);
+        LearningCandidate selectedCandidate =
+                rankedCandidates.get(0);
 
         return selectedDecision(
                 selectedCandidate,
@@ -62,7 +64,7 @@ public final class DefaultSelectionStrategy implements SelectionStrategy {
                 candidate.nodeId(),
                 DecisionStatus.SELECTED,
                 new DecisionReason(
-                        "CANDIDATE_SELECTED",
+                        DecisionReasonCode.CANDIDATE_SELECTED,
                         "The highest-ranked candidate was selected"
                 ),
                 graphVersion,
@@ -81,7 +83,7 @@ public final class DefaultSelectionStrategy implements SelectionStrategy {
                 null,
                 DecisionStatus.NO_CANDIDATE_AVAILABLE,
                 new DecisionReason(
-                        "NO_CANDIDATE_AVAILABLE",
+                        DecisionReasonCode.NO_CANDIDATE_AVAILABLE,
                         "No ranked candidates were available for selection"
                 ),
                 graphVersion,

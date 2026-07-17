@@ -6,11 +6,10 @@ import com.aigora.tutororchestrator.application.usecase.EvaluateLearningProgress
 import com.aigora.tutororchestrator.application.usecase.SelectNextLearningNodeUseCase;
 import com.aigora.tutororchestrator.application.usecase.SelectRegressionNodeUseCase;
 
-import java.util.Objects;
+import static com.aigora.tutororchestrator.shared.validation.Require.nonNull;
 
 /**
- * Immutable application configuration produced by the Tutor Orchestrator
- * composition root.
+ * Immutable application configuration produced by the composition root.
  */
 public record TutorOrchestratorConfiguration(
         SelectNextLearningNodeUseCase selectNextLearningNodeUseCase,
@@ -21,29 +20,29 @@ public record TutorOrchestratorConfiguration(
 ) implements TutorOrchestratorFactory {
 
     public TutorOrchestratorConfiguration {
-        Objects.requireNonNull(
+        selectNextLearningNodeUseCase = nonNull(
                 selectNextLearningNodeUseCase,
-                "SelectNextLearningNodeUseCase must not be null"
+                "SelectNextLearningNodeUseCase"
         );
 
-        Objects.requireNonNull(
+        selectRegressionNodeUseCase = nonNull(
                 selectRegressionNodeUseCase,
-                "SelectRegressionNodeUseCase must not be null"
+                "SelectRegressionNodeUseCase"
         );
 
-        Objects.requireNonNull(
+        evaluateLearningProgressUseCase = nonNull(
                 evaluateLearningProgressUseCase,
-                "EvaluateLearningProgressUseCase must not be null"
+                "EvaluateLearningProgressUseCase"
         );
 
-        Objects.requireNonNull(
+        decisionEngine = nonNull(
                 decisionEngine,
-                "DecisionEngine must not be null"
+                "DecisionEngine"
         );
 
-        Objects.requireNonNull(
+        orchestrationPipeline = nonNull(
                 orchestrationPipeline,
-                "OrchestrationPipeline must not be null"
+                "OrchestrationPipeline"
         );
     }
 }

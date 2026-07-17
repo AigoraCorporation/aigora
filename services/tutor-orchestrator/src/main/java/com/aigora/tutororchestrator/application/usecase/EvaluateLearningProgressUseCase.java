@@ -5,8 +5,11 @@ import com.aigora.tutororchestrator.application.contracts.result.EvaluateLearnin
 import com.aigora.tutororchestrator.application.ports.AssessmentClient;
 import com.aigora.tutororchestrator.application.ports.StudentModelClient;
 import com.aigora.tutororchestrator.domain.model.DecisionReason;
+import com.aigora.tutororchestrator.domain.model.DecisionReasonCode;
 import com.aigora.tutororchestrator.domain.policy.CompletionPolicy;
 import com.aigora.tutororchestrator.domain.policy.RegressionPolicy;
+
+import static com.aigora.tutororchestrator.shared.validation.Require.nonNull;
 
 public final class EvaluateLearningProgressUseCase {
 
@@ -21,29 +24,31 @@ public final class EvaluateLearningProgressUseCase {
             CompletionPolicy completionPolicy,
             RegressionPolicy regressionPolicy
     ) {
-        if (studentModelClient == null) {
-            throw new IllegalArgumentException("StudentModelClient must not be null");
-        }
-        if (assessmentClient == null) {
-            throw new IllegalArgumentException("AssessmentClient must not be null");
-        }
-        if (completionPolicy == null) {
-            throw new IllegalArgumentException("CompletionPolicy must not be null");
-        }
-        if (regressionPolicy == null) {
-            throw new IllegalArgumentException("RegressionPolicy must not be null");
-        }
+        this.studentModelClient = nonNull(
+                studentModelClient,
+                "StudentModelClient"
+        );
 
-        this.studentModelClient = studentModelClient;
-        this.assessmentClient = assessmentClient;
-        this.completionPolicy = completionPolicy;
-        this.regressionPolicy = regressionPolicy;
+        this.assessmentClient = nonNull(
+                assessmentClient,
+                "AssessmentClient"
+        );
+
+        this.completionPolicy = nonNull(
+                completionPolicy,
+                "CompletionPolicy"
+        );
+
+        this.regressionPolicy = nonNull(
+                regressionPolicy,
+                "RegressionPolicy"
+        );
     }
 
-    public EvaluateLearningProgressResult execute(EvaluateLearningProgressCommand command) {
-        if (command == null) {
-            throw new IllegalArgumentException("EvaluateLearningProgressCommand must not be null");
-        }
+    public EvaluateLearningProgressResult execute(
+            EvaluateLearningProgressCommand command
+    ) {
+        nonNull(command, "EvaluateLearningProgressCommand");
 
         studentModelClient.getLearningState(command.studentId());
 
@@ -52,7 +57,8 @@ public final class EvaluateLearningProgressUseCase {
                 command.currentNodeId()
         );
 
-        boolean completed = completionPolicy.isCompleted(masteredCurrentNode);
+        boolean completed =
+                completionPolicy.isCompleted(masteredCurrentNode);
 
         boolean failedCurrentNode = assessmentClient.hasFailedNode(
                 command.studentId(),
@@ -60,12 +66,15 @@ public final class EvaluateLearningProgressUseCase {
         );
 
         boolean regressionRecommendedByStudentModel =
-                studentModelClient.isRegressionRecommended(command.studentId());
+                studentModelClient.isRegressionRecommended(
+                        command.studentId()
+                );
 
-        boolean regressionRecommended = regressionPolicy.shouldRegress(
-                failedCurrentNode,
-                regressionRecommendedByStudentModel
-        );
+        boolean regressionRecommended =
+                regressionPolicy.shouldRegress(
+                        failedCurrentNode,
+                        regressionRecommendedByStudentModel
+                );
 
         return new EvaluateLearningProgressResult(
                 command.studentId(),
@@ -81,20 +90,20 @@ public final class EvaluateLearningProgressUseCase {
     ) {
         if (regressionRecommended) {
             return new DecisionReason(
-                    "REGRESSION_RECOMMENDED",
+                    DecisionReasonCode.REGRESSION_RECOMMENDED,
                     "Regression is recommended for the current learning state"
             );
         }
 
         if (completed) {
             return new DecisionReason(
-                    "LEARNING_COMPLETED",
+                    DecisionReasonCode.LEARNING_COMPLETED,
                     "Current learning node has been completed"
             );
         }
 
         return new DecisionReason(
-                "LEARNING_IN_PROGRESS",
+                DecisionReasonCode.LEARNING_IN_PROGRESS,
                 "Current learning node is still in progress"
         );
     }

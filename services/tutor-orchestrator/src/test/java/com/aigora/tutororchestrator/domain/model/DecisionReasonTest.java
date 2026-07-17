@@ -28,7 +28,7 @@ class DecisionReasonTest {
     @Test
     void shouldRejectNullCode() {
         assertThrows(IllegalArgumentException.class, () ->
-                new DecisionReason(null, "Description")
+                new DecisionReason((DecisionReasonCode)null, "Description")
         );
     }
 

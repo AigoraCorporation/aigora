@@ -15,14 +15,10 @@ import com.aigora.tutororchestrator.domain.ranking.DeterministicCandidateRanking
 import com.aigora.tutororchestrator.domain.selection.DefaultSelectionStrategy;
 import com.aigora.tutororchestrator.domain.selection.SelectionStrategy;
 
-import java.util.Objects;
+import static com.aigora.tutororchestrator.shared.validation.Require.nonNull;
 
 /**
  * Framework-independent composition root for the Tutor Orchestrator.
- *
- * <p>Concrete application-port implementations are supplied externally.
- * This factory creates the domain services, application use cases, decision
- * engine, and orchestration pipeline.</p>
  */
 public final class DefaultTutorOrchestratorFactory {
 
@@ -35,29 +31,31 @@ public final class DefaultTutorOrchestratorFactory {
             StudentModelClient studentModelClient,
             AssessmentClient assessmentClient
     ) {
-        this.curriculumGraphClient = Objects.requireNonNull(
+        this.curriculumGraphClient = nonNull(
                 curriculumGraphClient,
-                "CurriculumGraphClient must not be null"
+                "CurriculumGraphClient"
         );
 
-        this.studentModelClient = Objects.requireNonNull(
+        this.studentModelClient = nonNull(
                 studentModelClient,
-                "StudentModelClient must not be null"
+                "StudentModelClient"
         );
 
-        this.assessmentClient = Objects.requireNonNull(
+        this.assessmentClient = nonNull(
                 assessmentClient,
-                "AssessmentClient must not be null"
+                "AssessmentClient"
         );
     }
 
-    /**
-     * Builds a complete and immutable Tutor Orchestrator application graph.
-     */
     public TutorOrchestratorConfiguration build() {
-        EligibilityPolicy eligibilityPolicy = new EligibilityPolicy();
-        CompletionPolicy completionPolicy = new CompletionPolicy();
-        RegressionPolicy regressionPolicy = new RegressionPolicy();
+        EligibilityPolicy eligibilityPolicy =
+                new EligibilityPolicy();
+
+        CompletionPolicy completionPolicy =
+                new CompletionPolicy();
+
+        RegressionPolicy regressionPolicy =
+                new RegressionPolicy();
 
         DeterministicCandidateRanking candidateRanking =
                 new DeterministicCandidateRanking();
@@ -95,14 +93,17 @@ public final class DefaultTutorOrchestratorFactory {
                         regressionPolicy
                 );
 
-        DecisionEngine decisionEngine = new DecisionEngine(
-                selectNextLearningNodeUseCase,
-                selectRegressionNodeUseCase,
-                evaluateLearningProgressUseCase
-        );
+        DecisionEngine decisionEngine =
+                new DecisionEngine(
+                        selectNextLearningNodeUseCase,
+                        selectRegressionNodeUseCase,
+                        evaluateLearningProgressUseCase
+                );
 
         OrchestrationPipeline orchestrationPipeline =
-                new OrchestrationPipeline(decisionEngine);
+                new OrchestrationPipeline(
+                        decisionEngine
+                );
 
         return new TutorOrchestratorConfiguration(
                 selectNextLearningNodeUseCase,

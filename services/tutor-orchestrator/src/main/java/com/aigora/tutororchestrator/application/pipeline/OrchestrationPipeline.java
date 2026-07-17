@@ -7,50 +7,55 @@ import com.aigora.tutororchestrator.application.contracts.result.EvaluateLearnin
 import com.aigora.tutororchestrator.application.contracts.result.OrchestrationPipelineResult;
 import com.aigora.tutororchestrator.application.engine.DecisionEngine;
 
+import static com.aigora.tutororchestrator.shared.validation.Require.nonNull;
+
 /**
  * Coordinates the high-level deterministic orchestration lifecycle.
  *
- * <p>The pipeline evaluates learning progress first and then routes execution
- * to regression selection, next-node selection, or learning continuation.</p>
- *
- * <p>This component contains no policy, ranking, selection, transport, or
- * infrastructure logic.</p>
+ * <p>The pipeline evaluates progress first and routes the execution to
+ * regression selection, next-node selection, or learning continuation.</p>
  */
 public final class OrchestrationPipeline {
 
     private final DecisionEngine decisionEngine;
 
-    public OrchestrationPipeline(DecisionEngine decisionEngine) {
-        if (decisionEngine == null) {
-            throw new IllegalArgumentException(
-                    "DecisionEngine must not be null"
-            );
-        }
-
-        this.decisionEngine = decisionEngine;
+    public OrchestrationPipeline(
+            DecisionEngine decisionEngine
+    ) {
+        this.decisionEngine = nonNull(
+                decisionEngine,
+                "DecisionEngine"
+        );
     }
 
     public OrchestrationPipelineResult execute(
             EvaluateLearningProgressCommand command
     ) {
-        if (command == null) {
-            throw new IllegalArgumentException(
-                    "EvaluateLearningProgressCommand must not be null"
-            );
-        }
+        nonNull(
+                command,
+                "EvaluateLearningProgressCommand"
+        );
 
         EvaluateLearningProgressResult progress =
                 decisionEngine.evaluateLearningProgress(command);
 
         if (progress.regressionRecommended()) {
-            return executeRegressionFlow(command, progress);
+            return executeRegressionFlow(
+                    command,
+                    progress
+            );
         }
 
         if (progress.completed()) {
-            return executeNextLearningNodeFlow(command, progress);
+            return executeNextLearningNodeFlow(
+                    command,
+                    progress
+            );
         }
 
-        return OrchestrationPipelineResult.learningInProgress(progress);
+        return OrchestrationPipelineResult.learningInProgress(
+                progress
+        );
     }
 
     private OrchestrationPipelineResult executeRegressionFlow(
@@ -66,7 +71,9 @@ public final class OrchestrationPipeline {
                 );
 
         var regressionResult =
-                decisionEngine.selectRegressionNode(regressionCommand);
+                decisionEngine.selectRegressionNode(
+                        regressionCommand
+                );
 
         return OrchestrationPipelineResult.regressionNode(
                 progress,
@@ -87,7 +94,9 @@ public final class OrchestrationPipeline {
                 );
 
         var nextNodeResult =
-                decisionEngine.selectNextLearningNode(nextNodeCommand);
+                decisionEngine.selectNextLearningNode(
+                        nextNodeCommand
+                );
 
         return OrchestrationPipelineResult.nextLearningNode(
                 progress,
