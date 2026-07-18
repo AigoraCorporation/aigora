@@ -44,7 +44,7 @@ to advanced problem solving by combining:
 Unlike generic AI chatbots, AIGORA is conceived as a **designed educational system**,
 with explicit curriculum modeling and architectural governance.
 
---- 
+---
 
 # Strategic Foundation
 
@@ -53,7 +53,7 @@ The conceptual basis of the project is defined in the following documents:
 - [Project Vision](docs/00-vision/vision.md)
 - [System Overview](docs/02-architecture/overview.md)
 - [Curriculum Model](docs/04-curriculum/README.md)
-- [Goals & Non-Goals](docs/00-vision/goals-non-goals.md)
+- [Goals &amp; Non-Goals](docs/00-vision/goals-non-goals.md)
 
 These documents define the long-term direction of the project and establish
 clear architectural and strategic boundaries for its evolution.
@@ -65,15 +65,15 @@ clear architectural and strategic boundaries for its evolution.
 AIGORA is built around central architectural components that collaborate
 to provide deterministic and curriculum-aware pedagogical orchestration.
 
-| Component | Role |
-|------|------|
-| [Tutor Orchestrator](docs/02-architecture/tutor-orchestrator/index.md) | Coordinates pedagogical decisions and orchestration behavior |
-| [Student Model](docs/02-architecture/student-model.md) | Stores evidence of student performance and computes mastery progression |
-| [Curriculum Graph](docs/02-architecture/curriculum-graph/index.md) | Represents curriculum topology, prerequisites, and knowledge relationships |
-| [Assessment Engine](docs/02-architecture/assessment-engine.md) | Evaluates learning outcomes, mastery, and learning gaps |
-| [Learning Session Engine](docs/02-architecture/learning-session-engine.md) | Conducts guided learning sessions and exercise delivery |
-| [Retrieval Layer (RAG)](docs/02-architecture/retrieval-layer.md) | Retrieves contextual learning resources and supporting material |
-| [LLM Gateway](docs/02-architecture/llm-gateway.md) | Provides controlled access to language model generation capabilities |
+| Component                                                                 | Role                                                                       |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [Tutor Orchestrator](docs/02-architecture/tutor-orchestrator/index.md)     | Coordinates pedagogical decisions and orchestration behavior               |
+| [Student Model](docs/02-architecture/student-model.md)                     | Stores evidence of student performance and computes mastery progression    |
+| [Curriculum Graph](docs/02-architecture/curriculum-graph/index.md)         | Represents curriculum topology, prerequisites, and knowledge relationships |
+| [Assessment Engine](docs/02-architecture/assessment-engine.md)             | Evaluates learning outcomes, mastery, and learning gaps                    |
+| [Learning Session Engine](docs/02-architecture/learning-session-engine.md) | Conducts guided learning sessions and exercise delivery                    |
+| [Retrieval Layer (RAG)](docs/02-architecture/retrieval-layer.md)           | Retrieves contextual learning resources and supporting material            |
+| [LLM Gateway](docs/02-architecture/llm-gateway.md)                         | Provides controlled access to language model generation capabilities       |
 
 Together, these components allow the platform to guide learning progression
 while maintaining transparency, consistency, auditability, and curriculum grounding.
@@ -107,15 +107,14 @@ See the full language policy:
 
 The project documentation is organized into the following areas:
 
-| Area | Description | Location |
-|------|------------|----------|
-| Vision | Strategic direction of the project | [`docs/00-vision`](docs/00-vision/vision.md) |
-| Requirements | System constraints and requirements | [`docs/01-requirements`](docs/01-requirements/constraints.md) |
-| Architecture | System design and interaction model | [`docs/02-architecture`](docs/02-architecture/overview.md) |
-| Curriculum | Mathematical curriculum structure | [`docs/04-curriculum`](docs/04-curriculum/README.md) |
-| Data | Data contracts and exchange formats | [`docs/05-data`](docs/05-data/README.md) |
-| Engineering | Workflow, governance and development processes | [`docs/06-engineering`](docs/06-engineering/README.md) |
-
+| Area         | Description                                    | Location                                                       |
+| ------------ | ---------------------------------------------- | -------------------------------------------------------------- |
+| Vision       | Strategic direction of the project             | [`docs/00-vision`](docs/00-vision/vision.md)                  |
+| Requirements | System constraints and requirements            | [`docs/01-requirements`](docs/01-requirements/constraints.md) |
+| Architecture | System design and interaction model            | [`docs/02-architecture`](docs/02-architecture/overview.md)    |
+| Curriculum   | Mathematical curriculum structure              | [`docs/04-curriculum`](docs/04-curriculum/README.md)          |
+| Data         | Data contracts and exchange formats            | [`docs/05-data`](docs/05-data/README.md)                      |
+| Engineering  | Workflow, governance and development processes | [`docs/06-engineering`](docs/06-engineering/README.md)        |
 
 ---
 
@@ -125,11 +124,11 @@ AIGORA is currently in the **Early Development**.
 
 ### Component Status
 
-| Component  | Release Focus | Maturity | Description |
-|----------|--------------|----------|------------|
-| Curriculum Graph | 🚧 In Progress | [v0.2.1](https://github.com/AigoraCorporation/aigora/issues/124) | Defines the structured knowledge graph and dependencies |
-| Tutor Orchestrator | 🚧 In Progress | N/A | Responsible for pedagogical orchestration and decision-making |
-| Student Model | ⏳ Planned | N/A | Models student knowledge, progress, and learning state |
+| Component          | Release Focus  | Maturity                                                        | Description                                                   |
+| ------------------ | -------------- | --------------------------------------------------------------- | ------------------------------------------------------------- |
+| Curriculum Graph   | 🚧 In Progress | [v0.2.1](https://github.com/AigoraCorporation/aigora/issues/124) | Defines the structured knowledge graph and dependencies       |
+| Tutor Orchestrator | 🚧 In Progress | [v.0.3.0](https://github.com/AigoraCorporation/aigora/issues/185)| Responsible for pedagogical orchestration and decision-making |
+| Student Model      | ⏳ Planned     | N/A                                                             | Models student knowledge, progress, and learning state        |
 
 ### Current Releases
 
@@ -143,15 +142,18 @@ Focus:
 * Dependency injection structure
 * OpenAPI documentation
 
-**v0.3.0 — Orchestrator Core (Deterministic)**
+**v0.4.0 — Learning Session Orchestration**
 
 Focus:
 
-* Deterministic orchestration engine
-* Rule-based progression decisions
-* Curriculum Graph traversal
-* Learning state evaluation
-* Pedagogical orchestration flow
+* Learning session lifecycle
+* Session state management
+* Exercise execution workflow
+* Student progress tracking
+* Assessment Engine integration
+* Student Model integration
+* Event-driven pedagogical flow
+* Decision traceability and auditability
 
 ---
 
@@ -163,18 +165,18 @@ All notable changes are documented in:
 
 Latest release:
 
-| Version | Name | Status |
-|--------|------|--------|
-| v0.2.1 | Curriculum Graph Persistence & Change Management | ✅ Released |
-| v0.2.0 | Curriculum Graph (Core Runtime) | ✅ Released |
-| v0.1.1 | Architecture v1 | ✅ Released |
+| Version | Name                                             | Status      |
+| ------- | ------------------------------------------------ | ----------- |
+| v0.3.0  | Orchestrator Core (Deterministic)                | ✅ Released |
+| v0.2.1  | Curriculum Graph Persistence & Change Management | ✅ Released |
+| v0.2.0  | Curriculum Graph (Core Runtime)                  | ✅ Released |
 
 Release Roadmap:
 
-| Version | Name | Status | Planned Date | Details |
-|--------|------|--------|---------|---------|
-| v0.2.2 | Curriculum Graph API Foundation | 🚧 In Progress | 2026-06-15 | [Plan](https://github.com/AigoraCorporation/aigora/issues/186) |
-| v0.3.0 | Orchestrator Core (Deterministic) | 🚧 In Progress | 2026-06-15 | [Plan](https://github.com/AigoraCorporation/aigora/issues/185) |
+| Version | Name                              | Status         | Planned Date | Details                                                       |
+| ------- | --------------------------------- | -------------- | ------------ | ------------------------------------------------------------- |
+| v0.2.2  | Curriculum Graph API Foundation   | 🚧 In Progress | 2026-09-18   | [Plan](https://github.com/AigoraCorporation/aigora/issues/186) |
+| v0.3.1  | Orchestrator Core (Deterministic) | 🚧 In Progress | 2026-09-18   | [Plan](https://github.com/AigoraCorporation/aigora/issues/253) |
 
 See full roadmap: [Release Roadmap](docs/06-engineering/governance/release-roadmap.md)
 
@@ -206,7 +208,6 @@ consistency, and long-term maintainability.
 - [Traceability Model — ADRs, Issues, and Releases](docs/06-engineering/governance/traceability-model.md)
 
 [See full documentation: Engineering](docs/06-engineering/README.md)
-
 
 ## Conventions
 
@@ -266,7 +267,7 @@ npm install
 This installs the development dependencies used by the repository
 tooling and CI checks.
 
---- 
+---
 
 ## Local Development
 
