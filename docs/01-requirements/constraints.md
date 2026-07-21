@@ -31,5 +31,5 @@ that must be respected across the AIGORA system design.
 
 ## AI Integration Constraints
 
-- LLM usage must be mediated through the LLM Interface.
+- LLM usage must be mediated through the LLM Gateway.
 - Responses should be grounded using retrieved learning material.

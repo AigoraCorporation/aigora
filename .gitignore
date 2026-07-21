@@ -82,3 +82,6 @@ out/
 # ------------------------------
 .idea/
 src/UNKNOWN.egg-info
+
+# Maven
+target/

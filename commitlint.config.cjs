@@ -6,8 +6,34 @@ module.exports = {
       message.includes("Co-authored-by:")
   ],
   rules: {
-    "type-enum": [2, "always", ["feat","fix","docs","refactor","test","perf","build","ci","chore","revert"]],
-    "scope-enum": [2, "always", ["core","tutor","assessment","content","curriculum","evals","api","infra","docs","ci","repo", "architecture"]],
+    "type-enum": [2, "always", [
+      "feat",
+      "fix",
+      "docs",
+      "refactor",
+      "test",
+      "perf",
+      "build",
+      "ci",
+      "chore",
+      "revert",
+      "merge", 
+      "style"
+    ]],
+    "scope-enum": [2, "always", [
+      "core",
+      "tutor",
+      "assessment",
+      "content",
+      "curriculum",
+      "evals",
+      "api",
+      "infra",
+      "docs",
+      "ci",
+      "repo",
+      "architecture"
+    ]],
     "subject-case": [2, "never", ["sentence-case", "start-case", "pascal-case"]],
     "subject-full-stop": [2, "never", "."],
     "scope-empty": [2, "never"],
