@@ -44,20 +44,39 @@ to advanced problem solving by combining:
 Unlike generic AI chatbots, AIGORA is conceived as a **designed educational system**,
 with explicit curriculum modeling and architectural governance.
 
---- 
+---
+
+# Strategic Foundation
+
+The conceptual basis of the project is defined in the following documents:
+
+- [Project Vision](docs/00-vision/vision.md)
+- [System Overview](docs/02-architecture/overview.md)
+- [Curriculum Model](docs/04-curriculum/README.md)
+- [Goals &amp; Non-Goals](docs/00-vision/goals-non-goals.md)
+
+These documents define the long-term direction of the project and establish
+clear architectural and strategic boundaries for its evolution.
+
+---
 
 # Core Concepts
 
-AIGORA is built around three central architectural components:
+AIGORA is built around central architectural components that collaborate
+to provide deterministic and curriculum-aware pedagogical orchestration.
 
-| Component | Role |
-|------|------|
-| **Tutor Orchestrator** | Coordinates tutoring decisions and system behavior |
-| **Student Model** | Stores evidence of student performance and computes mastery |
-| **Curriculum Graph** | Represents mathematical knowledge and prerequisite structure |
+| Component                                                                 | Role                                                                       |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [Tutor Orchestrator](docs/02-architecture/tutor-orchestrator/index.md)     | Coordinates pedagogical decisions and orchestration behavior               |
+| [Student Model](docs/02-architecture/student-model.md)                     | Stores evidence of student performance and computes mastery progression    |
+| [Curriculum Graph](docs/02-architecture/curriculum-graph/index.md)         | Represents curriculum topology, prerequisites, and knowledge relationships |
+| [Assessment Engine](docs/02-architecture/assessment-engine.md)             | Evaluates learning outcomes, mastery, and learning gaps                    |
+| [Learning Session Engine](docs/02-architecture/learning-session-engine.md) | Conducts guided learning sessions and exercise delivery                    |
+| [Retrieval Layer (RAG)](docs/02-architecture/retrieval-layer.md)           | Retrieves contextual learning resources and supporting material            |
+| [LLM Gateway](docs/02-architecture/llm-gateway.md)                         | Provides controlled access to language model generation capabilities       |
 
-Together, these components allow the system to guide learning progression
-while maintaining transparency, consistency, and curriculum grounding.
+Together, these components allow the platform to guide learning progression
+while maintaining transparency, consistency, auditability, and curriculum grounding.
 
 ---
 
@@ -77,27 +96,25 @@ See the full language policy:
 
 ---
 
-## Documentation Map
-
-The project documentation is organized into the following areas:
-
-| Area | Description | Location |
-|------|------------|----------|
-| Vision | Strategic direction of the project | [`docs/00-vision`](docs/00-vision/vision.md) |
-| Requirements | System constraints and requirements | [`docs/01-requirements`](docs/01-requirements/constraints.md) |
-| Architecture | System design and interaction model | [`docs/02-architecture`](docs/02-architecture/overview.md) |
-| Curriculum | Mathematical curriculum structure | [`docs/04-curriculum`](docs/04-curriculum/README.md) |
-| Data | Data contracts and exchange formats | [`docs/05-data`](docs/05-data/README.md) |
-| Engineering | Workflow, governance and development processes | [`docs/06-engineering`](docs/06-engineering/README.md) |
-
----
-
-### Key Documents
+## Key Documents
 
 - [Project Vision](docs/00-vision/vision.md)
 - [Architecture Overview](docs/02-architecture/overview.md)
 - [Canonical CSV Model](docs/05-data/canonical-csv-model.md)
 - [Engineering Guide](docs/06-engineering/README.md)
+
+### Documentation Map
+
+The project documentation is organized into the following areas:
+
+| Area         | Description                                    | Location                                                       |
+| ------------ | ---------------------------------------------- | -------------------------------------------------------------- |
+| Vision       | Strategic direction of the project             | [`docs/00-vision`](docs/00-vision/vision.md)                  |
+| Requirements | System constraints and requirements            | [`docs/01-requirements`](docs/01-requirements/constraints.md) |
+| Architecture | System design and interaction model            | [`docs/02-architecture`](docs/02-architecture/overview.md)    |
+| Curriculum   | Mathematical curriculum structure              | [`docs/04-curriculum`](docs/04-curriculum/README.md)          |
+| Data         | Data contracts and exchange formats            | [`docs/05-data`](docs/05-data/README.md)                      |
+| Engineering  | Workflow, governance and development processes | [`docs/06-engineering`](docs/06-engineering/README.md)        |
 
 ---
 
@@ -107,11 +124,11 @@ AIGORA is currently in the **Early Development**.
 
 ### Component Status
 
-| Component  | Release Focus | Maturity | Description |
-|----------|--------------|----------|------------|
-| Curriculum Graph | 🚧 In Progress | [v0.2.1](https://github.com/AigoraCorporation/aigora/issues/124) | Defines the structured knowledge graph and dependencies |
-| Tutor Orchestrator | 🚧 In Progress | N/A | Responsible for pedagogical orchestration and decision-making |
-| Student Model | ⏳ Planned | N/A | Models student knowledge, progress, and learning state |
+| Component          | Release Focus  | Maturity                                                        | Description                                                   |
+| ------------------ | -------------- | --------------------------------------------------------------- | ------------------------------------------------------------- |
+| Curriculum Graph   | 🚧 In Progress | [v0.2.1](https://github.com/AigoraCorporation/aigora/issues/124) | Defines the structured knowledge graph and dependencies       |
+| Tutor Orchestrator | 🚧 In Progress | [v.0.3.0](https://github.com/AigoraCorporation/aigora/issues/185)| Responsible for pedagogical orchestration and decision-making |
+| Student Model      | ⏳ Planned     | N/A                                                             | Models student knowledge, progress, and learning state        |
 
 ### Current Releases
 
@@ -125,15 +142,18 @@ Focus:
 * Dependency injection structure
 * OpenAPI documentation
 
-**v0.3.0 — Orchestrator Core (Deterministic)**
+**v0.4.0 — Learning Session Orchestration**
 
 Focus:
 
-* Deterministic orchestration engine
-* Rule-based progression decisions
-* Curriculum Graph traversal
-* Learning state evaluation
-* Pedagogical orchestration flow
+* Learning session lifecycle
+* Session state management
+* Exercise execution workflow
+* Student progress tracking
+* Assessment Engine integration
+* Student Model integration
+* Event-driven pedagogical flow
+* Decision traceability and auditability
 
 ---
 
@@ -145,67 +165,20 @@ All notable changes are documented in:
 
 Latest release:
 
-| Version | Name | Status |
-|--------|------|--------|
-| v0.2.1 | Curriculum Graph Persistence & Change Management | ✅ Released |
-| v0.2.0 | Curriculum Graph (Core Runtime) | ✅ Released |
-| v0.1.1 | Architecture v1 | ✅ Released |
+| Version | Name                                             | Status      |
+| ------- | ------------------------------------------------ | ----------- |
+| v0.3.0  | Orchestrator Core (Deterministic)                | ✅ Released |
+| v0.2.1  | Curriculum Graph Persistence & Change Management | ✅ Released |
+| v0.2.0  | Curriculum Graph (Core Runtime)                  | ✅ Released |
 
 Release Roadmap:
 
-| Version | Name | Status | Planned Date | Details |
-|--------|------|--------|---------|---------|
-| v0.2.2 | Curriculum Graph API Foundation | 🚧 In Progress | 2026-06-15 | [Plan](https://github.com/AigoraCorporation/aigora/issues/186) |
-| v0.3.0 | Orchestrator Core (Deterministic) | 🚧 In Progress | 2026-06-15 | [Plan](https://github.com/AigoraCorporation/aigora/issues/185) |
+| Version | Name                              | Status         | Planned Date | Details                                                       |
+| ------- | --------------------------------- | -------------- | ------------ | ------------------------------------------------------------- |
+| v0.2.2  | Curriculum Graph API Foundation   | 🚧 In Progress | 2026-09-18   | [Plan](https://github.com/AigoraCorporation/aigora/issues/186) |
+| v0.3.1  | Orchestrator Core (Deterministic) | 🚧 In Progress | 2026-09-18   | [Plan](https://github.com/AigoraCorporation/aigora/issues/253) |
 
 See full roadmap: [Release Roadmap](docs/06-engineering/governance/release-roadmap.md)
-
----
-
-# Strategic Foundation
-
-The conceptual basis of the project is defined in the following documents:
-
-- [Project Vision](docs/00-vision/vision.md)
-- [Goals & Non-Goals](docs/00-vision/goals-non-goals.md)
-
-These documents define the long-term direction of the project and
-establish clear boundaries for its scope.
-
----
-
-# System Architecture
-
-The system architecture defines how AI components, curriculum models,
-and evaluation mechanisms interact.
-
-- [System Overview](docs/02-architecture/overview.md)
-
-- Engineering architecture docs:
-  - [Interaction Model](docs/02-architecture/interaction-model.md)
-  - [Tutor Orchestrator](docs/02-architecture/tutor-orchestrator.md)
-  - [Curriculum Graph](docs/02-architecture/curriculum-graph/index.md)
-  - [Student Model](docs/02-architecture/student-model.md) 
-  - [Retrieval Layer](docs/02-architecture/retrieval-layer.md) 
-
-Architecture is designed **before implementation** to ensure scalability
-and conceptual consistency.
-
----
-
-# Curriculum Model
-
-The curriculum is structured as a **prerequisite graph**, enabling
-mastery-based progression through mathematical topics.
-
-- [Scope Definition](docs/04-curriculum/scope-fuvest.md)
-- [Topic Map](docs/04-curriculum/topic-map.md)
-
-This structure allows the system to:
-
-- identify knowledge gaps
-- recommend learning paths
-- reinforce conceptual understanding
 
 ---
 
@@ -214,6 +187,9 @@ This structure allows the system to:
 All project work follows a structured engineering workflow and governance model.
 
 ## Workflow
+
+AIGORA follows a structured development workflow to ensure engineering consistency,
+traceability, collaboration, and long-term maintainability.
 
 - [Development Workflow](docs/06-engineering/workflow/development-workflow.md)
 - [Git Flow](docs/06-engineering/workflow/git-flow.md)
@@ -225,22 +201,13 @@ All project work follows a structured engineering workflow and governance model.
 AIGORA follows a structured engineering governance model to ensure code quality,
 consistency, and long-term maintainability.
 
-This includes:
-
-- Engineering policies (DDD, SOLID, etc.)
-- Pull request rules and validation criteria
-- Development workflow and branching strategy
+- [Engineering Policies](docs/06-engineering/governance/engineering-policies.md)
+- [Implementation Guardrails](docs/06-engineering/governance/implementation-guardrails.md)
+- [Pull Request Policy](docs/06-engineering/governance/pull-request-policy.md)
+- [Release Roadmap](docs/06-engineering/governance/release-roadmap.md)
+- [Traceability Model — ADRs, Issues, and Releases](docs/06-engineering/governance/traceability-model.md)
 
 [See full documentation: Engineering](docs/06-engineering/README.md)
-
-Every change must:
-
-1. originate from an Issue
-2. be implemented in a dedicated branch
-3. follow the commit convention
-4. be submitted via Pull Request
-5. pass CI checks
-
 
 ## Conventions
 
@@ -249,6 +216,7 @@ To maintain consistency and quality, the repository enforces:
 - [Commit Convention](docs/06-engineering/conventions/commits.md)
 - [Branch Naming Convention](docs/06-engineering/conventions/branch-naming.md)
 - [Pull Request Template](.github/PULL_REQUEST_TEMPLATE/pull_request_template.md)
+- [Language Policy](docs/06-engineering/conventions/language-policy.md)
 
 The `main`, `release`, and `dev` branches are protected and cannot be updated directly.
 
@@ -299,7 +267,7 @@ npm install
 This installs the development dependencies used by the repository
 tooling and CI checks.
 
---- 
+---
 
 ## Local Development
 
