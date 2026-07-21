@@ -19,7 +19,7 @@ It serves as the **single source of truth** for:
 | v0.2.0  | Curriculum Graph (Core Runtime)                  | 2026-04-24   | ✅ Released    | Curriculum Graph   | [Release](https://github.com/AigoraCorporation/aigora/issues/71)           |
 | v0.2.1  | Curriculum Graph Persistence & Change Management | 2026-05-15   | ✅ Released    | Curriculum Graph   | [Release](https://github.com/AigoraCorporation/aigora/issues/124)          |
 | v0.2.2  | Curriculum Graph API Foundation                  | 2026-09-18   | 🚧 In Progress | Curriculum Graph   | [Plan](https://github.com/AigoraCorporation/aigora/issues/186)             |
-| v0.3.0  | Orchestrator Core (Deterministic)                | 2026-07-18   | ✅ Released | Tutor Orchestrator | [Release](https://github.com/AigoraCorporation/aigora/issues/185)             |
+| v0.3.0  | Orchestrator Core (Deterministic)                | 2026-07-21   | ✅ Released | Tutor Orchestrator | [Release](https://github.com/AigoraCorporation/aigora/issues/185)             |
 | v0.3.1  | Learning Session Orchestration                   | 2026-09-18   | 🚧 In Progress | Tutor Orchestrator | [Plan](https://github.com/AigoraCorporation/aigora/issues/253)             |
 | v0.4.0  | Student Model Foundation                         | TBD          | ⏳ Planned     | Student Model      | —                                                                        |
 
