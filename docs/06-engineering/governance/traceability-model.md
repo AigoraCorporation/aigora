@@ -112,10 +112,10 @@ Each ADR document must include a `## Milestones` section:
 ```markdown
 ## Milestones
 
-| ID | Description | Status |
-|----|-------------|--------|
-| M1 | Initial implementation | Done |
-| M2 | Integration test coverage | Pending |
+| ID | Description | Status | Owner |
+|----|-------------|--------|-------|
+| M1 | Initial implementation | Done | @owner |
+| M2 | Integration test coverage | Pending | @owner |
 ```
 
 Issues reference milestones via the `ADR Milestone` field in their body.
