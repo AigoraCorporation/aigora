@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.3.0] - 2026-07-21
+
+### Added
+
+* Added the Tutor Orchestrator Core.
+* Added a deterministic orchestration pipeline.
+* Added the Decision Engine for pedagogical decision making.
+* Added candidate generation and ranking pipeline.
+* Added policy-based orchestration framework.
+* Added Eligibility, Regression and Completion policies.
+* Added Curriculum Graph integration contracts.
+* Added gRPC adapter architecture.
+* Added orchestration domain model.
+* Added orchestration error model.
+* Added shared validation utilities.
+* Added observability foundations.
+* Added testing infrastructure.
+
+
+### Changed
+
+* Changed the orchestration architecture to follow a deterministic-first approach.
+* Improved separation between application, domain and infrastructure layers.
+* Improved dependency injection configuration.
+* Improved project documentation and architecture guides.
+
+
+### Fixed
+
+* Fixed decision reason modeling.
+* Fixed orchestration validation consistency.
+* Fixed dependency validation across the orchestration pipeline.
+
+### Removed
+
+* Removed experimental orchestration assumptions from the initial prototype.
+
+---
+
 ## [v0.2.1] - 2026-05-15
 
 ### Added
