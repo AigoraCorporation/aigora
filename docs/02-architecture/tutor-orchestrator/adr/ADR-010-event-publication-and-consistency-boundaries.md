@@ -483,3 +483,631 @@ AIGORA guarantees:
 - audit traceability.
 
 Global ordering across multiple aggregates is **not guaranteed**.
+
+---
+
+# 10. Event Envelope
+
+Every published event shall be wrapped inside a standardized event envelope.
+
+The envelope provides metadata required for:
+
+- routing;
+- auditability;
+- observability;
+- replay;
+- ordering;
+- correlation;
+- schema evolution.
+
+The event payload contains only business information.
+
+The envelope contains technical metadata.
+
+---
+
+## 10.1 Standard Event Envelope
+
+Every published event shall contain the following fields.
+
+| Field | Description |
+|---------|-------------|
+| EventId | Globally unique event identifier |
+| EventType | Business event name |
+| AggregateId | Aggregate that generated the event |
+| AggregateType | Aggregate type |
+| AggregateVersion | Aggregate version after commit |
+| CorrelationId | Business transaction identifier |
+| CausationId | Previous event or command identifier |
+| EventVersion | Event schema version |
+| OccurredAt | UTC timestamp of business occurrence |
+| PublishedAt | UTC timestamp of publication |
+| Producer | Publishing bounded context |
+| Payload | Immutable business payload |
+
+---
+
+## 10.2 EventId
+
+Every event shall receive a globally unique identifier.
+
+Properties:
+
+- immutable;
+- globally unique;
+- never reused;
+- generated before publication.
+
+Recommended implementations:
+
+- UUID v7
+- ULID
+
+The identifier shall never encode business semantics.
+
+---
+
+## 10.3 AggregateId
+
+Every event references the aggregate responsible for the business fact.
+
+Example:
+
+LearningSession
+
+AggregateId
+
+```text
+LS-8A7E93...
+```
+
+The AggregateId allows consumers to reconstruct aggregate history.
+
+---
+
+## 10.4 AggregateVersion
+
+Every event references the version of the aggregate immediately after the committed mutation.
+
+Example:
+
+```text
+LearningSession
+
+Version 1
+
+↓
+
+ExerciseCompleted
+
+↓
+
+Version 2
+
+↓
+
+AssessmentAccepted
+
+↓
+
+Version 3
+
+↓
+
+LearningSessionCompleted
+
+↓
+
+Version 4
+```
+
+AggregateVersion is required for:
+
+- optimistic concurrency;
+- replay;
+- duplicate detection;
+- ordering validation.
+
+---
+
+## 10.5 EventVersion
+
+Every event schema shall be versioned.
+
+Version numbers evolve independently from aggregate versions.
+
+Example:
+
+```text
+LearningSessionCompleted
+
+Schema v1
+```
+
+↓
+
+```text
+LearningSessionCompleted
+
+Schema v2
+```
+
+Consumers may support:
+
+- only v2
+
+or
+
+- v1 and v2 simultaneously.
+
+Schema evolution rules are defined later in this ADR.
+
+---
+
+## 10.6 OccurredAt
+
+Represents when the business fact actually occurred.
+
+Not:
+
+- publication time;
+- processing time;
+- consumption time.
+
+OccurredAt represents business chronology.
+
+---
+
+## 10.7 PublishedAt
+
+Represents when the event became visible to external consumers.
+
+Publication may occur slightly after business occurrence.
+
+This distinction becomes important when asynchronous brokers are introduced.
+
+---
+
+## 10.8 Producer
+
+Identifies the authoritative bounded context.
+
+Examples:
+
+```text
+Learning Session Engine
+
+Tutor Orchestrator
+
+Assessment Engine
+
+Student Model
+```
+
+Consumers must trust only the authoritative producer.
+
+---
+
+# 11. Correlation and Causation
+
+Distributed systems require complete request tracing.
+
+AIGORA standardizes two identifiers.
+
+- CorrelationId
+- CausationId
+
+Both identifiers are mandatory.
+
+---
+
+## 11.1 CorrelationId
+
+CorrelationId identifies one complete business workflow.
+
+Example:
+
+Student solves an exercise.
+
+Entire workflow:
+
+```text
+ExerciseCompleted
+
+↓
+
+AssessmentAccepted
+
+↓
+
+PoliciesExecuted
+
+↓
+
+NodeSelected
+
+↓
+
+LearningSessionUpdated
+```
+
+All events above share the same CorrelationId.
+
+This enables complete workflow reconstruction.
+
+---
+
+## 11.2 CausationId
+
+CausationId identifies the event that immediately caused another event.
+
+Example:
+
+```text
+ExerciseCompleted
+
+↓
+
+AssessmentAccepted
+
+↓
+
+PoliciesExecuted
+
+↓
+
+NodeSelected
+```
+
+Each event stores the identifier of its direct predecessor.
+
+Example:
+
+```text
+AssessmentAccepted
+
+CausationId
+
+=
+
+ExerciseCompleted
+```
+
+---
+
+## 11.3 Correlation Example
+
+```text
+CorrelationId
+
+12345
+
+ExerciseCompleted
+
+↓
+
+AssessmentAccepted
+
+↓
+
+PoliciesExecuted
+
+↓
+
+NodeSelected
+
+↓
+
+LearningSessionUpdated
+```
+
+Entire chain belongs to one logical operation.
+
+---
+
+## 11.4 Causation Example
+
+```text
+ExerciseCompleted
+
+EventId = A
+
+↓
+
+AssessmentAccepted
+
+EventId = B
+
+CausationId = A
+
+↓
+
+PoliciesExecuted
+
+EventId = C
+
+CausationId = B
+
+↓
+
+NodeSelected
+
+EventId = D
+
+CausationId = C
+```
+
+This chain enables deterministic audit reconstruction.
+
+---
+
+# 12. Publication Pipeline
+
+The publication pipeline is standardized.
+
+Every component follows the same lifecycle.
+
+```text
+Business Command
+
+↓
+
+Application Service
+
+↓
+
+Aggregate
+
+↓
+
+Domain Events
+
+↓
+
+Persistence
+
+↓
+
+Transaction Commit
+
+↓
+
+Publication Adapter
+
+↓
+
+Message Broker / Event Bus
+
+↓
+
+Consumers
+```
+
+No component may bypass this flow.
+
+---
+
+## 12.1 Domain Events
+
+Domain Events are created inside aggregates.
+
+They represent pure business facts.
+
+Domain Events are not infrastructure messages.
+
+---
+
+## 12.2 Publication Adapter
+
+Publication adapters convert domain events into integration events.
+
+Responsibilities:
+
+- serialization;
+- schema validation;
+- metadata injection;
+- envelope creation;
+- broker communication.
+
+Aggregates never communicate directly with infrastructure.
+
+---
+
+## 12.3 Consumer Pipeline
+
+Consumers process events using:
+
+```text
+Receive
+
+↓
+
+Validate
+
+↓
+
+Deserialize
+
+↓
+
+Version Check
+
+↓
+
+Duplicate Check
+
+↓
+
+Business Processing
+
+↓
+
+Acknowledge
+```
+
+Duplicate detection occurs before business execution.
+
+---
+
+# 13. Consistency Boundaries
+
+Not every operation requires strong consistency.
+
+AIGORA distinguishes two consistency models.
+
+- Strong Consistency
+- Eventual Consistency
+
+---
+
+## 13.1 Strong Consistency
+
+Required inside aggregate boundaries.
+
+Examples:
+
+LearningSession aggregate
+
+Must guarantee:
+
+- valid lifecycle;
+- valid version;
+- invariant preservation;
+- atomic mutation.
+
+Strong consistency never crosses bounded contexts.
+
+---
+
+## 13.2 Eventual Consistency
+
+Used between bounded contexts.
+
+Example:
+
+```text
+Learning Session Engine
+
+↓
+
+ExerciseCompleted
+
+↓
+
+Assessment Engine
+
+↓
+
+AssessmentAccepted
+
+↓
+
+Student Model
+
+↓
+
+MasteryUpdated
+```
+
+Each bounded context updates independently.
+
+Temporary divergence is acceptable.
+
+---
+
+## 13.3 Consistency Rule
+
+Aggregate consistency:
+
+Strong
+
+Cross-component consistency:
+
+Eventual
+
+Distributed transactions are prohibited.
+
+---
+
+# 14. Ordering Guarantees
+
+Ordering is guaranteed only within one aggregate.
+
+Example:
+
+LearningSession
+
+```text
+Created
+
+↓
+
+Started
+
+↓
+
+ExercisePresented
+
+↓
+
+ExerciseCompleted
+
+↓
+
+Completed
+```
+
+Consumers may assume this order.
+
+Consumers must not assume ordering between unrelated aggregates.
+
+---
+
+## 14.1 Cross Aggregate Ordering
+
+The following ordering is **not guaranteed**:
+
+```text
+LearningSession A
+
+↓
+
+LearningSession B
+```
+
+Global ordering is intentionally avoided to maximize scalability.
+
+---
+
+# 15. Mermaid Sequence Diagram
+
+```mermaid
+sequenceDiagram
+
+participant UI
+
+participant LearningSession
+
+participant Assessment
+
+participant Tutor
+
+participant StudentModel
+
+UI->>LearningSession: Complete Exercise
+
+LearningSession->>Assessment: Request Assessment
+
+Assessment-->>LearningSession: Assessment Accepted
+
+LearningSession->>Tutor: Evaluate Progress
+
+Tutor-->>LearningSession: Node Selected
+
+LearningSession-->>StudentModel: Publish Mastery Update
+```
+
+The sequence above represents the logical interaction.
+
+Actual transport may be synchronous or asynchronous depending on deployment architecture.
+
