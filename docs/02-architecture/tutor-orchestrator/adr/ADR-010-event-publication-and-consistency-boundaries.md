@@ -1111,3 +1111,562 @@ The sequence above represents the logical interaction.
 
 Actual transport may be synchronous or asynchronous depending on deployment architecture.
 
+---
+
+# 16. Idempotency
+
+Distributed systems must assume that event delivery is **at least once**.
+
+Therefore, every producer and every consumer shall be idempotent.
+
+Exactly-once delivery is not assumed.
+
+The architecture guarantees correctness through idempotent processing rather than transport guarantees.
+
+---
+
+## 16.1 Producer Idempotency
+
+A producer shall never intentionally publish two distinct events representing the same committed business fact.
+
+Each published event must be uniquely identified by:
+
+- EventId
+- AggregateId
+- AggregateVersion
+
+Example:
+
+```text
+LearningSession
+Version 12
+
+↓
+
+ExerciseCompleted
+
+EventId = E-123
+```
+
+Publishing another `ExerciseCompleted` for the same aggregate version is prohibited.
+
+---
+
+## 16.2 Consumer Idempotency
+
+Consumers must tolerate duplicate delivery.
+
+Receiving the same event twice shall not execute the business logic twice.
+
+Example:
+
+```text
+ExerciseCompleted
+
+↓
+
+StudentModelUpdated
+```
+
+If the same event is delivered again:
+
+```text
+ExerciseCompleted
+
+↓
+
+StudentModelUpdated
+```
+
+the Student Model must recognize the duplicate and avoid applying the update twice.
+
+---
+
+## 16.3 Duplicate Detection
+
+Consumers shall maintain processed event identifiers.
+
+Recommended key:
+
+```text
+EventId
+```
+
+Alternative:
+
+```text
+AggregateId
++
+
+AggregateVersion
+```
+
+Duplicate detection must occur before business execution.
+
+---
+
+## 16.4 Idempotent Operations
+
+Examples of idempotent operations:
+
+- updating mastery to a specific value;
+- marking a session as completed;
+- storing immutable audit entries;
+- replacing cached projections.
+
+Examples of non-idempotent operations:
+
+- increment counters;
+- append duplicated history;
+- emit duplicate notifications;
+- create duplicated attempts.
+
+Business operations should always prefer idempotent semantics.
+
+---
+
+# 17. Retry Strategy
+
+Failures are inevitable.
+
+Retry behavior shall be standardized.
+
+---
+
+## 17.1 Transient Failures
+
+Retry is permitted for:
+
+- temporary network failures;
+- broker unavailability;
+- temporary database locks;
+- timeout while publishing;
+- temporary dependency overload.
+
+---
+
+## 17.2 Permanent Failures
+
+Retry shall not occur for:
+
+- invalid schema;
+- invalid event version;
+- business validation failure;
+- unsupported event type;
+- corrupted payload.
+
+These failures require operator intervention.
+
+---
+
+## 17.3 Retry Policy
+
+Recommended policy:
+
+```text
+Attempt 1
+
+↓
+
+Immediate Retry
+
+↓
+
+1 second
+
+↓
+
+5 seconds
+
+↓
+
+15 seconds
+
+↓
+
+30 seconds
+
+↓
+
+Dead Letter Queue
+```
+
+Retry policy belongs to infrastructure.
+
+Business logic must remain unaware of retry mechanics.
+
+---
+
+# 18. Dead Letter Queue
+
+Events that repeatedly fail shall be moved to a Dead Letter Queue (DLQ).
+
+The DLQ preserves:
+
+- original payload;
+- envelope metadata;
+- failure reason;
+- retry count;
+- processing timestamp.
+
+The DLQ is an operational concern.
+
+It must never become part of normal business processing.
+
+---
+
+## 18.1 DLQ Usage
+
+Typical causes:
+
+- incompatible schema;
+- malformed payload;
+- missing consumer implementation;
+- unrecoverable infrastructure failure.
+
+Events remain available for later inspection or replay.
+
+---
+
+# 19. Outbox Pattern
+
+## Decision
+
+AIGORA adopts the **Transactional Outbox Pattern** for durable integration event publication.
+
+The Outbox Pattern guarantees that:
+
+- aggregate persistence;
+- event persistence;
+
+occur inside the same local transaction.
+
+Publication to external brokers occurs afterwards.
+
+---
+
+## 19.1 Motivation
+
+Without an Outbox:
+
+```text
+Persist Aggregate
+
+↓
+
+Application Crash
+
+↓
+
+Event Never Published
+```
+
+or
+
+```text
+Publish Event
+
+↓
+
+Persistence Fails
+```
+
+↓
+
+Consumers observe a state that never existed.
+
+The Outbox Pattern eliminates these inconsistencies.
+
+---
+
+## 19.2 Publication Flow
+
+```text
+Command
+
+↓
+
+Aggregate Mutation
+
+↓
+
+Transaction
+
+↓
+
+Persist Aggregate
+
++
+
+Persist Outbox Event
+
+↓
+
+Commit
+
+↓
+
+Outbox Publisher
+
+↓
+
+Broker
+
+↓
+
+Consumers
+```
+
+---
+
+## 19.3 Responsibilities
+
+Application Layer
+
+Responsible for:
+
+- writing Outbox records.
+
+Infrastructure Layer
+
+Responsible for:
+
+- reading Outbox;
+- publishing events;
+- retrying publication;
+- marking events as published.
+
+---
+
+## 19.4 Broker Independence
+
+The Outbox Pattern must not depend on a specific messaging technology.
+
+Possible implementations:
+
+- Kafka
+- RabbitMQ
+- Azure Service Bus
+- AWS SNS/SQS
+- Google Pub/Sub
+- in-memory dispatcher (development)
+
+The architectural model remains unchanged.
+
+---
+
+# 20. Event Replay
+
+Replay allows rebuilding read models and recovering downstream systems.
+
+Replay shall be supported for Integration Events.
+
+---
+
+## 20.1 Replay Rules
+
+Replay must preserve:
+
+- EventId
+- AggregateVersion
+- CorrelationId
+- CausationId
+- OccurredAt
+
+Replay shall never generate new business identifiers.
+
+---
+
+## 20.2 Replay Consumers
+
+Consumers must distinguish:
+
+- live processing;
+- replay processing.
+
+Replay shall not:
+
+- send emails;
+- send notifications;
+- invoke external payment;
+- trigger user-visible side effects.
+
+Replay is intended to reconstruct state.
+
+---
+
+# 21. Schema Evolution
+
+Event schemas evolve over time.
+
+Breaking existing consumers is prohibited.
+
+---
+
+## 21.1 Compatibility Rules
+
+Allowed:
+
+- add optional fields;
+- extend metadata;
+- introduce new event versions.
+
+Forbidden:
+
+- remove mandatory fields;
+- rename existing fields;
+- change semantic meaning;
+- reuse event names with different behavior.
+
+---
+
+## 21.2 Versioning Strategy
+
+Every event includes:
+
+```text
+EventVersion
+```
+
+Consumers explicitly declare supported versions.
+
+Example:
+
+```text
+LearningSessionCompleted
+
+v1
+
+↓
+
+v2
+```
+
+Older consumers may continue processing v1 while newer consumers adopt v2.
+
+---
+
+## 21.3 Event Deprecation
+
+Deprecated versions remain supported until:
+
+- all consumers migrate;
+- operational replay no longer requires them.
+
+Removing a version requires an explicit architectural review.
+
+---
+
+# 22. Failure Semantics
+
+Failures are classified into four categories.
+
+---
+
+## 22.1 Business Failure
+
+Example:
+
+Invalid session transition.
+
+No event is published.
+
+---
+
+## 22.2 Infrastructure Failure
+
+Example:
+
+Broker unavailable.
+
+Aggregate state remains committed.
+
+Publication retries according to infrastructure policy.
+
+---
+
+## 22.3 Consumer Failure
+
+Consumer processing fails.
+
+The producer remains unaffected.
+
+Retry occurs independently.
+
+---
+
+## 22.4 Poison Event
+
+An event that consistently fails processing.
+
+Action:
+
+```text
+Retry
+
+↓
+
+DLQ
+
+↓
+
+Manual Analysis
+
+↓
+
+Replay (optional)
+```
+
+Poison events must never block the entire event pipeline.
+
+---
+
+# 23. Architecture Diagram
+
+```mermaid
+flowchart LR
+
+A[Aggregate]
+
+--> B[Domain Events]
+
+--> C[Outbox]
+
+--> D[Publisher]
+
+--> E[Broker]
+
+--> F[Consumers]
+
+F --> G[Retry]
+
+G --> H[Dead Letter Queue]
+
+H --> I[Replay]
+```
+
+---
+
+# 24. Operational Guarantees
+
+The architecture guarantees:
+
+- immutable events;
+- explicit ownership;
+- deterministic ordering inside an aggregate;
+- idempotent processing;
+- replay capability;
+- schema evolution;
+- broker independence;
+- auditability;
+- observability;
+- resilient publication.
+
+The architecture intentionally does **not** guarantee:
+
+- global ordering;
+- exactly-once delivery;
+- distributed transactions;
+- synchronous cross-component consistency.
+
+These guarantees are intentionally excluded to maximize scalability and resilience.
