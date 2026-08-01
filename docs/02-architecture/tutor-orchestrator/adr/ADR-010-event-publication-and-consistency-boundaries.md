@@ -1670,3 +1670,426 @@ The architecture intentionally does **not** guarantee:
 - synchronous cross-component consistency.
 
 These guarantees are intentionally excluded to maximize scalability and resilience.
+
+---
+
+# 25. Auditability Model
+
+Auditability is a first-class architectural concern within AIGORA.
+
+Every pedagogical decision must be fully reconstructable.
+
+A future engineer must be able to answer:
+
+- Why was this exercise selected?
+- Which policy rejected another candidate?
+- Which graph version was used?
+- Which student state was considered?
+- Which assessment triggered the decision?
+- Which model generated the recommendation (when applicable)?
+- Which component published each event?
+- Which aggregate version accepted the decision?
+
+No business decision shall become a "black box."
+
+---
+
+## 25.1 Decision Reconstruction
+
+The complete pedagogical flow must be reconstructable through immutable event history.
+
+Example:
+
+```text
+ExerciseCompleted
+        │
+        ▼
+AssessmentAccepted
+        │
+        ▼
+PoliciesExecuted
+        │
+        ▼
+CandidatesRanked
+        │
+        ▼
+NodeSelected
+        │
+        ▼
+NextNodeApplied
+        │
+        ▼
+LearningSessionUpdated
+```
+
+Every event contributes one immutable piece of evidence.
+
+---
+
+## 25.2 Required Trace Information
+
+Every integration event must provide enough metadata to reconstruct:
+
+- Aggregate ID
+- Aggregate Version
+- Correlation ID
+- Causation ID
+- Event ID
+- Producer
+- Timestamp
+- Event Version
+
+Decision events shall additionally include:
+
+- DecisionId
+- GraphVersion
+- StudentModelVersion
+- PolicySetVersion
+- CandidateCount
+- SelectedCandidate
+- RejectedCandidates (optional according to policy)
+
+---
+
+## 25.3 Audit Guarantees
+
+AIGORA guarantees:
+
+- immutable audit history;
+- deterministic decision reconstruction;
+- aggregate evolution history;
+- cross-component traceability;
+- event replay support.
+
+Audit data shall never depend on log files.
+
+Logs are operational artifacts.
+
+Events are business evidence.
+
+---
+
+# 26. Observability
+
+Observability complements auditability.
+
+Auditability explains **why** something happened.
+
+Observability explains **how** the system behaved.
+
+---
+
+## 26.1 Metrics
+
+Every component should expose metrics such as:
+
+Learning Session Engine
+
+- sessions started
+- sessions completed
+- active sessions
+- interrupted sessions
+
+Tutor Orchestrator
+
+- decisions executed
+- average candidate count
+- average ranking latency
+- policy execution latency
+
+Assessment Engine
+
+- assessments completed
+- assessment latency
+
+Infrastructure
+
+- event publication latency
+- broker latency
+- retry count
+- DLQ count
+
+---
+
+## 26.2 Tracing
+
+Distributed tracing shall propagate:
+
+- CorrelationId
+- CausationId
+
+through every synchronous and asynchronous boundary.
+
+OpenTelemetry-compatible propagation is recommended.
+
+---
+
+## 26.3 Logging
+
+Structured logging shall include:
+
+- CorrelationId
+- EventId
+- AggregateId
+- AggregateVersion
+- Component
+- Operation
+- Duration
+
+Sensitive learner data shall never be logged.
+
+---
+
+# 27. Architecture Tests
+
+The architecture shall include automated tests that enforce the rules defined by this ADR.
+
+Examples:
+
+- every Integration Event has exactly one owner;
+- events are immutable;
+- aggregates never publish directly to infrastructure;
+- Outbox is used for durable publication;
+- consumers are idempotent;
+- forbidden dependencies are rejected;
+- event envelopes contain mandatory metadata;
+- duplicate processing is safely ignored.
+
+Architecture tests should fail the build whenever these constraints are violated.
+
+---
+
+# 28. Compliance Rules
+
+An implementation complies with ADR-010 only when all of the following are true.
+
+## Event Publication
+
+- events represent committed facts;
+- publication occurs only after successful persistence;
+- events are immutable;
+- each event has exactly one publisher.
+
+## Event Metadata
+
+Every event contains:
+
+- EventId
+- AggregateId
+- AggregateVersion
+- CorrelationId
+- CausationId
+- EventVersion
+- OccurredAt
+- PublishedAt
+- Producer
+
+## Reliability
+
+The implementation supports:
+
+- duplicate detection;
+- idempotent processing;
+- retry;
+- dead-letter handling;
+- replay.
+
+## Consistency
+
+The implementation does not introduce:
+
+- distributed transactions;
+- shared persistence;
+- global ordering assumptions;
+- synchronous coupling between bounded contexts.
+
+## Evolution
+
+Breaking event changes require:
+
+- explicit version increment;
+- compatibility analysis;
+- architectural review.
+
+---
+
+# 29. Alternatives Considered
+
+## Alternative A — Commands only
+
+Every component communicates exclusively through synchronous commands.
+
+### Rejected
+
+This creates:
+
+- strong coupling;
+- limited scalability;
+- reduced observability;
+- difficult replay.
+
+---
+
+## Alternative B — Unversioned Events
+
+Events evolve without schema versioning.
+
+### Rejected
+
+Consumers cannot evolve safely.
+
+Replay becomes unreliable.
+
+---
+
+## Alternative C — Shared Event Model
+
+Multiple bounded contexts publish the same event type.
+
+### Rejected
+
+Ownership becomes ambiguous.
+
+Auditability is weakened.
+
+---
+
+## Alternative D — Best-effort Publication
+
+Publish events directly after persistence without durability guarantees.
+
+### Rejected
+
+Application crashes may permanently lose business events.
+
+---
+
+## Alternative E — Transactional Outbox
+
+Persist aggregate and event together.
+
+Publish asynchronously.
+
+### Accepted
+
+This provides:
+
+- reliable publication;
+- replay capability;
+- broker independence;
+- scalability.
+
+---
+
+# 30. Consequences
+
+## Positive
+
+- deterministic event contracts;
+- reliable integration;
+- replay support;
+- clear ownership;
+- resilient publication;
+- independent bounded contexts;
+- strong auditability;
+- scalable architecture.
+
+## Negative
+
+- additional infrastructure;
+- Outbox maintenance;
+- event version management;
+- more operational monitoring;
+- increased architectural discipline.
+
+These trade-offs are accepted.
+
+---
+
+# 31. Follow-up Actions
+
+Required for v0.3.1:
+
+1. Define Learning Session event contracts.
+2. Define Decision Trace contracts.
+3. Define Event Publisher ports.
+4. Implement Outbox abstraction.
+5. Implement event publication adapters.
+6. Implement replay support.
+7. Implement duplicate detection.
+8. Implement architecture tests.
+9. Implement observability instrumentation.
+10. Document event schemas.
+
+---
+
+# 32. Milestone Linkage
+
+ADR-010 enables:
+
+- Event Contracts
+- Event Publisher Port
+- Decision Trace Port
+- Outbox Adapter
+- Integration Events
+- Observability
+- Auditability
+- Distributed Testing
+
+The v0.3.1 implementation shall not publish production integration events before ADR-010 has been accepted.
+
+---
+
+# 33. Decision Summary
+
+AIGORA adopts the following architectural model.
+
+```text
+Aggregate
+        │
+        ▼
+Domain Event
+        │
+        ▼
+Transactional Outbox
+        │
+        ▼
+Publication Adapter
+        │
+        ▼
+Integration Event
+        │
+        ▼
+Broker
+        │
+        ▼
+Consumers
+```
+
+Core principles:
+
+- Events represent immutable business facts.
+- Every event has exactly one owner.
+- Publication occurs only after successful persistence.
+- Event schemas are versioned.
+- Consumers are idempotent.
+- Replay is supported.
+- Distributed transactions are prohibited.
+- Aggregate consistency is strong.
+- Cross-component consistency is eventual.
+- Auditability and observability are architectural requirements.
+
+---
+
+# 34. Final Architectural Statement
+
+ADR-010 establishes the official event architecture for AIGORA.
+
+All future components—including Learning Session Engine, Tutor Orchestrator, Student Model, Assessment Engine, Curriculum Graph, Retrieval Layer and LLM Gateway—shall publish and consume events according to the principles defined in this document.
+
+Any implementation that violates these rules requires either:
+
+- a superseding ADR, or
+- explicit approval by the architecture review process.
+
+Until superseded, ADR-010 is the authoritative reference for event publication and consistency boundaries within AIGORA.
