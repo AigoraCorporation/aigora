@@ -8,6 +8,7 @@ import com.aigora.tutororchestrator.application.ports.StudentModelClient;
 import com.aigora.tutororchestrator.domain.model.AssessmentSnapshot;
 import com.aigora.tutororchestrator.domain.model.DecisionReason;
 import com.aigora.tutororchestrator.domain.model.DecisionReasonCode;
+import com.aigora.tutororchestrator.domain.model.StudentLearningState;
 import com.aigora.tutororchestrator.domain.policy.CompletionPolicy;
 import com.aigora.tutororchestrator.domain.policy.RegressionPolicy;
 
@@ -39,7 +40,10 @@ public final class EvaluateLearningProgressUseCase {
 
         OrchestrationContext context = command.context();
 
-        studentModelClient.getLearningState(context.studentId());
+        var studentLearningState =
+                studentModelClient.getLearningState(context.studentId());
+
+        validateStudentModelSnapshot(context, studentLearningState);
 
         AssessmentSnapshot assessment = assessmentClient.getAssessment(
                 context.decisionEvidence().assessmentResultId()
@@ -50,7 +54,7 @@ public final class EvaluateLearningProgressUseCase {
         boolean completed = completionPolicy.isCompleted(assessment.mastered());
 
         boolean regressionRecommendedByStudentModel =
-                studentModelClient.isRegressionRecommended(context.studentId());
+                studentLearningState.regressionRecommended();
 
         boolean regressionRecommended = regressionPolicy.shouldRegress(
                 assessment.failed(),
@@ -63,6 +67,31 @@ public final class EvaluateLearningProgressUseCase {
                 regressionRecommended,
                 reasonFor(completed, regressionRecommended)
         );
+    }
+
+    private void validateStudentModelSnapshot(
+            OrchestrationContext context,
+            StudentLearningState studentLearningState
+    ) {
+        if (studentLearningState == null) {
+            throw new IllegalStateException(
+                    "StudentModelClient returned a null StudentLearningState"
+            );
+        }
+
+        if (!studentLearningState.studentId().equals(context.studentId())) {
+            throw new IllegalStateException(
+                    "StudentId does not match the orchestration context"
+            );
+        }
+
+        if (!studentLearningState.studentModelVersion().equals(
+                context.decisionEvidence().studentModelVersion()
+        )) {
+            throw new IllegalStateException(
+                    "StudentModelVersion does not match the orchestration context"
+            );
+        }
     }
 
     private void validateAssessmentSnapshot(

@@ -91,6 +91,8 @@ public final class SelectRegressionNodeUseCase {
         StudentLearningState studentLearningState =
                 studentModelClient.getLearningState(context.studentId());
 
+        validateStudentModelSnapshot(context, studentLearningState);
+
         AssessmentSnapshot assessmentSnapshot =
                 assessmentClient.getAssessment(
                         context.decisionEvidence().assessmentResultId()
@@ -103,9 +105,7 @@ public final class SelectRegressionNodeUseCase {
         );
 
         boolean regressionRecommended =
-                studentModelClient.isRegressionRecommended(
-                        context.studentId()
-                );
+                studentLearningState.regressionRecommended();
 
         boolean shouldRegress = regressionPolicy.shouldRegress(
                 assessmentSnapshot.failed(),
@@ -153,6 +153,31 @@ public final class SelectRegressionNodeUseCase {
                         context.traceContext().correlationId()
                 )
         );
+    }
+
+    private void validateStudentModelSnapshot(
+            OrchestrationContext context,
+            StudentLearningState studentLearningState
+    ) {
+        if (studentLearningState == null) {
+            throw new IllegalStateException(
+                    "StudentModelClient returned a null StudentLearningState"
+            );
+        }
+
+        if (!studentLearningState.studentId().equals(context.studentId())) {
+            throw new IllegalStateException(
+                    "StudentId does not match the orchestration context"
+            );
+        }
+
+        if (!studentLearningState.studentModelVersion().equals(
+                context.decisionEvidence().studentModelVersion()
+        )) {
+            throw new IllegalStateException(
+                    "StudentModelVersion does not match the orchestration context"
+            );
+        }
     }
 
     private void validateAssessmentSnapshot(

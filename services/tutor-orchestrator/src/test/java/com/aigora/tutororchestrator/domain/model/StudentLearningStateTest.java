@@ -3,6 +3,7 @@ package com.aigora.tutororchestrator.domain.model;
 import com.aigora.tutororchestrator.domain.valueobjects.GraphVersion;
 import com.aigora.tutororchestrator.domain.valueobjects.NodeId;
 import com.aigora.tutororchestrator.domain.valueobjects.StudentId;
+import com.aigora.tutororchestrator.domain.valueobjects.StudentModelVersion;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,7 +15,10 @@ class StudentLearningStateTest {
         StudentLearningState state = new StudentLearningState(
                 new StudentId("student-001"),
                 new NodeId("node-001"),
-                new GraphVersion("v1.0.0")
+                new GraphVersion("v1.0.0"),
+                new StudentModelVersion("student-model-v1"),
+                true,
+                false
         );
 
         assertEquals(new StudentId("student-001"), state.studentId());
@@ -27,13 +31,19 @@ class StudentLearningStateTest {
         StudentLearningState first = new StudentLearningState(
                 new StudentId("student-001"),
                 new NodeId("node-001"),
-                new GraphVersion("v1.0.0")
+                new GraphVersion("v1.0.0"),
+                new StudentModelVersion("student-model-v1"),
+                true,
+                false
         );
 
         StudentLearningState second = new StudentLearningState(
                 new StudentId("student-001"),
                 new NodeId("node-001"),
-                new GraphVersion("v1.0.0")
+                new GraphVersion("v1.0.0"),
+                new StudentModelVersion("student-model-v1"),
+                true,
+                false
         );
 
         assertEquals(first, second);
@@ -45,7 +55,10 @@ class StudentLearningStateTest {
                 new StudentLearningState(
                         null,
                         new NodeId("node-001"),
-                        new GraphVersion("v1.0.0")
+                        new GraphVersion("v1.0.0"),
+                        new StudentModelVersion("student-model-v1"),
+                        true,
+                        false
                 )
         );
     }
@@ -56,7 +69,10 @@ class StudentLearningStateTest {
                 new StudentLearningState(
                         new StudentId("student-001"),
                         null,
-                        new GraphVersion("v1.0.0")
+                        new GraphVersion("v1.0.0"),
+                        new StudentModelVersion("student-model-v1"),
+                        true,
+                        false
                 )
         );
     }
@@ -67,7 +83,10 @@ class StudentLearningStateTest {
                 new StudentLearningState(
                         new StudentId("student-001"),
                         new NodeId("node-001"),
-                        null
+                        null,
+                        new StudentModelVersion("student-model-v1"),
+                        true,
+                        false
                 )
         );
     }
