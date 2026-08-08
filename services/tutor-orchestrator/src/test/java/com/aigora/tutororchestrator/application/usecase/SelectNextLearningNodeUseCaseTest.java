@@ -100,16 +100,18 @@ class SelectNextLearningNodeUseCaseTest {
 
     @Test
     void shouldReturnNoCandidateAvailableWhenCurrentNodeFailed() {
-        var useCase = createUseCase(
-                List.of(
-                        aCandidate()
-                                .withNodeId("node-002")
-                                .withClassification(CandidateClassification.NEXT_LEARNING)
-                                .build()
-                ),
-                true,
-                true,
-                false
+       var useCase = createUseCase(
+        List.of(
+                aCandidate()
+                        .withNodeId("node-002")
+                        .withClassification(
+                                CandidateClassification.NEXT_LEARNING
+                        )
+                        .build()
+        ),
+        false,
+        true,
+        false
         );
 
         var result = useCase.execute(aCommand().buildSelectNextLearningNodeCommand());

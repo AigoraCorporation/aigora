@@ -11,51 +11,30 @@ import static com.aigora.tutororchestrator.shared.validation.Require.nonNull;
 
 /**
  * Coordinates the high-level deterministic orchestration lifecycle.
- *
- * <p>The pipeline evaluates progress first and routes the execution to
- * regression selection, next-node selection, or learning continuation.</p>
  */
 public final class OrchestrationPipeline {
 
     private final DecisionEngine decisionEngine;
 
-    public OrchestrationPipeline(
-            DecisionEngine decisionEngine
-    ) {
-        this.decisionEngine = nonNull(
-                decisionEngine,
-                "DecisionEngine"
-        );
+    public OrchestrationPipeline(DecisionEngine decisionEngine) {
+        this.decisionEngine = nonNull(decisionEngine, "DecisionEngine");
     }
 
-    public OrchestrationPipelineResult execute(
-            EvaluateLearningProgressCommand command
-    ) {
-        nonNull(
-                command,
-                "EvaluateLearningProgressCommand"
-        );
+    public OrchestrationPipelineResult execute(EvaluateLearningProgressCommand command) {
+        nonNull(command, "EvaluateLearningProgressCommand");
 
         EvaluateLearningProgressResult progress =
                 decisionEngine.evaluateLearningProgress(command);
 
         if (progress.regressionRecommended()) {
-            return executeRegressionFlow(
-                    command,
-                    progress
-            );
+            return executeRegressionFlow(command, progress);
         }
 
         if (progress.completed()) {
-            return executeNextLearningNodeFlow(
-                    command,
-                    progress
-            );
+            return executeNextLearningNodeFlow(command, progress);
         }
 
-        return OrchestrationPipelineResult.learningInProgress(
-                progress
-        );
+        return OrchestrationPipelineResult.learningInProgress(progress);
     }
 
     private OrchestrationPipelineResult executeRegressionFlow(
@@ -64,16 +43,11 @@ public final class OrchestrationPipeline {
     ) {
         SelectRegressionNodeCommand regressionCommand =
                 new SelectRegressionNodeCommand(
-                        command.studentId(),
-                        command.currentNodeId(),
-                        command.graphVersion(),
-                        command.correlationId()
+                        command.context(),
+                        command.currentNodeId()
                 );
 
-        var regressionResult =
-                decisionEngine.selectRegressionNode(
-                        regressionCommand
-                );
+        var regressionResult = decisionEngine.selectRegressionNode(regressionCommand);
 
         return OrchestrationPipelineResult.regressionNode(
                 progress,
@@ -87,16 +61,11 @@ public final class OrchestrationPipeline {
     ) {
         SelectNextLearningNodeCommand nextNodeCommand =
                 new SelectNextLearningNodeCommand(
-                        command.studentId(),
-                        command.currentNodeId(),
-                        command.graphVersion(),
-                        command.correlationId()
+                        command.context(),
+                        command.currentNodeId()
                 );
 
-        var nextNodeResult =
-                decisionEngine.selectNextLearningNode(
-                        nextNodeCommand
-                );
+        var nextNodeResult = decisionEngine.selectNextLearningNode(nextNodeCommand);
 
         return OrchestrationPipelineResult.nextLearningNode(
                 progress,
