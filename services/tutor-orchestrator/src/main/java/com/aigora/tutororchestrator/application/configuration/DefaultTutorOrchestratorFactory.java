@@ -1,5 +1,6 @@
 package com.aigora.tutororchestrator.application.configuration;
 
+import com.aigora.tutororchestrator.application.context.DecisionTraceFactory;
 import com.aigora.tutororchestrator.application.engine.DecisionEngine;
 import com.aigora.tutororchestrator.application.pipeline.OrchestrationPipeline;
 import com.aigora.tutororchestrator.application.ports.AssessmentClient;
@@ -14,6 +15,8 @@ import com.aigora.tutororchestrator.domain.policy.RegressionPolicy;
 import com.aigora.tutororchestrator.domain.ranking.DeterministicCandidateRanking;
 import com.aigora.tutororchestrator.domain.selection.DefaultSelectionStrategy;
 import com.aigora.tutororchestrator.domain.selection.SelectionStrategy;
+
+import java.time.Clock;
 
 import static com.aigora.tutororchestrator.shared.validation.Require.nonNull;
 
@@ -63,6 +66,9 @@ public final class DefaultTutorOrchestratorFactory {
         SelectionStrategy selectionStrategy =
                 new DefaultSelectionStrategy();
 
+        DecisionTraceFactory decisionTraceFactory =
+                new DecisionTraceFactory(Clock.systemUTC());
+
         SelectNextLearningNodeUseCase selectNextLearningNodeUseCase =
                 new SelectNextLearningNodeUseCase(
                         curriculumGraphClient,
@@ -72,7 +78,8 @@ public final class DefaultTutorOrchestratorFactory {
                         completionPolicy,
                         regressionPolicy,
                         candidateRanking,
-                        selectionStrategy
+                        selectionStrategy,
+                        decisionTraceFactory
                 );
 
         SelectRegressionNodeUseCase selectRegressionNodeUseCase =
@@ -82,7 +89,8 @@ public final class DefaultTutorOrchestratorFactory {
                         assessmentClient,
                         regressionPolicy,
                         candidateRanking,
-                        selectionStrategy
+                        selectionStrategy,
+                        decisionTraceFactory
                 );
 
         EvaluateLearningProgressUseCase evaluateLearningProgressUseCase =

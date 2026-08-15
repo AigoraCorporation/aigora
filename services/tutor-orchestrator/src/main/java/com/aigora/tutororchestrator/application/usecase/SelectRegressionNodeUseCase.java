@@ -1,5 +1,6 @@
 package com.aigora.tutororchestrator.application.usecase;
 
+import com.aigora.tutororchestrator.application.context.DecisionTraceFactory;
 import com.aigora.tutororchestrator.application.context.OrchestrationContext;
 import com.aigora.tutororchestrator.application.contracts.command.SelectRegressionNodeCommand;
 import com.aigora.tutororchestrator.application.contracts.result.SelectRegressionNodeResult;
@@ -8,6 +9,7 @@ import com.aigora.tutororchestrator.application.ports.CurriculumGraphClient;
 import com.aigora.tutororchestrator.application.ports.StudentModelClient;
 import com.aigora.tutororchestrator.domain.model.AssessmentSnapshot;
 import com.aigora.tutororchestrator.domain.model.CandidateClassification;
+import com.aigora.tutororchestrator.domain.model.DecisionTrace;
 import com.aigora.tutororchestrator.domain.model.LearningCandidate;
 import com.aigora.tutororchestrator.domain.model.StudentLearningState;
 import com.aigora.tutororchestrator.domain.policy.RegressionPolicy;
@@ -24,6 +26,7 @@ public final class SelectRegressionNodeUseCase {
     private final RegressionPolicy regressionPolicy;
     private final DeterministicCandidateRanking candidateRanking;
     private final SelectionStrategy selectionStrategy;
+    private final DecisionTraceFactory decisionTraceFactory;
 
     public SelectRegressionNodeUseCase(
             CurriculumGraphClient curriculumGraphClient,
@@ -31,7 +34,8 @@ public final class SelectRegressionNodeUseCase {
             AssessmentClient assessmentClient,
             RegressionPolicy regressionPolicy,
             DeterministicCandidateRanking candidateRanking,
-            SelectionStrategy selectionStrategy
+            SelectionStrategy selectionStrategy,
+            DecisionTraceFactory decisionTraceFactory
     ) {
         if (curriculumGraphClient == null) {
             throw new IllegalArgumentException(
@@ -75,6 +79,7 @@ public final class SelectRegressionNodeUseCase {
         this.regressionPolicy = regressionPolicy;
         this.candidateRanking = candidateRanking;
         this.selectionStrategy = selectionStrategy;
+        this.decisionTraceFactory = decisionTraceFactory;
     }
 
     public SelectRegressionNodeResult execute(
@@ -132,12 +137,13 @@ public final class SelectRegressionNodeUseCase {
         List<LearningCandidate> rankedCandidates =
                 candidateRanking.rank(regressionCandidates);
 
+        DecisionTrace decisionTrace = decisionTraceFactory.create(context);
+
         return new SelectRegressionNodeResult(
                 selectionStrategy.select(
                         rankedCandidates,
                         context.studentId(),
-                        context.decisionEvidence().graphVersion(),
-                        context.traceContext().correlationId()
+                        decisionTrace
                 )
         );
     }
@@ -145,12 +151,13 @@ public final class SelectRegressionNodeUseCase {
     private SelectRegressionNodeResult emptySelection(
             OrchestrationContext context
     ) {
+        DecisionTrace decisionTrace = decisionTraceFactory.create(context);
+
         return new SelectRegressionNodeResult(
                 selectionStrategy.select(
                         List.of(),
                         context.studentId(),
-                        context.decisionEvidence().graphVersion(),
-                        context.traceContext().correlationId()
+                        decisionTrace
                 )
         );
     }

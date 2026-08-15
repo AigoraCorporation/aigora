@@ -1,5 +1,6 @@
 package com.aigora.tutororchestrator.application.usecase;
 
+import com.aigora.tutororchestrator.application.context.DecisionTraceFactory;
 import com.aigora.tutororchestrator.domain.model.CandidateClassification;
 import com.aigora.tutororchestrator.domain.policy.CompletionPolicy;
 import com.aigora.tutororchestrator.domain.policy.EligibilityPolicy;
@@ -12,6 +13,10 @@ import com.aigora.tutororchestrator.testsupport.fake.studentmodel.FakeStudentMod
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
 import static com.aigora.tutororchestrator.testsupport.assertion.DecisionAssertions.assertNoCandidateAvailable;
 import static com.aigora.tutororchestrator.testsupport.assertion.DecisionAssertions.assertSelectedNode;
@@ -225,7 +230,17 @@ class SelectNextLearningNodeUseCaseTest {
                 new CompletionPolicy(),
                 new RegressionPolicy(),
                 new DeterministicCandidateRanking(),
-                new DefaultSelectionStrategy()
+                new DefaultSelectionStrategy(),
+                fixedDecisionTraceFactory()
+        );
+    }
+
+    private DecisionTraceFactory fixedDecisionTraceFactory() {
+        return new DecisionTraceFactory(
+                Clock.fixed(
+                        Instant.parse("2026-08-15T20:00:00Z"),
+                        ZoneOffset.UTC
+                )
         );
     }
 }

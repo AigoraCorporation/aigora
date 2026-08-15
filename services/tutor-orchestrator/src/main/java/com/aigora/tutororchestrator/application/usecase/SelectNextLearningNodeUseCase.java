@@ -1,5 +1,6 @@
 package com.aigora.tutororchestrator.application.usecase;
 
+import com.aigora.tutororchestrator.application.context.DecisionTraceFactory;
 import com.aigora.tutororchestrator.application.context.OrchestrationContext;
 import com.aigora.tutororchestrator.application.contracts.command.SelectNextLearningNodeCommand;
 import com.aigora.tutororchestrator.application.contracts.result.SelectNextLearningNodeResult;
@@ -7,6 +8,7 @@ import com.aigora.tutororchestrator.application.ports.AssessmentClient;
 import com.aigora.tutororchestrator.application.ports.CurriculumGraphClient;
 import com.aigora.tutororchestrator.application.ports.StudentModelClient;
 import com.aigora.tutororchestrator.domain.model.AssessmentSnapshot;
+import com.aigora.tutororchestrator.domain.model.DecisionTrace;
 import com.aigora.tutororchestrator.domain.model.LearningCandidate;
 import com.aigora.tutororchestrator.domain.model.StudentLearningState;
 import com.aigora.tutororchestrator.domain.policy.CompletionPolicy;
@@ -27,6 +29,7 @@ public final class SelectNextLearningNodeUseCase {
     private final RegressionPolicy regressionPolicy;
     private final DeterministicCandidateRanking candidateRanking;
     private final SelectionStrategy selectionStrategy;
+    private final DecisionTraceFactory decisionTraceFactory;
 
     public SelectNextLearningNodeUseCase(
             CurriculumGraphClient curriculumGraphClient,
@@ -36,7 +39,8 @@ public final class SelectNextLearningNodeUseCase {
             CompletionPolicy completionPolicy,
             RegressionPolicy regressionPolicy,
             DeterministicCandidateRanking candidateRanking,
-            SelectionStrategy selectionStrategy
+            SelectionStrategy selectionStrategy,
+            DecisionTraceFactory decisionTraceFactory
     ) {
         if (curriculumGraphClient == null) throw new IllegalArgumentException("CurriculumGraphClient must not be null");
         if (studentModelClient == null) throw new IllegalArgumentException("StudentModelClient must not be null");
@@ -46,6 +50,7 @@ public final class SelectNextLearningNodeUseCase {
         if (regressionPolicy == null) throw new IllegalArgumentException("RegressionPolicy must not be null");
         if (candidateRanking == null) throw new IllegalArgumentException("DeterministicCandidateRanking must not be null");
         if (selectionStrategy == null) throw new IllegalArgumentException("SelectionStrategy must not be null");
+        if (decisionTraceFactory == null) throw new IllegalArgumentException("DecisionTraceFactory must not be null");
 
         this.curriculumGraphClient = curriculumGraphClient;
         this.studentModelClient = studentModelClient;
@@ -55,6 +60,7 @@ public final class SelectNextLearningNodeUseCase {
         this.regressionPolicy = regressionPolicy;
         this.candidateRanking = candidateRanking;
         this.selectionStrategy = selectionStrategy;
+        this.decisionTraceFactory = decisionTraceFactory;
     }
 
     public SelectNextLearningNodeResult execute(
@@ -107,12 +113,13 @@ public final class SelectNextLearningNodeUseCase {
         List<LearningCandidate> rankedCandidates =
                 candidateRanking.rank(eligibleCandidates);
 
+        DecisionTrace decisionTrace = decisionTraceFactory.create(context);
+
         return new SelectNextLearningNodeResult(
                 selectionStrategy.select(
                         rankedCandidates,
                         context.studentId(),
-                        context.decisionEvidence().graphVersion(),
-                        context.traceContext().correlationId()
+                        decisionTrace
                 )
         );
     }
@@ -120,12 +127,13 @@ public final class SelectNextLearningNodeUseCase {
     private SelectNextLearningNodeResult emptySelection(
             OrchestrationContext context
     ) {
+        DecisionTrace decisionTrace = decisionTraceFactory.create(context);
+
         return new SelectNextLearningNodeResult(
                 selectionStrategy.select(
                         List.of(),
                         context.studentId(),
-                        context.decisionEvidence().graphVersion(),
-                        context.traceContext().correlationId()
+                        decisionTrace
                 )
         );
     }
