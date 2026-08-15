@@ -3,11 +3,10 @@ package com.aigora.tutororchestrator.domain.selection;
 import com.aigora.tutororchestrator.domain.model.DecisionReason;
 import com.aigora.tutororchestrator.domain.model.DecisionReasonCode;
 import com.aigora.tutororchestrator.domain.model.DecisionStatus;
+import com.aigora.tutororchestrator.domain.model.DecisionTrace;
 import com.aigora.tutororchestrator.domain.model.LearningCandidate;
 import com.aigora.tutororchestrator.domain.model.OrchestrationDecision;
-import com.aigora.tutororchestrator.domain.valueobjects.CorrelationId;
 import com.aigora.tutororchestrator.domain.valueobjects.DecisionId;
-import com.aigora.tutororchestrator.domain.valueobjects.GraphVersion;
 import com.aigora.tutororchestrator.domain.valueobjects.StudentId;
 
 import java.util.List;
@@ -21,8 +20,7 @@ public final class DefaultSelectionStrategy implements SelectionStrategy {
     public OrchestrationDecision select(
             List<LearningCandidate> rankedCandidates,
             StudentId studentId,
-            GraphVersion graphVersion,
-            CorrelationId correlationId
+            DecisionTrace decisionTrace
     ) {
         withoutNullElements(
                 rankedCandidates,
@@ -30,14 +28,12 @@ public final class DefaultSelectionStrategy implements SelectionStrategy {
         );
 
         nonNull(studentId, "StudentId");
-        nonNull(graphVersion, "GraphVersion");
-        nonNull(correlationId, "CorrelationId");
+        nonNull(decisionTrace, "DecisionTrace");
 
         if (rankedCandidates.isEmpty()) {
             return noCandidateAvailableDecision(
                     studentId,
-                    graphVersion,
-                    correlationId
+                    decisionTrace
             );
         }
 
@@ -47,16 +43,14 @@ public final class DefaultSelectionStrategy implements SelectionStrategy {
         return selectedDecision(
                 selectedCandidate,
                 studentId,
-                graphVersion,
-                correlationId
+                decisionTrace
         );
     }
 
     private OrchestrationDecision selectedDecision(
             LearningCandidate candidate,
             StudentId studentId,
-            GraphVersion graphVersion,
-            CorrelationId correlationId
+            DecisionTrace decisionTrace
     ) {
         return new OrchestrationDecision(
                 DecisionId.generate(),
@@ -67,15 +61,13 @@ public final class DefaultSelectionStrategy implements SelectionStrategy {
                         DecisionReasonCode.CANDIDATE_SELECTED,
                         "The highest-ranked candidate was selected"
                 ),
-                graphVersion,
-                correlationId
+                decisionTrace
         );
     }
 
     private OrchestrationDecision noCandidateAvailableDecision(
             StudentId studentId,
-            GraphVersion graphVersion,
-            CorrelationId correlationId
+            DecisionTrace decisionTrace
     ) {
         return new OrchestrationDecision(
                 DecisionId.generate(),
@@ -86,8 +78,7 @@ public final class DefaultSelectionStrategy implements SelectionStrategy {
                         DecisionReasonCode.NO_CANDIDATE_AVAILABLE,
                         "No ranked candidates were available for selection"
                 ),
-                graphVersion,
-                correlationId
+                decisionTrace
         );
     }
 }
