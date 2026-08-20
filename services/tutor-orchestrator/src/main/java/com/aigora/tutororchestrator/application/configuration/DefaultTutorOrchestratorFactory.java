@@ -5,6 +5,7 @@ import com.aigora.tutororchestrator.application.engine.DecisionEngine;
 import com.aigora.tutororchestrator.application.pipeline.OrchestrationPipeline;
 import com.aigora.tutororchestrator.application.ports.AssessmentClient;
 import com.aigora.tutororchestrator.application.ports.CurriculumGraphClient;
+import com.aigora.tutororchestrator.application.ports.DecisionTraceSink;
 import com.aigora.tutororchestrator.application.ports.StudentModelClient;
 import com.aigora.tutororchestrator.application.usecase.EvaluateLearningProgressUseCase;
 import com.aigora.tutororchestrator.application.usecase.SelectNextLearningNodeUseCase;
@@ -28,11 +29,13 @@ public final class DefaultTutorOrchestratorFactory {
     private final CurriculumGraphClient curriculumGraphClient;
     private final StudentModelClient studentModelClient;
     private final AssessmentClient assessmentClient;
+    private final DecisionTraceSink decisionTraceSink;
 
     public DefaultTutorOrchestratorFactory(
             CurriculumGraphClient curriculumGraphClient,
             StudentModelClient studentModelClient,
-            AssessmentClient assessmentClient
+            AssessmentClient assessmentClient,
+            DecisionTraceSink decisionTraceSink
     ) {
         this.curriculumGraphClient = nonNull(
                 curriculumGraphClient,
@@ -47,6 +50,11 @@ public final class DefaultTutorOrchestratorFactory {
         this.assessmentClient = nonNull(
                 assessmentClient,
                 "AssessmentClient"
+        );
+
+        this.decisionTraceSink = nonNull(
+                decisionTraceSink,
+                "DecisionTraceSink"
         );
     }
 
@@ -67,7 +75,9 @@ public final class DefaultTutorOrchestratorFactory {
                 new DefaultSelectionStrategy();
 
         DecisionTraceFactory decisionTraceFactory =
-                new DecisionTraceFactory(Clock.systemUTC());
+                new DecisionTraceFactory(
+                        Clock.systemUTC()
+                );
 
         SelectNextLearningNodeUseCase selectNextLearningNodeUseCase =
                 new SelectNextLearningNodeUseCase(
@@ -110,7 +120,8 @@ public final class DefaultTutorOrchestratorFactory {
 
         OrchestrationPipeline orchestrationPipeline =
                 new OrchestrationPipeline(
-                        decisionEngine
+                        decisionEngine,
+                        decisionTraceSink
                 );
 
         return new TutorOrchestratorConfiguration(
