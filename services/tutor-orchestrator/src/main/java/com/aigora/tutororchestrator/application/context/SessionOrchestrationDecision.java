@@ -1,0 +1,5 @@
+package com.aigora.tutororchestrator.application.context;
+import com.aigora.tutororchestrator.domain.valueobjects.*; import com.aigora.tutororchestrator.domain.model.OrchestrationOutcome; import com.aigora.tutororchestrator.shared.validation.Require;
+public record SessionOrchestrationDecision(DecisionId decisionId, LearningSessionId sessionId, SessionVersion expectedSessionVersion, AssessmentResultId assessmentResultId, OrchestrationOutcome outcome, NodeId nextNodeId) {
+ public SessionOrchestrationDecision { Require.nonNull(decisionId,"DecisionId");Require.nonNull(sessionId,"LearningSessionId");Require.nonNull(expectedSessionVersion,"SessionVersion");Require.nonNull(assessmentResultId,"AssessmentResultId");Require.nonNull(outcome,"OrchestrationOutcome"); if((outcome==OrchestrationOutcome.NEXT_NODE||outcome==OrchestrationOutcome.CONTINUE_CURRENT_NODE)&&nextNodeId==null) throw new IllegalArgumentException("Node outcome requires nextNodeId"); if((outcome==OrchestrationOutcome.COMPLETED||outcome==OrchestrationOutcome.NO_CANDIDATE)&&nextNodeId!=null) throw new IllegalArgumentException("Terminal/no-candidate outcome must not contain nextNodeId"); }
+}

@@ -1,0 +1,3 @@
+package com.aigora.tutororchestrator.application.contracts.command;
+import com.aigora.tutororchestrator.domain.valueobjects.*; import com.aigora.tutororchestrator.shared.validation.Require;
+public record CompleteExerciseCommand(LearningSessionId sessionId, SessionVersion expectedVersion, ExerciseAttemptId attemptId, ExerciseId exerciseId, CommandId commandId, CorrelationId correlationId, CausationId causationId) { public CompleteExerciseCommand { Require.nonNull(sessionId,"LearningSessionId");Require.nonNull(expectedVersion,"SessionVersion");Require.nonNull(attemptId,"ExerciseAttemptId");Require.nonNull(exerciseId,"ExerciseId");Require.nonNull(commandId,"CommandId");Require.nonNull(correlationId,"CorrelationId");Require.nonNull(causationId,"CausationId"); } }
