@@ -1,0 +1,3 @@
+package com.aigora.tutororchestrator.infrastructure;
+import com.aigora.tutororchestrator.application.context.SessionOrchestrationDecision;import com.aigora.tutororchestrator.application.ports.SessionDecisionTraceSink;import java.util.*;
+public final class InMemorySessionDecisionTraceSink implements SessionDecisionTraceSink {private final List<SessionOrchestrationDecision> decisions=new ArrayList<>();public synchronized void record(SessionOrchestrationDecision d){if(d==null)throw new IllegalArgumentException("SessionOrchestrationDecision must not be null");decisions.add(d);}public synchronized List<SessionOrchestrationDecision> recordedDecisions(){return List.copyOf(decisions);} }
