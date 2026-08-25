@@ -1,5 +1,7 @@
 package com.aigora.tutororchestrator.application.pipeline;
 
+import com.aigora.tutororchestrator.testsupport.fake.decisiontrace.FakeDecisionTraceSink;
+
 import com.aigora.tutororchestrator.application.context.DecisionTraceFactory;
 import com.aigora.tutororchestrator.application.contracts.result.OrchestrationRoute;
 import com.aigora.tutororchestrator.application.engine.DecisionEngine;
@@ -318,7 +320,7 @@ class OrchestrationPipelineTest {
     void shouldRejectNullDecisionEngine() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new OrchestrationPipeline(null)
+                () -> new OrchestrationPipeline(null, new FakeDecisionTraceSink())
         );
     }
 
@@ -396,7 +398,7 @@ class OrchestrationPipelineTest {
                 evaluateLearningProgressUseCase
         );
 
-        return new OrchestrationPipeline(decisionEngine);
+        return new OrchestrationPipeline(decisionEngine, new FakeDecisionTraceSink());
     }
 
     private LearningCandidate candidate(
