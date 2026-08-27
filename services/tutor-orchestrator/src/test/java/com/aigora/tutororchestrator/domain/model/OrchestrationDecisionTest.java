@@ -27,8 +27,6 @@ class OrchestrationDecisionTest {
         assertEquals(new NodeId("node-001"), decision.selectedNodeId());
         assertEquals(DecisionStatus.SELECTED, decision.status());
         assertEquals(trace, decision.trace());
-        assertEquals(trace.graphVersion(), decision.graphVersion());
-        assertEquals(trace.correlationId(), decision.correlationId());
     }
 
     @Test

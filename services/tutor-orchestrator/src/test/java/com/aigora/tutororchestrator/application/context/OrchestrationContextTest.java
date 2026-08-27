@@ -73,26 +73,6 @@ class OrchestrationContextTest {
     }
 
     @Test
-    void shouldExposeGraphVersionThroughCompatibilityAccessor() {
-        OrchestrationContext context = validContext();
-
-        assertEquals(
-                context.decisionEvidence().graphVersion(),
-                context.graphVersion()
-        );
-    }
-
-    @Test
-    void shouldExposeCorrelationIdThroughCompatibilityAccessor() {
-        OrchestrationContext context = validContext();
-
-        assertEquals(
-                context.traceContext().correlationId(),
-                context.correlationId()
-        );
-    }
-
-    @Test
     void shouldRejectNullRequestId() {
         assertThrows(
                 IllegalArgumentException.class,

@@ -52,17 +52,4 @@ public record OrchestrationDecision(
         }
     }
 
-    /**
-     * Convenience accessor retained while callers migrate to the complete trace.
-     */
-    public com.aigora.tutororchestrator.domain.valueobjects.GraphVersion graphVersion() {
-        return trace.graphVersion();
-    }
-
-    /**
-     * Convenience accessor retained while callers migrate to the complete trace.
-     */
-    public com.aigora.tutororchestrator.domain.valueobjects.CorrelationId correlationId() {
-        return trace.correlationId();
-    }
 }

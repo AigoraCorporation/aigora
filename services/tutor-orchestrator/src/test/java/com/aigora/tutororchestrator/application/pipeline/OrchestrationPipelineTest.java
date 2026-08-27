@@ -297,12 +297,12 @@ class OrchestrationPipelineTest {
                 secondDecision.reason()
         );
         assertEquals(
-                firstDecision.graphVersion(),
-                secondDecision.graphVersion()
+                firstDecision.trace().graphVersion(),
+                secondDecision.trace().graphVersion()
         );
         assertEquals(
-                firstDecision.correlationId(),
-                secondDecision.correlationId()
+                firstDecision.trace().correlationId(),
+                secondDecision.trace().correlationId()
         );
     }
 

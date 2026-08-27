@@ -195,8 +195,8 @@ class SelectNextLearningNodeUseCaseTest {
         assertEquals(first.studentId(), second.studentId());
         assertEquals(first.selectedNodeId(), second.selectedNodeId());
         assertEquals(first.reason(), second.reason());
-        assertEquals(first.graphVersion(), second.graphVersion());
-        assertEquals(first.correlationId(), second.correlationId());
+        assertEquals(first.trace().graphVersion(), second.trace().graphVersion());
+        assertEquals(first.trace().correlationId(), second.trace().correlationId());
     }
 
     @Test

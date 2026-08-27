@@ -1,7 +1,5 @@
 package com.aigora.tutororchestrator.application.context;
 
-import com.aigora.tutororchestrator.domain.valueobjects.CorrelationId;
-import com.aigora.tutororchestrator.domain.valueobjects.GraphVersion;
 import com.aigora.tutororchestrator.domain.valueobjects.OrchestrationRequestId;
 import com.aigora.tutororchestrator.domain.valueobjects.StudentId;
 
@@ -56,25 +54,4 @@ public record OrchestrationContext(
         }
     }
 
-    /**
-     * Temporary compatibility accessor.
-     *
-     * <p>Allows existing code to continue using {@code context.graphVersion()}
-     * while the orchestration pipeline is migrated to the nested evidence
-     * context.</p>
-     */
-    public GraphVersion graphVersion() {
-        return decisionEvidence.graphVersion();
-    }
-
-    /**
-     * Temporary compatibility accessor.
-     *
-     * <p>Allows existing code to continue using
-     * {@code context.correlationId()} while the orchestration pipeline is
-     * migrated to the nested trace context.</p>
-     */
-    public CorrelationId correlationId() {
-        return traceContext.correlationId();
-    }
 }
