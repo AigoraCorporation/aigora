@@ -30,12 +30,14 @@ public final class DefaultTutorOrchestratorFactory {
     private final StudentModelClient studentModelClient;
     private final AssessmentClient assessmentClient;
     private final DecisionTraceSink decisionTraceSink;
+    private final Clock clock;
 
     public DefaultTutorOrchestratorFactory(
             CurriculumGraphClient curriculumGraphClient,
             StudentModelClient studentModelClient,
             AssessmentClient assessmentClient,
-            DecisionTraceSink decisionTraceSink
+            DecisionTraceSink decisionTraceSink,
+            Clock clock
     ) {
         this.curriculumGraphClient = nonNull(
                 curriculumGraphClient,
@@ -56,6 +58,11 @@ public final class DefaultTutorOrchestratorFactory {
                 decisionTraceSink,
                 "DecisionTraceSink"
         );
+
+        this.clock = nonNull(
+                clock,
+                "Clock"
+        );
     }
 
     public TutorOrchestratorConfiguration build() {
@@ -75,9 +82,7 @@ public final class DefaultTutorOrchestratorFactory {
                 new DefaultSelectionStrategy();
 
         DecisionTraceFactory decisionTraceFactory =
-                new DecisionTraceFactory(
-                        Clock.systemUTC()
-                );
+                new DecisionTraceFactory(clock);
 
         SelectNextLearningNodeUseCase selectNextLearningNodeUseCase =
                 new SelectNextLearningNodeUseCase(

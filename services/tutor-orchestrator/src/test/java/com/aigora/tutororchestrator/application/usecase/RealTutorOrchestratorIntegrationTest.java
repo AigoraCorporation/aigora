@@ -54,14 +54,20 @@ class RealTutorOrchestratorIntegrationTest {
                 );
 
         var tutorTrace = new FakeDecisionTraceSink();
-        var tutor = new DefaultTutorOrchestratorFactory(graphClient, studentClient, tutorAssessmentClient, tutorTrace).build();
+        var clock = Clock.fixed(Instant.parse("2026-08-20T12:00:00Z"), ZoneOffset.UTC);
+        var tutor = new DefaultTutorOrchestratorFactory(
+                graphClient,
+                studentClient,
+                tutorAssessmentClient,
+                tutorTrace,
+                clock
+        ).build();
         var tutorAdapter = new TutorOrchestratorAdapter(tutor.orchestrationPipeline());
 
         var repo = new InMemoryLearningSessionRepository();
         var events = new InMemorySessionEventPublisher();
         var sessionTrace = new InMemorySessionDecisionTraceSink();
         var telemetry = new InMemoryLifecycleTelemetrySink();
-        var clock = Clock.fixed(Instant.parse("2026-08-20T12:00:00Z"), ZoneOffset.UTC);
         SessionAssessmentClient sessionAssessment = id -> new SessionAssessmentSnapshot(id, new ExerciseAttemptId("a1"), new NodeId("n1"), true, false);
 
         var start = new StartLearningSessionUseCase(repo, events, telemetry, clock);
