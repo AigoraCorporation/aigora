@@ -6,7 +6,7 @@
 
     <groupId>com.aigora</groupId>
     <artifactId>tutor-orchestrator</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.3.1-SNAPSHOT</version>
 
     <name>AIGORA Tutor Orchestrator</name>
     <description>Deterministic Tutor Orchestrator service</description>

@@ -6,6 +6,7 @@ import com.aigora.tutororchestrator.domain.model.StudentLearningState;
 import com.aigora.tutororchestrator.domain.valueobjects.GraphVersion;
 import com.aigora.tutororchestrator.domain.valueobjects.NodeId;
 import com.aigora.tutororchestrator.domain.valueobjects.StudentId;
+import com.aigora.tutororchestrator.domain.valueobjects.StudentModelVersion;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,7 +20,10 @@ class EligibilityPolicyTest {
         var state = new StudentLearningState(
                 new StudentId("student-001"),
                 new NodeId("node-001"),
-                new GraphVersion("v1.0.0")
+                new GraphVersion("v1.0.0"),
+                new StudentModelVersion("student-model-v1"),
+                true,
+                false
         );
 
         var candidate = new LearningCandidate(
@@ -35,7 +39,10 @@ class EligibilityPolicyTest {
         var state = new StudentLearningState(
                 new StudentId("student-001"),
                 new NodeId("node-001"),
-                new GraphVersion("v1.0.0")
+                new GraphVersion("v1.0.0"),
+                new StudentModelVersion("student-model-v1"),
+                true,
+                false
         );
 
         var candidate = new LearningCandidate(
@@ -63,7 +70,10 @@ class EligibilityPolicyTest {
         var state = new StudentLearningState(
                 new StudentId("student-001"),
                 new NodeId("node-001"),
-                new GraphVersion("v1.0.0")
+                new GraphVersion("v1.0.0"),
+                new StudentModelVersion("student-model-v1"),
+                true,
+                false
         );
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -76,7 +86,10 @@ class EligibilityPolicyTest {
         var state = new StudentLearningState(
                 new StudentId("student-001"),
                 new NodeId("node-001"),
-                new GraphVersion("v1.0.0")
+                new GraphVersion("v1.0.0"),
+                new StudentModelVersion("student-model-v1"),
+                true,
+                false
         );
 
         var candidate = new LearningCandidate(

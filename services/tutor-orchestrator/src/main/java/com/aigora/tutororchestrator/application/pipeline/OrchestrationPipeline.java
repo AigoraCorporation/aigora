@@ -6,35 +6,34 @@ import com.aigora.tutororchestrator.application.contracts.command.SelectRegressi
 import com.aigora.tutororchestrator.application.contracts.result.EvaluateLearningProgressResult;
 import com.aigora.tutororchestrator.application.contracts.result.OrchestrationPipelineResult;
 import com.aigora.tutororchestrator.application.engine.DecisionEngine;
+import com.aigora.tutororchestrator.application.ports.DecisionTraceSink;
+import com.aigora.tutororchestrator.domain.model.OrchestrationDecision;
 
 import static com.aigora.tutororchestrator.shared.validation.Require.nonNull;
 
 /**
  * Coordinates the high-level deterministic orchestration lifecycle.
- *
- * <p>The pipeline evaluates progress first and routes the execution to
- * regression selection, next-node selection, or learning continuation.</p>
  */
 public final class OrchestrationPipeline {
 
     private final DecisionEngine decisionEngine;
+    private final DecisionTraceSink decisionTraceSink;
 
     public OrchestrationPipeline(
-            DecisionEngine decisionEngine
+            DecisionEngine decisionEngine,
+            DecisionTraceSink decisionTraceSink
     ) {
-        this.decisionEngine = nonNull(
-                decisionEngine,
-                "DecisionEngine"
-        );
+        this.decisionEngine =
+                nonNull(decisionEngine, "DecisionEngine");
+
+        this.decisionTraceSink =
+                nonNull(decisionTraceSink, "DecisionTraceSink");
     }
 
     public OrchestrationPipelineResult execute(
             EvaluateLearningProgressCommand command
     ) {
-        nonNull(
-                command,
-                "EvaluateLearningProgressCommand"
-        );
+        nonNull(command, "EvaluateLearningProgressCommand");
 
         EvaluateLearningProgressResult progress =
                 decisionEngine.evaluateLearningProgress(command);
@@ -64,10 +63,8 @@ public final class OrchestrationPipeline {
     ) {
         SelectRegressionNodeCommand regressionCommand =
                 new SelectRegressionNodeCommand(
-                        command.studentId(),
-                        command.currentNodeId(),
-                        command.graphVersion(),
-                        command.correlationId()
+                        command.context(),
+                        command.currentNodeId()
                 );
 
         var regressionResult =
@@ -75,9 +72,14 @@ public final class OrchestrationPipeline {
                         regressionCommand
                 );
 
+        OrchestrationDecision decision =
+                regressionResult.decision();
+
+        recordDecision(decision);
+
         return OrchestrationPipelineResult.regressionNode(
                 progress,
-                regressionResult.decision()
+                decision
         );
     }
 
@@ -87,10 +89,8 @@ public final class OrchestrationPipeline {
     ) {
         SelectNextLearningNodeCommand nextNodeCommand =
                 new SelectNextLearningNodeCommand(
-                        command.studentId(),
-                        command.currentNodeId(),
-                        command.graphVersion(),
-                        command.correlationId()
+                        command.context(),
+                        command.currentNodeId()
                 );
 
         var nextNodeResult =
@@ -98,9 +98,22 @@ public final class OrchestrationPipeline {
                         nextNodeCommand
                 );
 
+        OrchestrationDecision decision =
+                nextNodeResult.decision();
+
+        recordDecision(decision);
+
         return OrchestrationPipelineResult.nextLearningNode(
                 progress,
-                nextNodeResult.decision()
+                decision
+        );
+    }
+
+    private void recordDecision(
+            OrchestrationDecision decision
+    ) {
+        decisionTraceSink.record(
+                nonNull(decision, "OrchestrationDecision")
         );
     }
 }

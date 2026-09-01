@@ -1,5 +1,8 @@
 package com.aigora.tutororchestrator.application.pipeline;
 
+import com.aigora.tutororchestrator.testsupport.fake.decisiontrace.FakeDecisionTraceSink;
+
+import com.aigora.tutororchestrator.application.context.DecisionTraceFactory;
 import com.aigora.tutororchestrator.application.contracts.result.OrchestrationRoute;
 import com.aigora.tutororchestrator.application.engine.DecisionEngine;
 import com.aigora.tutororchestrator.application.usecase.EvaluateLearningProgressUseCase;
@@ -19,6 +22,10 @@ import com.aigora.tutororchestrator.testsupport.fake.studentmodel.FakeStudentMod
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
 import static com.aigora.tutororchestrator.testsupport.assertion.DecisionAssertions.assertSelectedNode;
 import static com.aigora.tutororchestrator.testsupport.builder.CommandBuilder.aCommand;
@@ -290,12 +297,12 @@ class OrchestrationPipelineTest {
                 secondDecision.reason()
         );
         assertEquals(
-                firstDecision.graphVersion(),
-                secondDecision.graphVersion()
+                firstDecision.trace().graphVersion(),
+                secondDecision.trace().graphVersion()
         );
         assertEquals(
-                firstDecision.correlationId(),
-                secondDecision.correlationId()
+                firstDecision.trace().correlationId(),
+                secondDecision.trace().correlationId()
         );
     }
 
@@ -313,7 +320,7 @@ class OrchestrationPipelineTest {
     void shouldRejectNullDecisionEngine() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new OrchestrationPipeline(null)
+                () -> new OrchestrationPipeline(null, new FakeDecisionTraceSink())
         );
     }
 
@@ -362,7 +369,8 @@ class OrchestrationPipelineTest {
                         completionPolicy,
                         regressionPolicy,
                         candidateRanking,
-                        selectionStrategy
+                        selectionStrategy,
+                        fixedDecisionTraceFactory()
                 );
 
         var selectRegressionNodeUseCase =
@@ -372,7 +380,8 @@ class OrchestrationPipelineTest {
                         assessmentClient,
                         regressionPolicy,
                         candidateRanking,
-                        selectionStrategy
+                        selectionStrategy,
+                        fixedDecisionTraceFactory()
                 );
 
         var evaluateLearningProgressUseCase =
@@ -389,7 +398,7 @@ class OrchestrationPipelineTest {
                 evaluateLearningProgressUseCase
         );
 
-        return new OrchestrationPipeline(decisionEngine);
+        return new OrchestrationPipeline(decisionEngine, new FakeDecisionTraceSink());
     }
 
     private LearningCandidate candidate(
@@ -399,6 +408,15 @@ class OrchestrationPipelineTest {
         return new LearningCandidate(
                 new NodeId(nodeId),
                 classification
+        );
+    }
+
+    private DecisionTraceFactory fixedDecisionTraceFactory() {
+        return new DecisionTraceFactory(
+                Clock.fixed(
+                        Instant.parse("2026-08-15T20:00:00Z"),
+                        ZoneOffset.UTC
+                )
         );
     }
 }

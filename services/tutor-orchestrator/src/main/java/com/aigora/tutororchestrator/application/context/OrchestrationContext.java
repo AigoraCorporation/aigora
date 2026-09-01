@@ -1,40 +1,57 @@
 package com.aigora.tutororchestrator.application.context;
 
-import com.aigora.tutororchestrator.domain.valueobjects.CorrelationId;
-import com.aigora.tutororchestrator.domain.valueobjects.GraphVersion;
+import com.aigora.tutororchestrator.domain.valueobjects.OrchestrationRequestId;
 import com.aigora.tutororchestrator.domain.valueobjects.StudentId;
 
 /**
  * Shared application context associated with a deterministic orchestration
  * execution.
  *
- * <p>This context groups identifiers that are propagated across application
- * commands and orchestration flows. It remains independent from transport,
- * infrastructure, persistence, and framework-specific concepts.</p>
+ * <p>This context groups identifiers, session references, decision evidence,
+ * and tracing metadata propagated across application commands and
+ * orchestration flows.</p>
+ *
+ * <p>It remains independent from transport, infrastructure, persistence,
+ * and framework-specific concepts.</p>
  */
 public record OrchestrationContext(
+        OrchestrationRequestId requestId,
         StudentId studentId,
-        GraphVersion graphVersion,
-        CorrelationId correlationId
+        LearningSessionReference sessionReference,
+        DecisionEvidenceContext decisionEvidence,
+        TraceContext traceContext
 ) {
 
     public OrchestrationContext {
+        if (requestId == null) {
+            throw new IllegalArgumentException(
+                    "OrchestrationRequestId must not be null"
+            );
+        }
+
         if (studentId == null) {
             throw new IllegalArgumentException(
                     "StudentId must not be null"
             );
         }
 
-        if (graphVersion == null) {
+        if (sessionReference == null) {
             throw new IllegalArgumentException(
-                    "GraphVersion must not be null"
+                    "LearningSessionReference must not be null"
             );
         }
 
-        if (correlationId == null) {
+        if (decisionEvidence == null) {
             throw new IllegalArgumentException(
-                    "CorrelationId must not be null"
+                    "DecisionEvidenceContext must not be null"
+            );
+        }
+
+        if (traceContext == null) {
+            throw new IllegalArgumentException(
+                    "TraceContext must not be null"
             );
         }
     }
+
 }

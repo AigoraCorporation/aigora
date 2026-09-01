@@ -1,5 +1,6 @@
 package com.aigora.tutororchestrator.application.usecase;
 
+import com.aigora.tutororchestrator.application.context.DecisionTraceFactory;
 import com.aigora.tutororchestrator.domain.model.CandidateClassification;
 import com.aigora.tutororchestrator.domain.policy.CompletionPolicy;
 import com.aigora.tutororchestrator.domain.policy.EligibilityPolicy;
@@ -12,6 +13,10 @@ import com.aigora.tutororchestrator.testsupport.fake.studentmodel.FakeStudentMod
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
 import static com.aigora.tutororchestrator.testsupport.assertion.DecisionAssertions.assertNoCandidateAvailable;
 import static com.aigora.tutororchestrator.testsupport.assertion.DecisionAssertions.assertSelectedNode;
@@ -100,16 +105,18 @@ class SelectNextLearningNodeUseCaseTest {
 
     @Test
     void shouldReturnNoCandidateAvailableWhenCurrentNodeFailed() {
-        var useCase = createUseCase(
-                List.of(
-                        aCandidate()
-                                .withNodeId("node-002")
-                                .withClassification(CandidateClassification.NEXT_LEARNING)
-                                .build()
-                ),
-                true,
-                true,
-                false
+       var useCase = createUseCase(
+        List.of(
+                aCandidate()
+                        .withNodeId("node-002")
+                        .withClassification(
+                                CandidateClassification.NEXT_LEARNING
+                        )
+                        .build()
+        ),
+        false,
+        true,
+        false
         );
 
         var result = useCase.execute(aCommand().buildSelectNextLearningNodeCommand());
@@ -188,8 +195,8 @@ class SelectNextLearningNodeUseCaseTest {
         assertEquals(first.studentId(), second.studentId());
         assertEquals(first.selectedNodeId(), second.selectedNodeId());
         assertEquals(first.reason(), second.reason());
-        assertEquals(first.graphVersion(), second.graphVersion());
-        assertEquals(first.correlationId(), second.correlationId());
+        assertEquals(first.trace().graphVersion(), second.trace().graphVersion());
+        assertEquals(first.trace().correlationId(), second.trace().correlationId());
     }
 
     @Test
@@ -223,7 +230,17 @@ class SelectNextLearningNodeUseCaseTest {
                 new CompletionPolicy(),
                 new RegressionPolicy(),
                 new DeterministicCandidateRanking(),
-                new DefaultSelectionStrategy()
+                new DefaultSelectionStrategy(),
+                fixedDecisionTraceFactory()
+        );
+    }
+
+    private DecisionTraceFactory fixedDecisionTraceFactory() {
+        return new DecisionTraceFactory(
+                Clock.fixed(
+                        Instant.parse("2026-08-15T20:00:00Z"),
+                        ZoneOffset.UTC
+                )
         );
     }
 }

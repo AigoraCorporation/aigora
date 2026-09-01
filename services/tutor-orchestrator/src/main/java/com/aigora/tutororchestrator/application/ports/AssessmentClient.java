@@ -1,11 +1,9 @@
 package com.aigora.tutororchestrator.application.ports;
 
-import com.aigora.tutororchestrator.domain.valueobjects.NodeId;
-import com.aigora.tutororchestrator.domain.valueobjects.StudentId;
+import com.aigora.tutororchestrator.domain.model.AssessmentSnapshot;
+import com.aigora.tutororchestrator.domain.valueobjects.AssessmentResultId;
 
 public interface AssessmentClient {
 
-    boolean hasMasteredNode(StudentId studentId, NodeId nodeId);
-
-    boolean hasFailedNode(StudentId studentId, NodeId nodeId);
+    AssessmentSnapshot getAssessment(AssessmentResultId assessmentResultId);
 }

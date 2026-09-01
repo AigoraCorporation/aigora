@@ -1,5 +1,6 @@
 package com.aigora.tutororchestrator.application.usecase;
 
+import com.aigora.tutororchestrator.application.context.DecisionTraceFactory;
 import com.aigora.tutororchestrator.domain.model.DecisionStatus;
 import com.aigora.tutororchestrator.domain.policy.RegressionPolicy;
 import com.aigora.tutororchestrator.domain.ranking.DeterministicCandidateRanking;
@@ -10,6 +11,10 @@ import com.aigora.tutororchestrator.testsupport.fake.studentmodel.FakeStudentMod
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
 import static com.aigora.tutororchestrator.testsupport.assertion.DecisionAssertions.assertNoCandidateAvailable;
 import static com.aigora.tutororchestrator.testsupport.assertion.DecisionAssertions.assertSelectedNode;
@@ -89,8 +94,8 @@ class SelectRegressionNodeUseCaseTest {
         assertEquals(first.studentId(), second.studentId());
         assertEquals(first.selectedNodeId(), second.selectedNodeId());
         assertEquals(first.reason(), second.reason());
-        assertEquals(first.graphVersion(), second.graphVersion());
-        assertEquals(first.correlationId(), second.correlationId());
+        assertEquals(first.trace().graphVersion(), second.trace().graphVersion());
+        assertEquals(first.trace().correlationId(), second.trace().correlationId());
     }
 
     @Test
@@ -115,7 +120,17 @@ class SelectRegressionNodeUseCaseTest {
                 new FakeAssessmentClient(false, failedCurrentNode),
                 new RegressionPolicy(),
                 new DeterministicCandidateRanking(),
-                new DefaultSelectionStrategy()
+                new DefaultSelectionStrategy(),
+                fixedDecisionTraceFactory()
+        );
+    }
+
+    private DecisionTraceFactory fixedDecisionTraceFactory() {
+        return new DecisionTraceFactory(
+                Clock.fixed(
+                        Instant.parse("2026-08-15T20:00:00Z"),
+                        ZoneOffset.UTC
+                )
         );
     }
 }

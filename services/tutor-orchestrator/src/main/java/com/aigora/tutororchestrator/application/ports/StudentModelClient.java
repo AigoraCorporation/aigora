@@ -6,8 +6,4 @@ import com.aigora.tutororchestrator.domain.valueobjects.StudentId;
 public interface StudentModelClient {
 
     StudentLearningState getLearningState(StudentId studentId);
-
-    boolean hasCompletedCurrentNode(StudentId studentId);
-
-    boolean isRegressionRecommended(StudentId studentId);
 }
