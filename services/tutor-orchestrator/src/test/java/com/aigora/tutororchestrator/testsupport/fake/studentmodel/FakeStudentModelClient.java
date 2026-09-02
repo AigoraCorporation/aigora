@@ -5,10 +5,15 @@ import com.aigora.tutororchestrator.domain.model.StudentLearningState;
 import com.aigora.tutororchestrator.domain.valueobjects.GraphVersion;
 import com.aigora.tutororchestrator.domain.valueobjects.NodeId;
 import com.aigora.tutororchestrator.domain.valueobjects.StudentId;
+import com.aigora.tutororchestrator.domain.valueobjects.StudentModelVersion;
 
 public final class FakeStudentModelClient implements StudentModelClient {
 
     private final boolean regressionRecommended;
+
+    public FakeStudentModelClient() {
+        this(false);
+    }
 
     public FakeStudentModelClient(boolean regressionRecommended) {
         this.regressionRecommended = regressionRecommended;
@@ -19,17 +24,10 @@ public final class FakeStudentModelClient implements StudentModelClient {
         return new StudentLearningState(
                 studentId,
                 new NodeId("node-001"),
-                new GraphVersion("v1.0.0")
+                new GraphVersion("v1.0.0"),
+                new StudentModelVersion("student-model-v1"),
+                true,
+                regressionRecommended
         );
-    }
-
-    @Override
-    public boolean hasCompletedCurrentNode(StudentId studentId) {
-        return true;
-    }
-
-    @Override
-    public boolean isRegressionRecommended(StudentId studentId) {
-        return regressionRecommended;
     }
 }

@@ -78,11 +78,11 @@ class EvaluateLearningProgressUseCaseTest {
 
     @Test
     void shouldPrioritizeRegressionReasonWhenCompletedAndRegressionRecommended() {
-        var useCase = createUseCase(
-                true,
-                true,
-                false
-        );
+         var useCase = createUseCase(
+            true,
+            false,
+            true
+    );
 
         var result = useCase.execute(aCommand().buildEvaluateLearningProgressCommand());
 

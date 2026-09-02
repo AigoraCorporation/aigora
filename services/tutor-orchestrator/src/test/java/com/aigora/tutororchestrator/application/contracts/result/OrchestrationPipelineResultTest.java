@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static com.aigora.tutororchestrator.testsupport.builder.DecisionBuilder.aDecision;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrchestrationPipelineResultTest {
@@ -215,17 +216,8 @@ class OrchestrationPipelineResultTest {
     }
 
     private OrchestrationDecision selectedDecision(String nodeId) {
-        return new OrchestrationDecision(
-                new DecisionId("decision-001"),
-                new StudentId("student-001"),
-                new NodeId(nodeId),
-                DecisionStatus.SELECTED,
-                new DecisionReason(
-                        "CANDIDATE_SELECTED",
-                        "The highest-ranked candidate was selected"
-                ),
-                new GraphVersion("v1.0.0"),
-                new CorrelationId("corr-001")
-        );
+        return aDecision()
+                .withSelectedNodeId(nodeId)
+                .build();
     }
 }

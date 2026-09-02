@@ -1,0 +1,6 @@
+package com.aigora.tutororchestrator.application.usecase;
+import com.aigora.tutororchestrator.application.ports.SessionVersionConflictException;import com.aigora.tutororchestrator.domain.model.*;import com.aigora.tutororchestrator.domain.valueobjects.*;import org.junit.jupiter.api.Test;import java.time.Instant;import static org.junit.jupiter.api.Assertions.*;
+import com.aigora.tutororchestrator.infrastructure.InMemoryLearningSessionRepository;
+class InMemoryLearningSessionRepositoryTest {
+ @Test void shouldEnforceOptimisticConcurrency(){var repo=new InMemoryLearningSessionRepository();var s=LearningSession.create(new LearningSessionId("s1"),new StudentId("u1"),Instant.EPOCH);s.start(new NodeId("n1"),new ExerciseId("e1"),new CommandId("start"),new CorrelationId("c"),new CausationId("x"),Instant.EPOCH);s.drainEvents();repo.insert(s);var stale=repo.findById(s.id()).orElseThrow();var current=repo.findById(s.id()).orElseThrow();var expected=current.version();current.completeExercise(new ExerciseAttemptId("a1"),new ExerciseId("e1"),new CommandId("c1"),new CorrelationId("c"),new CausationId("x"),Instant.EPOCH);current.drainEvents();repo.update(current,expected);assertThrows(SessionVersionConflictException.class,()->repo.update(stale,expected));}
+}

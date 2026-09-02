@@ -1,11 +1,15 @@
 package com.aigora.tutororchestrator.application.usecase;
 
+import com.aigora.tutororchestrator.application.context.DecisionTraceFactory;
+import com.aigora.tutororchestrator.application.context.OrchestrationContext;
 import com.aigora.tutororchestrator.application.contracts.command.SelectRegressionNodeCommand;
 import com.aigora.tutororchestrator.application.contracts.result.SelectRegressionNodeResult;
 import com.aigora.tutororchestrator.application.ports.AssessmentClient;
 import com.aigora.tutororchestrator.application.ports.CurriculumGraphClient;
 import com.aigora.tutororchestrator.application.ports.StudentModelClient;
+import com.aigora.tutororchestrator.domain.model.AssessmentSnapshot;
 import com.aigora.tutororchestrator.domain.model.CandidateClassification;
+import com.aigora.tutororchestrator.domain.model.DecisionTrace;
 import com.aigora.tutororchestrator.domain.model.LearningCandidate;
 import com.aigora.tutororchestrator.domain.model.StudentLearningState;
 import com.aigora.tutororchestrator.domain.policy.RegressionPolicy;
@@ -22,6 +26,7 @@ public final class SelectRegressionNodeUseCase {
     private final RegressionPolicy regressionPolicy;
     private final DeterministicCandidateRanking candidateRanking;
     private final SelectionStrategy selectionStrategy;
+    private final DecisionTraceFactory decisionTraceFactory;
 
     public SelectRegressionNodeUseCase(
             CurriculumGraphClient curriculumGraphClient,
@@ -29,14 +34,44 @@ public final class SelectRegressionNodeUseCase {
             AssessmentClient assessmentClient,
             RegressionPolicy regressionPolicy,
             DeterministicCandidateRanking candidateRanking,
-            SelectionStrategy selectionStrategy
+            SelectionStrategy selectionStrategy,
+            DecisionTraceFactory decisionTraceFactory
     ) {
-        if (curriculumGraphClient == null) throw new IllegalArgumentException("CurriculumGraphClient must not be null");
-        if (studentModelClient == null) throw new IllegalArgumentException("StudentModelClient must not be null");
-        if (assessmentClient == null) throw new IllegalArgumentException("AssessmentClient must not be null");
-        if (regressionPolicy == null) throw new IllegalArgumentException("RegressionPolicy must not be null");
-        if (candidateRanking == null) throw new IllegalArgumentException("DeterministicCandidateRanking must not be null");
-        if (selectionStrategy == null) throw new IllegalArgumentException("SelectionStrategy must not be null");
+        if (curriculumGraphClient == null) {
+            throw new IllegalArgumentException(
+                    "CurriculumGraphClient must not be null"
+            );
+        }
+
+        if (studentModelClient == null) {
+            throw new IllegalArgumentException(
+                    "StudentModelClient must not be null"
+            );
+        }
+
+        if (assessmentClient == null) {
+            throw new IllegalArgumentException(
+                    "AssessmentClient must not be null"
+            );
+        }
+
+        if (regressionPolicy == null) {
+            throw new IllegalArgumentException(
+                    "RegressionPolicy must not be null"
+            );
+        }
+
+        if (candidateRanking == null) {
+            throw new IllegalArgumentException(
+                    "DeterministicCandidateRanking must not be null"
+            );
+        }
+
+        if (selectionStrategy == null) {
+            throw new IllegalArgumentException(
+                    "SelectionStrategy must not be null"
+            );
+        }
 
         this.curriculumGraphClient = curriculumGraphClient;
         this.studentModelClient = studentModelClient;
@@ -44,36 +79,46 @@ public final class SelectRegressionNodeUseCase {
         this.regressionPolicy = regressionPolicy;
         this.candidateRanking = candidateRanking;
         this.selectionStrategy = selectionStrategy;
+        this.decisionTraceFactory = decisionTraceFactory;
     }
 
-    public SelectRegressionNodeResult execute(SelectRegressionNodeCommand command) {
+    public SelectRegressionNodeResult execute(
+            SelectRegressionNodeCommand command
+    ) {
         if (command == null) {
-            throw new IllegalArgumentException("SelectRegressionNodeCommand must not be null");
+            throw new IllegalArgumentException(
+                    "SelectRegressionNodeCommand must not be null"
+            );
         }
 
-        StudentLearningState studentLearningState =
-                studentModelClient.getLearningState(command.studentId());
+        OrchestrationContext context = command.context();
 
-        boolean failedCurrentNode = assessmentClient.hasFailedNode(
-                command.studentId(),
-                command.currentNodeId()
+        StudentLearningState studentLearningState =
+                studentModelClient.getLearningState(context.studentId());
+
+        validateStudentModelSnapshot(context, studentLearningState);
+
+        AssessmentSnapshot assessmentSnapshot =
+                assessmentClient.getAssessment(
+                        context.decisionEvidence().assessmentResultId()
+                );
+
+        validateAssessmentSnapshot(
+                command,
+                context,
+                assessmentSnapshot
         );
 
         boolean regressionRecommended =
-                studentModelClient.isRegressionRecommended(command.studentId());
+                studentLearningState.regressionRecommended();
 
-        boolean shouldRegress =
-                regressionPolicy.shouldRegress(failedCurrentNode, regressionRecommended);
+        boolean shouldRegress = regressionPolicy.shouldRegress(
+                assessmentSnapshot.failed(),
+                regressionRecommended
+        );
 
         if (!shouldRegress) {
-            return new SelectRegressionNodeResult(
-                    selectionStrategy.select(
-                            List.of(),
-                            command.studentId(),
-                            command.graphVersion(),
-                            command.correlationId()
-                    )
-            );
+            return emptySelection(context);
         }
 
         List<LearningCandidate> regressionCandidates =
@@ -92,13 +137,87 @@ public final class SelectRegressionNodeUseCase {
         List<LearningCandidate> rankedCandidates =
                 candidateRanking.rank(regressionCandidates);
 
+        DecisionTrace decisionTrace = decisionTraceFactory.create(context);
+
         return new SelectRegressionNodeResult(
                 selectionStrategy.select(
                         rankedCandidates,
-                        command.studentId(),
-                        command.graphVersion(),
-                        command.correlationId()
+                        context.studentId(),
+                        decisionTrace
                 )
         );
+    }
+
+    private SelectRegressionNodeResult emptySelection(
+            OrchestrationContext context
+    ) {
+        DecisionTrace decisionTrace = decisionTraceFactory.create(context);
+
+        return new SelectRegressionNodeResult(
+                selectionStrategy.select(
+                        List.of(),
+                        context.studentId(),
+                        decisionTrace
+                )
+        );
+    }
+
+    private void validateStudentModelSnapshot(
+            OrchestrationContext context,
+            StudentLearningState studentLearningState
+    ) {
+        if (studentLearningState == null) {
+            throw new IllegalStateException(
+                    "StudentModelClient returned a null StudentLearningState"
+            );
+        }
+
+        if (!studentLearningState.studentId().equals(context.studentId())) {
+            throw new IllegalStateException(
+                    "StudentId does not match the orchestration context"
+            );
+        }
+
+        if (!studentLearningState.studentModelVersion().equals(
+                context.decisionEvidence().studentModelVersion()
+        )) {
+            throw new IllegalStateException(
+                    "StudentModelVersion does not match the orchestration context"
+            );
+        }
+    }
+
+    private void validateAssessmentSnapshot(
+            SelectRegressionNodeCommand command,
+            OrchestrationContext context,
+            AssessmentSnapshot assessmentSnapshot
+    ) {
+        if (assessmentSnapshot == null) {
+            throw new IllegalStateException(
+                    "AssessmentClient returned a null AssessmentSnapshot"
+            );
+        }
+
+        if (!assessmentSnapshot.assessmentResultId().equals(
+                context.decisionEvidence().assessmentResultId()
+        )) {
+            throw new IllegalStateException(
+                    "AssessmentResultId does not match the orchestration context"
+            );
+        }
+
+        if (!assessmentSnapshot.exerciseAttemptId().equals(
+                context.sessionReference().exerciseAttemptId()
+        )) {
+            throw new IllegalStateException(
+                    "ExerciseAttemptId does not match the orchestration context"
+            );
+        }
+
+        if (!assessmentSnapshot.nodeId().equals(command.currentNodeId())) {
+            throw new IllegalStateException(
+                    "Assessment node does not match the current command node"
+            );
+        }
     }
 }

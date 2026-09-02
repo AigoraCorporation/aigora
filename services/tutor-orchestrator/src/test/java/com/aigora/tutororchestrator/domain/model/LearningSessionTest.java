@@ -1,0 +1,9 @@
+package com.aigora.tutororchestrator.domain.model;
+import com.aigora.tutororchestrator.domain.model.SessionDomainException;import com.aigora.tutororchestrator.domain.valueobjects.*;import org.junit.jupiter.api.Test;import java.time.Instant;import static org.junit.jupiter.api.Assertions.*;
+class LearningSessionTest {
+ private final Instant now=Instant.parse("2026-08-20T12:00:00Z");
+ private LearningSession active(){var s=LearningSession.create(new LearningSessionId("s1"),new StudentId("u1"),now);s.start(new NodeId("n1"),new ExerciseId("e1"),new CommandId("start"),new CorrelationId("c1"),new CausationId("root"),now);s.drainEvents();return s;}
+ @Test void shouldFollowHappyPathToCompletion(){var s=active();s.completeExercise(new ExerciseAttemptId("a1"),new ExerciseId("e1"),new CommandId("complete"),new CorrelationId("c1"),new CausationId("x"),now);assertEquals(LearningSessionStatus.AWAITING_ASSESSMENT,s.status());s.acceptAssessment(new ExerciseAttemptId("a1"),new AssessmentResultId("r1"),new CommandId("assess"),new CorrelationId("c1"),new CausationId("x"),now);assertEquals(LearningSessionStatus.PROCESSING_DECISION,s.status());s.completeSession(new DecisionId("d1"),SessionTerminalReason.LEARNING_GOAL_REACHED,new CommandId("decision"),new CorrelationId("c1"),new CausationId("x"),now);assertEquals(LearningSessionStatus.COMPLETED,s.status());}
+ @Test void shouldRejectTerminalMutation(){var s=active();s.interrupt(SessionTerminalReason.USER_INTERRUPTED,new CommandId("i"),new CorrelationId("c1"),new CausationId("x"),now);assertThrows(SessionDomainException.class,()->s.fail(SessionTerminalReason.NON_RECOVERABLE_FAILURE,new CommandId("f"),new CorrelationId("c1"),new CausationId("x"),now));}
+ @Test void shouldDeduplicateSameCommand(){var s=active();var v=s.version();s.start(new NodeId("n1"),new ExerciseId("e1"),new CommandId("start"),new CorrelationId("c1"),new CausationId("root"),now);assertEquals(v,s.version());}
+}

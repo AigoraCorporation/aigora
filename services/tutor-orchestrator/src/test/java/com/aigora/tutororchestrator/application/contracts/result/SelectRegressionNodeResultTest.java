@@ -10,6 +10,7 @@ import com.aigora.tutororchestrator.domain.valueobjects.NodeId;
 import com.aigora.tutororchestrator.domain.valueobjects.StudentId;
 import org.junit.jupiter.api.Test;
 
+import static com.aigora.tutororchestrator.testsupport.builder.DecisionBuilder.aDecision;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SelectRegressionNodeResultTest {
@@ -41,14 +42,8 @@ class SelectRegressionNodeResultTest {
     }
 
     private OrchestrationDecision regressionDecision() {
-        return new OrchestrationDecision(
-                new DecisionId("decision-001"),
-                new StudentId("student-001"),
-                new NodeId("node-prerequisite-001"),
-                DecisionStatus.SELECTED,
-                new DecisionReason("REGRESSION_SELECTED", "Regression node selected successfully"),
-                new GraphVersion("v1.0.0"),
-                new CorrelationId("corr-001")
-        );
+        return aDecision()
+                .withSelectedNodeId("node-prerequisite-001")
+                .build();
     }
 }

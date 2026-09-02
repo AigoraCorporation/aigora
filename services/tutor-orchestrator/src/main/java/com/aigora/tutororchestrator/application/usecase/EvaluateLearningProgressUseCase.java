@@ -1,11 +1,14 @@
 package com.aigora.tutororchestrator.application.usecase;
 
+import com.aigora.tutororchestrator.application.context.OrchestrationContext;
 import com.aigora.tutororchestrator.application.contracts.command.EvaluateLearningProgressCommand;
 import com.aigora.tutororchestrator.application.contracts.result.EvaluateLearningProgressResult;
 import com.aigora.tutororchestrator.application.ports.AssessmentClient;
 import com.aigora.tutororchestrator.application.ports.StudentModelClient;
+import com.aigora.tutororchestrator.domain.model.AssessmentSnapshot;
 import com.aigora.tutororchestrator.domain.model.DecisionReason;
 import com.aigora.tutororchestrator.domain.model.DecisionReasonCode;
+import com.aigora.tutororchestrator.domain.model.StudentLearningState;
 import com.aigora.tutororchestrator.domain.policy.CompletionPolicy;
 import com.aigora.tutororchestrator.domain.policy.RegressionPolicy;
 
@@ -24,25 +27,10 @@ public final class EvaluateLearningProgressUseCase {
             CompletionPolicy completionPolicy,
             RegressionPolicy regressionPolicy
     ) {
-        this.studentModelClient = nonNull(
-                studentModelClient,
-                "StudentModelClient"
-        );
-
-        this.assessmentClient = nonNull(
-                assessmentClient,
-                "AssessmentClient"
-        );
-
-        this.completionPolicy = nonNull(
-                completionPolicy,
-                "CompletionPolicy"
-        );
-
-        this.regressionPolicy = nonNull(
-                regressionPolicy,
-                "RegressionPolicy"
-        );
+        this.studentModelClient = nonNull(studentModelClient, "StudentModelClient");
+        this.assessmentClient = nonNull(assessmentClient, "AssessmentClient");
+        this.completionPolicy = nonNull(completionPolicy, "CompletionPolicy");
+        this.regressionPolicy = nonNull(regressionPolicy, "RegressionPolicy");
     }
 
     public EvaluateLearningProgressResult execute(
@@ -50,38 +38,94 @@ public final class EvaluateLearningProgressUseCase {
     ) {
         nonNull(command, "EvaluateLearningProgressCommand");
 
-        studentModelClient.getLearningState(command.studentId());
+        OrchestrationContext context = command.context();
 
-        boolean masteredCurrentNode = assessmentClient.hasMasteredNode(
-                command.studentId(),
-                command.currentNodeId()
+        var studentLearningState =
+                studentModelClient.getLearningState(context.studentId());
+
+        validateStudentModelSnapshot(context, studentLearningState);
+
+        AssessmentSnapshot assessment = assessmentClient.getAssessment(
+                context.decisionEvidence().assessmentResultId()
         );
 
-        boolean completed =
-                completionPolicy.isCompleted(masteredCurrentNode);
+        validateAssessmentSnapshot(command, context, assessment);
 
-        boolean failedCurrentNode = assessmentClient.hasFailedNode(
-                command.studentId(),
-                command.currentNodeId()
-        );
+        boolean completed = completionPolicy.isCompleted(assessment.mastered());
 
         boolean regressionRecommendedByStudentModel =
-                studentModelClient.isRegressionRecommended(
-                        command.studentId()
-                );
+                studentLearningState.regressionRecommended();
 
-        boolean regressionRecommended =
-                regressionPolicy.shouldRegress(
-                        failedCurrentNode,
-                        regressionRecommendedByStudentModel
-                );
+        boolean regressionRecommended = regressionPolicy.shouldRegress(
+                assessment.failed(),
+                regressionRecommendedByStudentModel
+        );
 
         return new EvaluateLearningProgressResult(
-                command.studentId(),
+                context.studentId(),
                 completed,
                 regressionRecommended,
                 reasonFor(completed, regressionRecommended)
         );
+    }
+
+    private void validateStudentModelSnapshot(
+            OrchestrationContext context,
+            StudentLearningState studentLearningState
+    ) {
+        if (studentLearningState == null) {
+            throw new IllegalStateException(
+                    "StudentModelClient returned a null StudentLearningState"
+            );
+        }
+
+        if (!studentLearningState.studentId().equals(context.studentId())) {
+            throw new IllegalStateException(
+                    "StudentId does not match the orchestration context"
+            );
+        }
+
+        if (!studentLearningState.studentModelVersion().equals(
+                context.decisionEvidence().studentModelVersion()
+        )) {
+            throw new IllegalStateException(
+                    "StudentModelVersion does not match the orchestration context"
+            );
+        }
+    }
+
+    private void validateAssessmentSnapshot(
+            EvaluateLearningProgressCommand command,
+            OrchestrationContext context,
+            AssessmentSnapshot assessment
+    ) {
+        if (assessment == null) {
+            throw new IllegalStateException(
+                    "AssessmentClient returned a null AssessmentSnapshot"
+            );
+        }
+
+        if (!assessment.assessmentResultId().equals(
+                context.decisionEvidence().assessmentResultId()
+        )) {
+            throw new IllegalStateException(
+                    "AssessmentResultId does not match the orchestration context"
+            );
+        }
+
+        if (!assessment.exerciseAttemptId().equals(
+                context.sessionReference().exerciseAttemptId()
+        )) {
+            throw new IllegalStateException(
+                    "ExerciseAttemptId does not match the orchestration context"
+            );
+        }
+
+        if (!assessment.nodeId().equals(command.currentNodeId())) {
+            throw new IllegalStateException(
+                    "Assessment node does not match the current command node"
+            );
+        }
     }
 
     private DecisionReason reasonFor(

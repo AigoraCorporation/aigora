@@ -1,5 +1,6 @@
 package com.aigora.tutororchestrator.application.engine;
 
+import com.aigora.tutororchestrator.application.context.DecisionTraceFactory;
 import com.aigora.tutororchestrator.application.usecase.EvaluateLearningProgressUseCase;
 import com.aigora.tutororchestrator.application.usecase.SelectNextLearningNodeUseCase;
 import com.aigora.tutororchestrator.application.usecase.SelectRegressionNodeUseCase;
@@ -16,6 +17,10 @@ import com.aigora.tutororchestrator.testsupport.fake.studentmodel.FakeStudentMod
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
 import static com.aigora.tutororchestrator.testsupport.assertion.DecisionAssertions.assertSelectedNode;
 import static com.aigora.tutororchestrator.testsupport.builder.CandidateBuilder.aCandidate;
@@ -220,7 +225,8 @@ class DecisionEngineTest {
                 completionPolicy,
                 regressionPolicy,
                 candidateRanking,
-                selectionStrategy
+                selectionStrategy,
+                fixedDecisionTraceFactory()
         );
 
         var selectRegressionNodeUseCase = new SelectRegressionNodeUseCase(
@@ -229,7 +235,8 @@ class DecisionEngineTest {
                 assessmentClient,
                 regressionPolicy,
                 candidateRanking,
-                selectionStrategy
+                selectionStrategy,
+                fixedDecisionTraceFactory()
         );
 
         var evaluateLearningProgressUseCase = new EvaluateLearningProgressUseCase(
@@ -270,7 +277,8 @@ class DecisionEngineTest {
                         completionPolicy,
                         regressionPolicy,
                         candidateRanking,
-                        selectionStrategy
+                        selectionStrategy,
+                        fixedDecisionTraceFactory()
                 ),
                 new SelectRegressionNodeUseCase(
                         curriculumGraphClient,
@@ -278,7 +286,8 @@ class DecisionEngineTest {
                         assessmentClient,
                         regressionPolicy,
                         candidateRanking,
-                        selectionStrategy
+                        selectionStrategy,
+                        fixedDecisionTraceFactory()
                 ),
                 new EvaluateLearningProgressUseCase(
                         studentModelClient,
@@ -294,5 +303,14 @@ class DecisionEngineTest {
             SelectRegressionNodeUseCase selectRegressionNodeUseCase,
             EvaluateLearningProgressUseCase evaluateLearningProgressUseCase
     ) {
+    }
+
+    private DecisionTraceFactory fixedDecisionTraceFactory() {
+        return new DecisionTraceFactory(
+                Clock.fixed(
+                        Instant.parse("2026-08-15T20:00:00Z"),
+                        ZoneOffset.UTC
+                )
+        );
     }
 }

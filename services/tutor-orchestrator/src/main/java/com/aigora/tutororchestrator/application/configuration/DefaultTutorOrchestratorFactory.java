@@ -1,9 +1,11 @@
 package com.aigora.tutororchestrator.application.configuration;
 
+import com.aigora.tutororchestrator.application.context.DecisionTraceFactory;
 import com.aigora.tutororchestrator.application.engine.DecisionEngine;
 import com.aigora.tutororchestrator.application.pipeline.OrchestrationPipeline;
 import com.aigora.tutororchestrator.application.ports.AssessmentClient;
 import com.aigora.tutororchestrator.application.ports.CurriculumGraphClient;
+import com.aigora.tutororchestrator.application.ports.DecisionTraceSink;
 import com.aigora.tutororchestrator.application.ports.StudentModelClient;
 import com.aigora.tutororchestrator.application.usecase.EvaluateLearningProgressUseCase;
 import com.aigora.tutororchestrator.application.usecase.SelectNextLearningNodeUseCase;
@@ -15,6 +17,8 @@ import com.aigora.tutororchestrator.domain.ranking.DeterministicCandidateRanking
 import com.aigora.tutororchestrator.domain.selection.DefaultSelectionStrategy;
 import com.aigora.tutororchestrator.domain.selection.SelectionStrategy;
 
+import java.time.Clock;
+
 import static com.aigora.tutororchestrator.shared.validation.Require.nonNull;
 
 /**
@@ -25,11 +29,15 @@ public final class DefaultTutorOrchestratorFactory {
     private final CurriculumGraphClient curriculumGraphClient;
     private final StudentModelClient studentModelClient;
     private final AssessmentClient assessmentClient;
+    private final DecisionTraceSink decisionTraceSink;
+    private final Clock clock;
 
     public DefaultTutorOrchestratorFactory(
             CurriculumGraphClient curriculumGraphClient,
             StudentModelClient studentModelClient,
-            AssessmentClient assessmentClient
+            AssessmentClient assessmentClient,
+            DecisionTraceSink decisionTraceSink,
+            Clock clock
     ) {
         this.curriculumGraphClient = nonNull(
                 curriculumGraphClient,
@@ -44,6 +52,16 @@ public final class DefaultTutorOrchestratorFactory {
         this.assessmentClient = nonNull(
                 assessmentClient,
                 "AssessmentClient"
+        );
+
+        this.decisionTraceSink = nonNull(
+                decisionTraceSink,
+                "DecisionTraceSink"
+        );
+
+        this.clock = nonNull(
+                clock,
+                "Clock"
         );
     }
 
@@ -63,6 +81,9 @@ public final class DefaultTutorOrchestratorFactory {
         SelectionStrategy selectionStrategy =
                 new DefaultSelectionStrategy();
 
+        DecisionTraceFactory decisionTraceFactory =
+                new DecisionTraceFactory(clock);
+
         SelectNextLearningNodeUseCase selectNextLearningNodeUseCase =
                 new SelectNextLearningNodeUseCase(
                         curriculumGraphClient,
@@ -72,7 +93,8 @@ public final class DefaultTutorOrchestratorFactory {
                         completionPolicy,
                         regressionPolicy,
                         candidateRanking,
-                        selectionStrategy
+                        selectionStrategy,
+                        decisionTraceFactory
                 );
 
         SelectRegressionNodeUseCase selectRegressionNodeUseCase =
@@ -82,7 +104,8 @@ public final class DefaultTutorOrchestratorFactory {
                         assessmentClient,
                         regressionPolicy,
                         candidateRanking,
-                        selectionStrategy
+                        selectionStrategy,
+                        decisionTraceFactory
                 );
 
         EvaluateLearningProgressUseCase evaluateLearningProgressUseCase =
@@ -102,7 +125,8 @@ public final class DefaultTutorOrchestratorFactory {
 
         OrchestrationPipeline orchestrationPipeline =
                 new OrchestrationPipeline(
-                        decisionEngine
+                        decisionEngine,
+                        decisionTraceSink
                 );
 
         return new TutorOrchestratorConfiguration(

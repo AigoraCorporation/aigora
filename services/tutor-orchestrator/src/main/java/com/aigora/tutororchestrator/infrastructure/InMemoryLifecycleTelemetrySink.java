@@ -1,0 +1,3 @@
+package com.aigora.tutororchestrator.infrastructure;
+import com.aigora.tutororchestrator.application.ports.LifecycleTelemetrySink;import com.aigora.tutororchestrator.domain.valueobjects.*;import java.util.*;
+public final class InMemoryLifecycleTelemetrySink implements LifecycleTelemetrySink { public record Entry(String operation,LearningSessionId sessionId,SessionVersion version,String outcome,long durationNanos){} private final List<Entry> entries=new ArrayList<>();public synchronized void record(String operation,LearningSessionId sessionId,SessionVersion version,String outcome,long durationNanos){entries.add(new Entry(operation,sessionId,version,outcome,durationNanos));}public synchronized List<Entry> entries(){return List.copyOf(entries);} }
