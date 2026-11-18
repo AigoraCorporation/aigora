@@ -21,7 +21,7 @@ It serves as the **single source of truth** for:
 | v0.2.2  | Curriculum Graph API Foundation                  | 2026-09-18   | 🚧 In Progress | Curriculum Graph   | [Plan](https://github.com/AigoraCorporation/aigora/issues/186)             |
 | v0.3.0  | Orchestrator Core (Deterministic)                | 2026-07-21   | ✅ Released | Tutor Orchestrator | [Release](https://github.com/AigoraCorporation/aigora/issues/185)             |
 | v0.3.1  | Learning Session Orchestration                   | 2026-09-18   | 🚧 In Progress | Tutor Orchestrator | [Plan](https://github.com/AigoraCorporation/aigora/issues/253)             |
-| v0.3.2  | Tutor Orchestrator gRPC Runtime                  | TBD          | ⏳ Planned     | Tutor Orchestrator | —                                                                        |
+| v0.3.2  | Tutor Orchestrator gRPC Runtime                  | TBD          | ⏳ Planned     | Tutor Orchestrator | [Plan](https://github.com/AigoraCorporation/aigora/issues/291)             |
 | v0.4.0  | Student Model Foundation                         | TBD          | ⏳ Planned     | Student Model      | —                                                                        |
 
 ---
@@ -81,6 +81,8 @@ Implementation plan: [v0.3.1 plan](releases/v0.3.1-learning-session-orchestratio
 - Student Model and Assessment ports wired to placeholder adapters until v0.4.0
 
 Depends on: v0.2.2 (Curriculum Graph v1 gRPC contracts).
+
+Implementation plan: [v0.3.2 DAG](releases/v0.3.2-implementation-dag.md) · Release issue: [#291](https://github.com/AigoraCorporation/aigora/issues/291)
 
 ### v0.4.0 — Student Model Foundation
 

@@ -180,7 +180,7 @@ Release Roadmap:
 | ------- | --------------------------------- | -------------- | ------------ | ------------------------------------------------------------- |
 | v0.2.2  | Curriculum Graph API Foundation   | 🚧 In Progress | 2026-09-18   | [Plan](https://github.com/AigoraCorporation/aigora/issues/186) |
 | v0.3.1  | Learning Session Orchestration    | 🚧 In Progress | 2026-09-18   | [Plan](https://github.com/AigoraCorporation/aigora/issues/253) |
-| v0.3.2  | Tutor Orchestrator gRPC Runtime   | ⏳ Planned     | TBD          | —                                                             |
+| v0.3.2  | Tutor Orchestrator gRPC Runtime   | ⏳ Planned     | TBD          | [Plan](https://github.com/AigoraCorporation/aigora/issues/291) |
 | v0.4.0  | Student Model Foundation          | ⏳ Planned     | TBD          | —                                                             |
 
 See full roadmap: [Release Roadmap](docs/06-engineering/governance/release-roadmap.md)
