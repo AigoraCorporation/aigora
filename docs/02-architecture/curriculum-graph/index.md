@@ -31,6 +31,7 @@ Each document explains the system from a different level of abstraction.
 | [Domain Model](model.md)    | Canonical nodes, edges, and mastery structures         |
 | [Schema](schema.md)         | Graph schema and validation rules                      |
 | [Queries](queries.md)       | Query patterns and traversal semantics                 |
+| [gRPC API Contract v1](grpc-api-contract.md) | Read-only gRPC API, error model and compatibility rules |
 | [Validation](validation.md) | Structural, semantic, and operational validation rules |
 | [Versioning](versioning.md) | Graph evolution and compatibility constraints          |
 
