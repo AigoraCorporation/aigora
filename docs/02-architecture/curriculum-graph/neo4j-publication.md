@@ -84,6 +84,27 @@ Persistence validation is technical validation and belongs to infrastructure bec
 
 ---
 
+## Published Snapshot (Read Model)
+
+Since v0.2.2 publication is lossless and versioned, so the gRPC API can serve
+exactly the published graph ([ADR-007](adr/ADR-007-read-only-grpc-api-foundation.md)).
+
+| Element | Persisted properties |
+|---------|----------------------|
+| `(:Concept)` | `id`, `name`, `domain`, `description`, `mastery_criteria_json`, `error_taxonomy`, `prerequisite_ids`, `regression_ids`, `graph_version` |
+| `-[:PREREQUISITE_OF]->` | `type` (part of the MERGE key, so a hard and a regression edge between the same concepts stay distinct), `graph_version` |
+| `(:CurriculumProfile)` | `id`, `name`, `required_nodes`, `mastery_targets_json`, `node_weights_json`, `progression_path`, `exam_skill_overlay`, `graph_version` |
+| `(:GraphMetadata {key: 'active'})` | `graph_version`, `node_count`, `edge_count`, `profile_count`, `published_at` |
+
+The `:GraphMetadata` node marks the active version. `Neo4jCurriculumGraphReader`
+(the `CurriculumGraphReader` port adapter) loads only elements stamped with
+that version, so leftovers from earlier publications are ignored.
+
+Graphs published before v0.2.2 lack these properties; the reader reports them
+as unavailable until they are republished.
+
+---
+
 ## Constraints
 
 - Publication must go through `PublishGraphUseCase`.

@@ -13,3 +13,7 @@ FOR (n:Concept) ON (n.name);
 // CurriculumProfile: index on name
 CREATE INDEX profile_name_idx IF NOT EXISTS
 FOR (p:CurriculumProfile) ON (p.name);
+
+// Concept: index on graph_version for loading the published snapshot (ADR-007)
+CREATE INDEX concept_graph_version_idx IF NOT EXISTS
+FOR (n:Concept) ON (n.graph_version);

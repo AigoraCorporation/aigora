@@ -85,3 +85,4 @@ src/UNKNOWN.egg-info
 
 # Maven
 target/
+*.egg-info/
