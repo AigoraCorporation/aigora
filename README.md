@@ -272,3 +272,4 @@ tooling and CI checks.
 ## Local Development
 
 - [Neo4j Local Setup](docs/06-engineering/workflow/neo4j-local-setup.md)
+- [Curriculum Graph gRPC API — Local Validation](docs/06-engineering/workflow/curriculum-graph-grpc-local-validation.md) (`docker compose up -d --build`)
