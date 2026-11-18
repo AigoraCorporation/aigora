@@ -94,6 +94,18 @@ status details (`grpc-status-details-bin`).
 `ErrorDetail` fields: `code`, `message` (safe, no infrastructure details),
 `request_id`, `graph_version` (per the invariant above).
 
+Any other failure is a server defect: it is answered with `INTERNAL`, the
+generic message `Internal server error.`, an empty `code` and the
+`request_id`, and is logged with its stack trace server-side.
+
+### Correlation
+
+Every response, successful or not, carries the request's correlation id in the
+`x-request-id` trailing metadata. The server uses `RequestContext.request_id`
+when supplied and generates one otherwise. Each call is logged once as a JSON
+`grpc_request` event with `rpc_method`, `request_id`, `grpc_status`,
+`error_code`, `graph_version` and `latency_ms`.
+
 ---
 
 ## Compatibility rules (v1)

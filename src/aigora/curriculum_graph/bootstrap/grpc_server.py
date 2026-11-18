@@ -18,6 +18,7 @@ import grpc
 from aigora.curriculum_graph.application.ports.curriculum_graph_reader import CurriculumGraphReader
 from aigora.curriculum_graph.application.services.published_graph_provider import PublishedGraphProvider
 from aigora.curriculum_graph.application.use_cases.read_graph import ReadGraphUseCase
+from aigora.curriculum_graph.bootstrap.logging_config import configure_logging
 from aigora.curriculum_graph.presentation.grpc import CurriculumGraphServicer, register
 from aigora.shared.config.settings import GrpcServerSettings
 
@@ -91,7 +92,7 @@ def start_server(
 def main() -> None:
     from aigora.curriculum_graph.infrastructure.neo4j import Neo4jClient, Neo4jCurriculumGraphReader
 
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
+    configure_logging()
     settings = GrpcServerSettings.from_env()
     client = Neo4jClient()
     running = start_server(Neo4jCurriculumGraphReader(client), settings)
