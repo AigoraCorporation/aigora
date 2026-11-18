@@ -21,6 +21,7 @@ It serves as the **single source of truth** for:
 | v0.2.2  | Curriculum Graph API Foundation                  | 2026-09-18   | 🚧 In Progress | Curriculum Graph   | [Plan](https://github.com/AigoraCorporation/aigora/issues/186)             |
 | v0.3.0  | Orchestrator Core (Deterministic)                | 2026-07-21   | ✅ Released | Tutor Orchestrator | [Release](https://github.com/AigoraCorporation/aigora/issues/185)             |
 | v0.3.1  | Learning Session Orchestration                   | 2026-09-18   | 🚧 In Progress | Tutor Orchestrator | [Plan](https://github.com/AigoraCorporation/aigora/issues/253)             |
+| v0.3.2  | Tutor Orchestrator gRPC Runtime                  | TBD          | ⏳ Planned     | Tutor Orchestrator | —                                                                        |
 | v0.4.0  | Student Model Foundation                         | TBD          | ⏳ Planned     | Student Model      | —                                                                        |
 
 ---
@@ -43,7 +44,7 @@ It serves as the **single source of truth** for:
 
 Out of scope: public REST API, graph write/publication operations.
 
-Implementation plan: [v0.2.2 DAG](../../releases/v0.2.2-implementation-dag.md)
+Implementation plan: [v0.2.2 DAG](releases/v0.2.2-implementation-dag.md)
 
 ### v0.3.1 — Learning Session Orchestration
 
@@ -58,9 +59,28 @@ Implementation plan: [v0.2.2 DAG](../../releases/v0.2.2-implementation-dag.md)
 * Event-driven pedagogical flow
 * Decision traceability and auditability
 
+Implementation plan: [v0.3.1 plan](releases/v0.3.1-learning-session-orchestration-plan.md) ·
+[v0.3.1 DAG](releases/v0.3.1-implementation-dag.md)
+
 ---
 
 ## Upcoming Releases
+
+### v0.3.2 — Tutor Orchestrator gRPC Runtime
+
+**Status:** ⏳ Planned
+**Primary Component:** Tutor Orchestrator
+
+#### Scope
+
+- v1 protobuf contracts for the Tutor Orchestrator API
+  (`SelectNextLearningNode`, `SelectRegressionNode`, `EvaluateLearningProgress`)
+- Runnable gRPC server bootstrap mapped to application use cases
+- Curriculum Graph gRPC adapter (consumes the v0.2.2 v1 contracts)
+- Integration tests for the gRPC runtime boundary
+- Student Model and Assessment ports wired to placeholder adapters until v0.4.0
+
+Depends on: v0.2.2 (Curriculum Graph v1 gRPC contracts).
 
 ### v0.4.0 — Student Model Foundation
 
@@ -72,6 +92,8 @@ Implementation plan: [v0.2.2 DAG](../../releases/v0.2.2-implementation-dag.md)
 - Student state representation
 - Knowledge tracking
 - Progress modeling
+- Tutor Orchestrator Student Model and Assessment gRPC adapters
+  (replacing the v0.3.2 placeholder adapters)
 
 ---
 

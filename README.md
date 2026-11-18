@@ -140,9 +140,9 @@ Focus:
 * gRPC handlers mapped to application use cases
 * Standardized error model and `graph_version` propagation
 * Dockerized local runtime (API + Neo4j)
-* Implementation plan: [v0.2.2 DAG](docs/releases/v0.2.2-implementation-dag.md)
+* Implementation plan: [v0.2.2 DAG](docs/06-engineering/governance/releases/v0.2.2-implementation-dag.md)
 
-**v0.4.0 — Learning Session Orchestration**
+**v0.3.1 — Learning Session Orchestration**
 
 Focus:
 
@@ -151,9 +151,12 @@ Focus:
 * Exercise execution workflow
 * Student progress tracking
 * Assessment Engine integration
-* Student Model integration
 * Event-driven pedagogical flow
 * Decision traceability and auditability
+* Implementation plan: [v0.3.1 DAG](docs/06-engineering/governance/releases/v0.3.1-implementation-dag.md)
+
+**Next — v0.3.2 Tutor Orchestrator gRPC Runtime**, then **v0.4.0 Student Model Foundation**
+(see the [Release Roadmap](docs/06-engineering/governance/release-roadmap.md)).
 
 ---
 
@@ -176,7 +179,9 @@ Release Roadmap:
 | Version | Name                              | Status         | Planned Date | Details                                                       |
 | ------- | --------------------------------- | -------------- | ------------ | ------------------------------------------------------------- |
 | v0.2.2  | Curriculum Graph API Foundation   | 🚧 In Progress | 2026-09-18   | [Plan](https://github.com/AigoraCorporation/aigora/issues/186) |
-| v0.3.1  | Orchestrator Core (Deterministic) | 🚧 In Progress | 2026-09-18   | [Plan](https://github.com/AigoraCorporation/aigora/issues/253) |
+| v0.3.1  | Learning Session Orchestration    | 🚧 In Progress | 2026-09-18   | [Plan](https://github.com/AigoraCorporation/aigora/issues/253) |
+| v0.3.2  | Tutor Orchestrator gRPC Runtime   | ⏳ Planned     | TBD          | —                                                             |
+| v0.4.0  | Student Model Foundation          | ⏳ Planned     | TBD          | —                                                             |
 
 See full roadmap: [Release Roadmap](docs/06-engineering/governance/release-roadmap.md)
 
