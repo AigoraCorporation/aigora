@@ -34,13 +34,16 @@ It serves as the **single source of truth** for:
 
 #### Scope
 
-- FastAPI delivery layer foundation
-- External access to Curriculum Graph use cases
-- Request / response contract definition
-- API dependency injection structure
+- Versioned, read-only gRPC API (v1 contracts, additive-only evolution)
+- gRPC delivery adapter mapped to Curriculum Graph use cases
+- Standardized error model and `graph_version` propagation
+- Dockerized local runtime (API + Neo4j)
 - Use case boundary enforcement
-- OpenAPI exposure strategy
 - Infrastructure isolation from delivery mechanisms
+
+Out of scope: public REST API, graph write/publication operations.
+
+Implementation plan: [v0.2.2 DAG](../../releases/v0.2.2-implementation-dag.md)
 
 ### v0.3.1 — Learning Session Orchestration
 

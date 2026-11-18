@@ -136,11 +136,11 @@ AIGORA is currently in the **Early Development**.
 
 Focus:
 
-* FastAPI delivery layer
-* API boundary exposure
-* Request / response contracts
-* Dependency injection structure
-* OpenAPI documentation
+* Versioned, read-only gRPC API (v1 contracts)
+* gRPC handlers mapped to application use cases
+* Standardized error model and `graph_version` propagation
+* Dockerized local runtime (API + Neo4j)
+* Implementation plan: [v0.2.2 DAG](docs/releases/v0.2.2-implementation-dag.md)
 
 **v0.4.0 — Learning Session Orchestration**
 
