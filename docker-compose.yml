@@ -26,11 +26,13 @@ services:
     volumes:
       - neo4j_data:/data
     healthcheck:
-      test: ["CMD-SHELL", "cypher-shell -u \"$${NEO4J_AUTH%%/*}\" -p \"$${NEO4J_AUTH#*/}\" 'RETURN 1' > /dev/null"]
+      # HTTP probe instead of cypher-shell: cypher-shell starts a JVM and can exceed
+      # the probe timeout on slower hosts. Bolt and HTTP come up together.
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:7474"]
       interval: 5s
       timeout: 5s
-      retries: 30
-      start_period: 15s
+      retries: 60
+      start_period: 60s
 
   graph-publisher:
     build:
