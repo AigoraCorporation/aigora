@@ -47,7 +47,7 @@ class Neo4jClient:
         self._uri = uri or settings.uri
         self._username = username or settings.username
         self._password = password or settings.password
-        self._database = database or settings.database
+        self._database = database or (settings.database if settings is not None else "neo4j")
         if GraphDatabase is None:
             raise Neo4jClientError(
                 "The 'neo4j' package is required to create Neo4jClient. "
