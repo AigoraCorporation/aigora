@@ -1,0 +1,72 @@
+# Local runtime for the Curriculum Graph gRPC API (ADR-007, RQ-5).
+#
+#   docker compose up -d --build     # neo4j -> graph-publisher -> curriculum-graph-api
+#   docker compose ps                # neo4j and curriculum-graph-api must be "healthy"
+#   docker compose down -v           # stop and remove data
+#
+# Configuration: copy .env.example to .env to override defaults.
+name: aigora
+
+x-neo4j-connection: &neo4j-connection
+  NEO4J_URI: bolt://neo4j:7687
+  NEO4J_USERNAME: ${NEO4J_USERNAME:-neo4j}
+  NEO4J_PASSWORD: ${NEO4J_PASSWORD:-aigora-local-password}
+  NEO4J_DATABASE: ${NEO4J_DATABASE:-neo4j}
+
+services:
+  neo4j:
+    image: neo4j:5.26.0
+    environment:
+      NEO4J_AUTH: ${NEO4J_USERNAME:-neo4j}/${NEO4J_PASSWORD:-aigora-local-password}
+      NEO4J_server_memory_heap_initial__size: ${NEO4J_HEAP_INITIAL:-512m}
+      NEO4J_server_memory_heap_max__size: ${NEO4J_HEAP_MAX:-1G}
+    ports:
+      - "${NEO4J_HTTP_PORT:-7474}:7474"   # Neo4j Browser
+      - "${NEO4J_BOLT_PORT:-7687}:7687"   # Bolt
+    volumes:
+      - neo4j_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u \"$${NEO4J_AUTH%%/*}\" -p \"$${NEO4J_AUTH#*/}\" 'RETURN 1' > /dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+
+  graph-publisher:
+    build:
+      context: .
+      dockerfile: docker/curriculum-graph-api/Dockerfile
+    image: aigora/curriculum-graph-api:local
+    command:
+      - python
+      - -m
+      - aigora.curriculum_graph.bootstrap.publish
+      - --input
+      - ${GRAPH_PUBLISH_INPUT:-data/graph/canonical/graph.json}
+    environment:
+      <<: *neo4j-connection
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    restart: "no"
+    healthcheck:
+      disable: true
+
+  curriculum-graph-api:
+    image: aigora/curriculum-graph-api:local
+    environment:
+      <<: *neo4j-connection
+      GRPC_PORT: "50051"
+      GRAPH_VERSION_DEFAULT: ${GRAPH_VERSION_DEFAULT:-}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "${GRPC_PORT:-50051}:50051"
+    depends_on:
+      neo4j:
+        condition: service_healthy
+      graph-publisher:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  neo4j_data:
