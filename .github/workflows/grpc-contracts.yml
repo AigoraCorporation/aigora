@@ -1,0 +1,27 @@
+name: gRPC Contracts
+
+on:
+  pull_request:
+    paths:
+      - "proto/**"
+      - "src/aigora/**/v1/**"
+      - "scripts/grpc_contracts.py"
+      - "docs/02-architecture/curriculum-graph/grpc-api-reference.md"
+      - "pyproject.toml"
+      - ".github/workflows/grpc-contracts.yml"
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Check generated code, reference docs and v1 compatibility
+        run: python scripts/grpc_contracts.py check

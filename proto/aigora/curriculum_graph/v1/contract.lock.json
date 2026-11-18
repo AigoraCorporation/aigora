@@ -1,0 +1,577 @@
+{
+  "enums": {
+    ".aigora.curriculum_graph.v1.HealthCheckResponse.ServingStatus": {
+      "0": "SERVING_STATUS_UNSPECIFIED",
+      "1": "SERVING_STATUS_SERVING",
+      "2": "SERVING_STATUS_NOT_SERVING"
+    },
+    ".aigora.curriculum_graph.v1.MasteryLevel": {
+      "0": "MASTERY_LEVEL_UNSPECIFIED",
+      "1": "MASTERY_LEVEL_UNEXPOSED",
+      "2": "MASTERY_LEVEL_RECOGNISES",
+      "3": "MASTERY_LEVEL_GUIDED",
+      "4": "MASTERY_LEVEL_INDEPENDENT",
+      "5": "MASTERY_LEVEL_EFFICIENT",
+      "6": "MASTERY_LEVEL_TRANSFERABLE"
+    },
+    ".aigora.curriculum_graph.v1.PrerequisiteKind": {
+      "0": "PREREQUISITE_KIND_UNSPECIFIED",
+      "1": "PREREQUISITE_KIND_HARD",
+      "2": "PREREQUISITE_KIND_SOFT"
+    }
+  },
+  "messages": {
+    ".aigora.curriculum_graph.v1.ErrorDetail": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "code",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "message",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "3": {
+          "label": "LABEL_OPTIONAL",
+          "name": "request_id",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "4": {
+          "label": "LABEL_OPTIONAL",
+          "name": "graph_version",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.GetGraphMetadataRequest": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "context",
+          "proto3_optional": false,
+          "type": "TYPE_MESSAGE",
+          "type_name": ".aigora.curriculum_graph.v1.RequestContext"
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.GetGraphMetadataResponse": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "graph_version",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "node_count",
+          "proto3_optional": false,
+          "type": "TYPE_INT32",
+          "type_name": ""
+        },
+        "3": {
+          "label": "LABEL_OPTIONAL",
+          "name": "edge_count",
+          "proto3_optional": false,
+          "type": "TYPE_INT32",
+          "type_name": ""
+        },
+        "4": {
+          "label": "LABEL_OPTIONAL",
+          "name": "profile_count",
+          "proto3_optional": false,
+          "type": "TYPE_INT32",
+          "type_name": ""
+        },
+        "5": {
+          "label": "LABEL_REPEATED",
+          "name": "profile_ids",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "6": {
+          "label": "LABEL_REPEATED",
+          "name": "domains",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.GetLearningPathRequest": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "context",
+          "proto3_optional": false,
+          "type": "TYPE_MESSAGE",
+          "type_name": ".aigora.curriculum_graph.v1.RequestContext"
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "start_node_id",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "3": {
+          "label": "LABEL_OPTIONAL",
+          "name": "target_node_id",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "4": {
+          "label": "LABEL_OPTIONAL",
+          "name": "include_soft",
+          "proto3_optional": true,
+          "type": "TYPE_BOOL",
+          "type_name": ""
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.GetLearningPathResponse": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "graph_version",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "path_found",
+          "proto3_optional": false,
+          "type": "TYPE_BOOL",
+          "type_name": ""
+        },
+        "3": {
+          "label": "LABEL_REPEATED",
+          "name": "path",
+          "proto3_optional": false,
+          "type": "TYPE_MESSAGE",
+          "type_name": ".aigora.curriculum_graph.v1.Node"
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.GetNodeRequest": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "context",
+          "proto3_optional": false,
+          "type": "TYPE_MESSAGE",
+          "type_name": ".aigora.curriculum_graph.v1.RequestContext"
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "node_id",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.GetNodeResponse": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "graph_version",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "node",
+          "proto3_optional": false,
+          "type": "TYPE_MESSAGE",
+          "type_name": ".aigora.curriculum_graph.v1.Node"
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.GetPrerequisitesRequest": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "context",
+          "proto3_optional": false,
+          "type": "TYPE_MESSAGE",
+          "type_name": ".aigora.curriculum_graph.v1.RequestContext"
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "node_id",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "3": {
+          "label": "LABEL_OPTIONAL",
+          "name": "include_soft",
+          "proto3_optional": true,
+          "type": "TYPE_BOOL",
+          "type_name": ""
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.GetPrerequisitesResponse": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "graph_version",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "2": {
+          "label": "LABEL_REPEATED",
+          "name": "prerequisites",
+          "proto3_optional": false,
+          "type": "TYPE_MESSAGE",
+          "type_name": ".aigora.curriculum_graph.v1.Prerequisite"
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.GetRegressionTargetsRequest": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "context",
+          "proto3_optional": false,
+          "type": "TYPE_MESSAGE",
+          "type_name": ".aigora.curriculum_graph.v1.RequestContext"
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "node_id",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.GetRegressionTargetsResponse": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "graph_version",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "2": {
+          "label": "LABEL_REPEATED",
+          "name": "targets",
+          "proto3_optional": false,
+          "type": "TYPE_MESSAGE",
+          "type_name": ".aigora.curriculum_graph.v1.Node"
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.HealthCheckRequest": {
+      "fields": {},
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.HealthCheckResponse": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "status",
+          "proto3_optional": false,
+          "type": "TYPE_ENUM",
+          "type_name": ".aigora.curriculum_graph.v1.HealthCheckResponse.ServingStatus"
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "graph_version",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.ListNodesRequest": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "context",
+          "proto3_optional": false,
+          "type": "TYPE_MESSAGE",
+          "type_name": ".aigora.curriculum_graph.v1.RequestContext"
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "domain",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "3": {
+          "label": "LABEL_OPTIONAL",
+          "name": "profile_id",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "4": {
+          "label": "LABEL_OPTIONAL",
+          "name": "page_size",
+          "proto3_optional": false,
+          "type": "TYPE_INT32",
+          "type_name": ""
+        },
+        "5": {
+          "label": "LABEL_OPTIONAL",
+          "name": "page_token",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.ListNodesResponse": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "graph_version",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "2": {
+          "label": "LABEL_REPEATED",
+          "name": "nodes",
+          "proto3_optional": false,
+          "type": "TYPE_MESSAGE",
+          "type_name": ".aigora.curriculum_graph.v1.Node"
+        },
+        "3": {
+          "label": "LABEL_OPTIONAL",
+          "name": "next_page_token",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "4": {
+          "label": "LABEL_OPTIONAL",
+          "name": "total_size",
+          "proto3_optional": false,
+          "type": "TYPE_INT32",
+          "type_name": ""
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.MasteryCriterion": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "level",
+          "proto3_optional": false,
+          "type": "TYPE_ENUM",
+          "type_name": ".aigora.curriculum_graph.v1.MasteryLevel"
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "description",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.Node": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "id",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "name",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "3": {
+          "label": "LABEL_OPTIONAL",
+          "name": "domain",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "4": {
+          "label": "LABEL_OPTIONAL",
+          "name": "description",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "5": {
+          "label": "LABEL_REPEATED",
+          "name": "mastery_criteria",
+          "proto3_optional": false,
+          "type": "TYPE_MESSAGE",
+          "type_name": ".aigora.curriculum_graph.v1.MasteryCriterion"
+        },
+        "6": {
+          "label": "LABEL_REPEATED",
+          "name": "error_taxonomy",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "7": {
+          "label": "LABEL_REPEATED",
+          "name": "prerequisite_ids",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "8": {
+          "label": "LABEL_REPEATED",
+          "name": "regression_ids",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.Prerequisite": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "node",
+          "proto3_optional": false,
+          "type": "TYPE_MESSAGE",
+          "type_name": ".aigora.curriculum_graph.v1.Node"
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "kind",
+          "proto3_optional": false,
+          "type": "TYPE_ENUM",
+          "type_name": ".aigora.curriculum_graph.v1.PrerequisiteKind"
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    },
+    ".aigora.curriculum_graph.v1.RequestContext": {
+      "fields": {
+        "1": {
+          "label": "LABEL_OPTIONAL",
+          "name": "request_id",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        },
+        "2": {
+          "label": "LABEL_OPTIONAL",
+          "name": "graph_version",
+          "proto3_optional": false,
+          "type": "TYPE_STRING",
+          "type_name": ""
+        }
+      },
+      "reserved_names": [],
+      "reserved_numbers": []
+    }
+  },
+  "package": "aigora.curriculum_graph.v1",
+  "services": {
+    ".aigora.curriculum_graph.v1.CurriculumGraphService": {
+      "GetGraphMetadata": {
+        "client_streaming": false,
+        "input": ".aigora.curriculum_graph.v1.GetGraphMetadataRequest",
+        "output": ".aigora.curriculum_graph.v1.GetGraphMetadataResponse",
+        "server_streaming": false
+      },
+      "GetLearningPath": {
+        "client_streaming": false,
+        "input": ".aigora.curriculum_graph.v1.GetLearningPathRequest",
+        "output": ".aigora.curriculum_graph.v1.GetLearningPathResponse",
+        "server_streaming": false
+      },
+      "GetNode": {
+        "client_streaming": false,
+        "input": ".aigora.curriculum_graph.v1.GetNodeRequest",
+        "output": ".aigora.curriculum_graph.v1.GetNodeResponse",
+        "server_streaming": false
+      },
+      "GetPrerequisites": {
+        "client_streaming": false,
+        "input": ".aigora.curriculum_graph.v1.GetPrerequisitesRequest",
+        "output": ".aigora.curriculum_graph.v1.GetPrerequisitesResponse",
+        "server_streaming": false
+      },
+      "GetRegressionTargets": {
+        "client_streaming": false,
+        "input": ".aigora.curriculum_graph.v1.GetRegressionTargetsRequest",
+        "output": ".aigora.curriculum_graph.v1.GetRegressionTargetsResponse",
+        "server_streaming": false
+      },
+      "HealthCheck": {
+        "client_streaming": false,
+        "input": ".aigora.curriculum_graph.v1.HealthCheckRequest",
+        "output": ".aigora.curriculum_graph.v1.HealthCheckResponse",
+        "server_streaming": false
+      },
+      "ListNodes": {
+        "client_streaming": false,
+        "input": ".aigora.curriculum_graph.v1.ListNodesRequest",
+        "output": ".aigora.curriculum_graph.v1.ListNodesResponse",
+        "server_streaming": false
+      }
+    }
+  }
+}

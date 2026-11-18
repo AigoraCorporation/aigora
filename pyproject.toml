@@ -1,3 +1,34 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aigora"
+version = "0.2.2"
+description = "AIGORA — AI-driven mathematics learning architecture"
+requires-python = ">=3.12"
+dependencies = [
+    "neo4j>=5.20",
+    "PyYAML>=6.0",
+    "grpcio==1.68.1",
+    "grpcio-status==1.68.1",
+    "protobuf>=5.28,<6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "grpcio-tools==1.68.1",
+    "import-linter>=2.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.cypher", "*.pyi"]
+
 [tool.pytest.ini_options]
 pythonpath = ["src", "tools"]
 testpaths = ["tests"]
@@ -84,5 +115,23 @@ source_modules = ["aigora.curriculum_graph.application"]
 
 forbidden_modules = [
     "aigora.curriculum_graph.presentation",
+]
+
+# ============================================================
+# GENERATED gRPC CONTRACTS STAY IN THE DELIVERY LAYER (ADR-007)
+# ============================================================
+
+[[tool.importlinter.contracts]]
+name = "Only presentation may use generated gRPC contracts"
+type = "forbidden"
+source_modules = [
+    "aigora.curriculum_graph.domain",
+    "aigora.curriculum_graph.application",
+    "aigora.curriculum_graph.infrastructure",
+]
+
+forbidden_modules = [
+    "aigora.curriculum_graph.v1",
+    "google.protobuf",
 ]
 
