@@ -159,6 +159,8 @@ class ReadGraphUseCase:
             prerequisites.append(
                 PrerequisiteView(node=to_node_view(graph.get_node(edge.source)), kind=_PREREQUISITE_KINDS[edge.type])
             )
+        # Deterministic order regardless of edge storage order: hard first, then by node id.
+        prerequisites.sort(key=lambda p: (p.kind is not PrerequisiteKind.HARD, p.node.id))
         return GetPrerequisitesResult(graph_version=version, prerequisites=tuple(prerequisites))
 
     def _regression_targets(

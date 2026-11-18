@@ -135,7 +135,7 @@ Canonical error payload attached to every failed RPC as a rich status detail: th
 | Field | Number | Type | Description |
 |-------|--------|------|-------------|
 | `graph_version` | 1 | `string` |  |
-| `prerequisites` | 2 | `repeated Prerequisite` |  |
+| `prerequisites` | 2 | `repeated Prerequisite` | Hard prerequisites first, then ordered by node id. |
 
 ### GetRegressionTargetsRequest
 

@@ -20,7 +20,7 @@ from aigora.curriculum_graph.application.use_cases.read_graph import (
     PrerequisiteKind,
     ReadGraphUseCase,
 )
-from tests.fixtures.curriculum_graph.read_graph import GRAPH_VERSION, StaticGraphReader
+from tests.fixtures.curriculum_graph.read_graph import GRAPH_VERSION, StaticGraphReader, make_graph
 
 
 @pytest.fixture
@@ -153,3 +153,15 @@ def test_unloaded_graph_is_unavailable() -> None:
     use_case = ReadGraphUseCase(PublishedGraphProvider(StaticGraphReader()))
     with pytest.raises(GraphUnavailableError):
         use_case.execute(GetGraphMetadataCommand())
+
+
+def test_prerequisite_order_does_not_depend_on_edge_storage_order() -> None:
+    graph = make_graph()
+    graph.edges.reverse()
+    provider = PublishedGraphProvider(StaticGraphReader(graph))
+    provider.load()
+    result = ReadGraphUseCase(provider).execute(GetPrerequisitesCommand(node_id="b.linear-equations"))
+    assert [(p.node.id, p.kind) for p in result.prerequisites] == [
+        ("a.fractions", PrerequisiteKind.HARD),
+        ("a.decimals", PrerequisiteKind.SOFT),
+    ]
