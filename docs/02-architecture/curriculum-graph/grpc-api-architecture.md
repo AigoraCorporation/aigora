@@ -235,12 +235,15 @@ contract. How each method is served:
 |-------------|-----------|-------|
 | `getPrerequisites(nodeId, version)` | `GetPrerequisites` | Direct. Use `include_soft = false` for hard prerequisites only. |
 | `nodeExists(nodeId, version)` | `GetNode` | `CG_NODE_NOT_FOUND` → `false`. |
-| `getNextCandidateLearningNodes(current, student, version)` | `ListNodes` + `GetPrerequisites` | **Gap:** v1 has no "dependents" RPC. Build the forward adjacency once per `graph_version` (list all nodes, ask each for its prerequisites) and cache it; the snapshot is immutable per version. Candidate filtering by student state stays in the orchestrator. |
+| `getNextCandidateLearningNodes(current, student, version)` | `ListNodes` + `GetPrerequisites` | **Gap (#293):** v1 has no "dependents" RPC yet. Build the forward adjacency once per `graph_version` (list all nodes, ask each for its prerequisites) and cache it; the snapshot is immutable per version. Candidate filtering by student state stays in the orchestrator. |
 | `getUnlockedNodes(student, version)` | same cached adjacency | Requires student mastery (Student Model); the graph only supplies topology. |
 | `getCurrentLearningNode(student, version)` | — | Not a Curriculum Graph concern: the current node is student/session state. |
 
-The gap above is a candidate for an **additive** v1 evolution (for example a
-`GetDependents` RPC), which the compatibility rules allow without a `v2`.
+The gap above is closed by an **additive** v1 evolution, which the
+compatibility rules allow without a `v2`: a `GetDependents` RPC, tracked in
+[#293](https://github.com/AigoraCorporation/aigora/issues/293) (release v0.3.2,
+blocks the orchestrator adapter #245). Until it ships, use the cached adjacency
+described above.
 
 ### 5.4 Python client
 
