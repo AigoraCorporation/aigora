@@ -1,5 +1,13 @@
 # Curriculum Graph Contracts
 
+> **Superseded for the transport contract.** The RPCs below were the
+> orchestrator's initial proposal. The binding contract is the frozen
+> `aigora.curriculum_graph.v1` API
+> ([Contract v1](../../curriculum-graph/grpc-api-contract.md),
+> [ADR-007](../../curriculum-graph/adr/ADR-007-read-only-grpc-api-foundation.md)).
+> See [Port-to-RPC mapping](../../curriculum-graph/grpc-api-architecture.md#53-port-to-rpc-mapping)
+> for how `CurriculumGraphClient` is served by v1 and which operations are gaps.
+
 ## Overview
 
 This document defines the formal service contracts exposed by the AIGORA Curriculum Graph API.
