@@ -1,0 +1,36 @@
+name: Python Tests
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "tools/**"
+      - "pyproject.toml"
+      - ".github/workflows/python-tests.yml"
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Architecture boundaries (import-linter)
+        run: lint-imports
+
+      - name: Unit tests with coverage gate for the gRPC API
+        run: >-
+          pytest -m "not integration"
+          --cov=aigora.curriculum_graph.presentation
+          --cov=aigora.curriculum_graph.application.use_cases.read_graph
+          --cov=aigora.curriculum_graph.application.services
+          --cov=aigora.curriculum_graph.infrastructure.neo4j.neo4j_curriculum_graph_reader
+          --cov-report=term-missing
+          --cov-fail-under=80
