@@ -32,6 +32,7 @@ Each document explains the system from a different level of abstraction.
 | [Schema](schema.md)         | Graph schema and validation rules                      |
 | [Queries](queries.md)       | Query patterns and traversal semantics                 |
 | [gRPC API Contract v1](grpc-api-contract.md) | Read-only gRPC API, error model and compatibility rules |
+| [gRPC API Reference v1](grpc-api-reference.md) | Generated message and RPC reference (do not edit) |
 | [Validation](validation.md) | Structural, semantic, and operational validation rules |
 | [Versioning](versioning.md) | Graph evolution and compatibility constraints          |
 

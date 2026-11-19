@@ -6,7 +6,9 @@
 
 This document describes the frozen v1 contract of the read-only Curriculum
 Graph API and the rules that keep it backward compatible. Field-level reference
-documentation is generated from the `.proto` file.
+documentation is generated from the `.proto` file:
+[gRPC API Reference v1](grpc-api-reference.md). Generation and the
+compatibility gate are described in [`proto/README.md`](../../../proto/README.md).
 
 ---
 
