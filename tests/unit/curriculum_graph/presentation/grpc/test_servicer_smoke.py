@@ -7,6 +7,7 @@ import grpc
 import pytest
 
 from aigora.curriculum_graph.bootstrap.grpc_server import RunningServer, start_server
+from aigora.curriculum_graph.presentation.grpc.errors import error_detail_from
 from aigora.curriculum_graph.v1 import curriculum_graph_pb2 as pb
 from aigora.curriculum_graph.v1 import curriculum_graph_pb2_grpc as pb_grpc
 from aigora.shared.config.settings import GrpcServerSettings
@@ -49,7 +50,10 @@ def test_all_rpcs_answer_with_graph_version(stub: pb_grpc.CurriculumGraphService
     assert path.path_found and len(path.path) == 4
 
 
-def test_unknown_node_maps_to_not_found(stub: pb_grpc.CurriculumGraphServiceStub) -> None:
+def test_unknown_node_maps_to_canonical_not_found(stub: pb_grpc.CurriculumGraphServiceStub) -> None:
     with pytest.raises(grpc.RpcError) as exc:
-        stub.GetNode(pb.GetNodeRequest(node_id="z.unknown"))
+        stub.GetNode(pb.GetNodeRequest(context=pb.RequestContext(request_id="req-1"), node_id="z.unknown"))
     assert exc.value.code() == grpc.StatusCode.NOT_FOUND
+    detail = error_detail_from(exc.value)
+    assert detail is not None
+    assert (detail.code, detail.request_id, detail.graph_version) == ("CG_NODE_NOT_FOUND", "req-1", GRAPH_VERSION)
