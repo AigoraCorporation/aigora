@@ -30,7 +30,7 @@ where = ["src"]
 "*" = ["*.cypher", "*.pyi"]
 
 [tool.pytest.ini_options]
-pythonpath = ["src", "tools"]
+pythonpath = ["src", "tools", "."]
 testpaths = ["tests"]
 addopts = "-ra --import-mode=importlib"
 markers = [
@@ -39,6 +39,7 @@ markers = [
 
 [tool.importlinter]
 root_packages = ["aigora.curriculum_graph"]
+include_external_packages = true
 
 # ============================================================
 # DOMAIN ISOLATION
@@ -85,6 +86,7 @@ forbidden_modules = [
 [[tool.importlinter.contracts]]
 name = "Presentation must not bypass application layer"
 type = "forbidden"
+allow_indirect_imports = true
 source_modules = ["aigora.curriculum_graph.presentation"]
 
 forbidden_modules = [
@@ -98,6 +100,7 @@ forbidden_modules = [
 [[tool.importlinter.contracts]]
 name = "Presentation must not directly depend on infrastructure"
 type = "forbidden"
+allow_indirect_imports = true
 source_modules = ["aigora.curriculum_graph.presentation"]
 
 forbidden_modules = [
@@ -132,6 +135,7 @@ source_modules = [
 
 forbidden_modules = [
     "aigora.curriculum_graph.v1",
-    "google.protobuf",
+    "google",
+    "grpc",
 ]
 

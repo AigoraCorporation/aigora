@@ -18,6 +18,10 @@ def _default_batch_size() -> int:
     return Neo4jSettings.from_env().default_batch_size
 
 
+def _version(graph: CurriculumGraph) -> str:
+    return str(graph.version) if graph.version is not None else ""
+
+
 def _load_cypher(filename: str) -> str:
     return (_CYPHER_DIR / filename).read_text(encoding="utf-8")
 
@@ -52,11 +56,15 @@ class Neo4jCurriculumGraphRepository:
     def persist(self, graph: CurriculumGraph) -> None:
         """Persist all nodes, edges, and profiles from the graph.
 
-        Uses batched UNWIND/MERGE to ensure idempotency.
+        Uses batched UNWIND/MERGE to ensure idempotency. Every element is
+        stamped with the graph version, and the :GraphMetadata node marks
+        that version as the active published snapshot (ADR-007), so the
+        read side can rebuild exactly the published graph.
         """
         self._persist_nodes(graph)
         self._persist_edges(graph)
         self._persist_profiles(graph)
+        self._persist_metadata(graph)
 
     def validate(self, graph: CurriculumGraph) -> None:
         """Validate persisted state against in-memory graph.
@@ -101,12 +109,25 @@ class Neo4jCurriculumGraphRepository:
     # ------------------------------------------------------------------
 
     def _persist_nodes(self, graph: CurriculumGraph) -> None:
+        version = _version(graph)
         nodes = [
             {
                 "id": node.id,
                 "name": node.name,
                 "domain": node.domain,
                 "description": node.description,
+                "mastery_criteria_json": json.dumps(
+                    [
+                        {"level": int(level), "description": criterion.description}
+                        for level, criterion in sorted(
+                            node.mastery_criteria.criteria_by_level.items(), key=lambda item: int(item[0])
+                        )
+                    ]
+                ),
+                "error_taxonomy": list(node.error_taxonomy),
+                "prerequisite_ids": [str(i) for i in node.prerequisite_ids],
+                "regression_ids": [str(i) for i in node.regression_ids],
+                "graph_version": version,
             }
             for node in graph.nodes.values()
         ]
@@ -117,14 +138,20 @@ class Neo4jCurriculumGraphRepository:
                 MERGE (n:Concept {id: row.id})
                 SET n.name = row.name,
                     n.domain = row.domain,
-                    n.description = row.description
+                    n.description = row.description,
+                    n.mastery_criteria_json = row.mastery_criteria_json,
+                    n.error_taxonomy = row.error_taxonomy,
+                    n.prerequisite_ids = row.prerequisite_ids,
+                    n.regression_ids = row.regression_ids,
+                    n.graph_version = row.graph_version
                 """,
                 {"rows": batch},
             )
 
     def _persist_edges(self, graph: CurriculumGraph) -> None:
+        version = _version(graph)
         edges = [
-            {"source": edge.source, "target": edge.target, "type": edge.type.value}
+            {"source": edge.source, "target": edge.target, "type": edge.type.value, "graph_version": version}
             for edge in graph.edges
         ]
         for batch in self._batches(edges):
@@ -133,8 +160,8 @@ class Neo4jCurriculumGraphRepository:
                 UNWIND $rows AS row
                 MATCH (src:Concept {id: row.source})
                 MATCH (tgt:Concept {id: row.target})
-                MERGE (src)-[r:PREREQUISITE_OF]->(tgt)
-                SET r.type = row.type
+                MERGE (src)-[r:PREREQUISITE_OF {type: row.type}]->(tgt)
+                SET r.graph_version = row.graph_version
                 """,
                 {"rows": batch},
             )
@@ -150,6 +177,8 @@ class Neo4jCurriculumGraphRepository:
                 ),
                 "node_weights_json": json.dumps(dict(profile.node_weights)),
                 "progression_path": list(profile.progression_path),
+                "exam_skill_overlay": list(profile.exam_skill_overlay),
+                "graph_version": _version(graph),
             }
             for profile in graph.profiles.values()
         ]
@@ -162,10 +191,31 @@ class Neo4jCurriculumGraphRepository:
                     p.required_nodes = row.required_nodes,
                     p.mastery_targets_json = row.mastery_targets_json,
                     p.node_weights_json = row.node_weights_json,
-                    p.progression_path = row.progression_path
+                    p.progression_path = row.progression_path,
+                    p.exam_skill_overlay = row.exam_skill_overlay,
+                    p.graph_version = row.graph_version
                 """,
                 {"rows": batch},
             )
+
+    def _persist_metadata(self, graph: CurriculumGraph) -> None:
+        """Mark the persisted version as the active published snapshot."""
+        self._client.run(
+            """
+            MERGE (m:GraphMetadata {key: 'active'})
+            SET m.graph_version = $graph_version,
+                m.node_count = $node_count,
+                m.edge_count = $edge_count,
+                m.profile_count = $profile_count,
+                m.published_at = datetime()
+            """,
+            {
+                "graph_version": _version(graph),
+                "node_count": len(graph.nodes),
+                "edge_count": len(graph.edges),
+                "profile_count": len(graph.profiles),
+            },
+        )
 
     # ------------------------------------------------------------------
     # Utilities

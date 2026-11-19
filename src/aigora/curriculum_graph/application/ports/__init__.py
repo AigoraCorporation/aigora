@@ -1,6 +1,7 @@
 from aigora.curriculum_graph.application.ports.curriculum_graph_assembler import CurriculumGraphAssemblerPort
 from aigora.curriculum_graph.application.ports.curriculum_graph_exporter import CurriculumGraphExporter
 from aigora.curriculum_graph.application.ports.curriculum_graph_file_parser import CurriculumGraphFileParserPort
+from aigora.curriculum_graph.application.ports.curriculum_graph_reader import CurriculumGraphReader
 from aigora.curriculum_graph.application.ports.curriculum_graph_mapper import CurriculumGraphMapperPort
 from aigora.curriculum_graph.application.ports.curriculum_graph_schema_validator import CurriculumGraphSchemaValidatorPort
 
@@ -9,5 +10,6 @@ __all__ = [
     "CurriculumGraphExporter",
     "CurriculumGraphFileParserPort",
     "CurriculumGraphMapperPort",
+    "CurriculumGraphReader",
     "CurriculumGraphSchemaValidatorPort",
 ]

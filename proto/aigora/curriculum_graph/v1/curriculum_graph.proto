@@ -199,6 +199,7 @@ message Prerequisite {
 
 message GetPrerequisitesResponse {
   string graph_version = 1;
+  // Hard prerequisites first, then ordered by node id.
   repeated Prerequisite prerequisites = 2;
 }
 

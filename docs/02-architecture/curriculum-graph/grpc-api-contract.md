@@ -54,7 +54,8 @@ An invalid client-supplied version is never echoed back as `graph_version`.
 
 - Prerequisite edges point from the prerequisite to the dependent concept.
   `GetPrerequisites(X)` returns the sources of hard (and, unless
-  `include_soft = false`, soft) edges whose target is `X`.
+  `include_soft = false`, soft) edges whose target is `X`, ordered hard first
+  and then by node id.
 - `GetRegressionTargets(X)` returns `X.regression_ids` followed by targets of
   `regression_target` edges whose source is `X`, without duplicates.
 - `GetLearningPath(A, B)` returns the shortest path from `A` to `B` following

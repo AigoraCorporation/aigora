@@ -100,7 +100,7 @@ class TestNeo4jCurriculumGraphRepositoryUnit:
     ) -> None:
         graph = _make_graph()
         repo.persist(graph)
-        assert mock_client.run.call_count == 3  # nodes, edges, profiles
+        assert mock_client.run.call_count == 4  # nodes, edges, profiles, graph metadata
 
     def test_validate_delegates_to_persistence_validator(
         self, repo: Neo4jCurriculumGraphRepository, mock_client: MagicMock
