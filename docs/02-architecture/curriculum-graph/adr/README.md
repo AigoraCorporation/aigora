@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-**Last Updated**: 2026-05-14
+**Last Updated**: 2026-11-18
 
 This directory contains Architecture Decision Records (ADRs) documenting significant technical decisions for Curriculum-Graph Component.
 
@@ -18,5 +18,6 @@ Use the shared ADR template at [`docs/06-engineering/governance/templates/ADR-TE
 | [ADR-004](ADR-004-use-command-result-contracts-for-use-cases.md) | Use Command / Result Contracts for Use Cases | v0.2.1 | 2026-05-14 |
 | [ADR-005](ADR-005-model-graph-loading-as-explicit-pipeline.md) | Model Graph Loading as Explicit Pipeline | v0.2.1 | 2026-05-14 |
 | [ADR-006](ADR-006-use-exporter-strategy-registry.md) | Use Exporter Strategy Registry for Graph Export | v0.2.1 | 2026-05-14 |
+| [ADR-007](ADR-007-read-only-grpc-api-foundation.md) | Read-Only gRPC API Foundation | v0.2.2 | 2026-11-18 |
 
 ---
