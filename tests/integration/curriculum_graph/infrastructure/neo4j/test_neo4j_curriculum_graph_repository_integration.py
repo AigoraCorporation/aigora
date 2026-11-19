@@ -73,13 +73,15 @@ def _make_graph() -> CurriculumGraph:
 )
 class TestNeo4jCurriculumGraphRepositoryIntegration:
     @pytest.fixture
-    def client(self) -> Neo4jClient:
-        return Neo4jClient(
+    def client(self):
+        client = Neo4jClient(
             uri=os.environ.get("NEO4J_URI", "bolt://localhost:7687"),
             username=os.environ.get("NEO4J_USERNAME", "neo4j"),
             password=os.environ.get("NEO4J_PASSWORD", "aigora-local-password"),
             database=os.environ.get("NEO4J_DATABASE", "neo4j"),
         )
+        yield client
+        client.close()
 
     @pytest.fixture
     def repo(self, client: Neo4jClient) -> Neo4jCurriculumGraphRepository:
@@ -88,20 +90,17 @@ class TestNeo4jCurriculumGraphRepositoryIntegration:
     @pytest.fixture(autouse=True)
     def cleanup(self, client: Neo4jClient):
         yield
-        with client:
-            client.run("MATCH (n:Concept) WHERE n.id STARTS WITH 'integ-' DETACH DELETE n")
-            client.run("MATCH (p:CurriculumProfile) WHERE p.id STARTS WITH 'integ-' DELETE p")
+        client.run("MATCH (n:Concept) WHERE n.id STARTS WITH 'integ-' DETACH DELETE n")
+        client.run("MATCH (p:CurriculumProfile) WHERE p.id STARTS WITH 'integ-' DELETE p")
 
     def test_persist_and_validate(self, repo: Neo4jCurriculumGraphRepository, client: Neo4jClient) -> None:
         graph = _make_graph()
-        with client:
-            repo.apply_schema()
-            repo.persist(graph)
-            repo.validate(graph)
+        repo.apply_schema()
+        repo.persist(graph)
+        repo.validate(graph)
 
     def test_persist_is_idempotent(self, repo: Neo4jCurriculumGraphRepository, client: Neo4jClient) -> None:
         graph = _make_graph()
-        with client:
-            repo.persist(graph)
-            repo.persist(graph)  # second run must not duplicate
-            repo.validate(graph)
+        repo.persist(graph)
+        repo.persist(graph)  # second run must not duplicate
+        repo.validate(graph)
