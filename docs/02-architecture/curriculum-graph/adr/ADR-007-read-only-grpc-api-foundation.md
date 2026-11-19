@@ -115,12 +115,14 @@ The API serves the graph **published in Neo4j**, not the canonical files:
 
 ### 7. Local runtime (RQ-5)
 
-Docker Compose defines two services: `curriculum-graph-api` (gRPC on `50051`)
-and `neo4j` (`7474`, `7687`), configured through `NEO4J_URI`, `NEO4J_USER`,
-`NEO4J_PASSWORD`, `GRPC_PORT` and optional `GRAPH_VERSION_DEFAULT`. The API
-starts only after Neo4j is healthy, and readiness requires both health checks.
-A clean checkout must validate with `docker compose up` plus `grpcurl` smoke
-tests.
+Docker Compose defines two long-running services: `curriculum-graph-api` (gRPC
+on `50051`) and `neo4j` (`7474`, `7687`), configured through `NEO4J_URI`,
+`NEO4J_USERNAME`, `NEO4J_PASSWORD`, `GRPC_PORT` and optional
+`GRAPH_VERSION_DEFAULT` (the names already used by the Neo4j adapter). A
+one-shot `graph-publisher` job publishes the canonical graph so a clean checkout
+has data to serve. The API starts only after Neo4j is healthy and publication
+has completed, and readiness requires both health checks. A clean checkout must
+validate with `docker compose up` plus `grpcurl` smoke tests.
 
 ## Consequences
 
